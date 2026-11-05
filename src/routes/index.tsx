@@ -171,7 +171,7 @@ function Index() {
             </div>
             <button className="relative flex flex-col items-center justify-center rounded-2xl bg-card text-center transition-colors hover:bg-accent">
               <span className="absolute right-2.5 top-2.5 rounded-md bg-accent px-2 py-0.5 text-xs text-muted-foreground">仅限 Studio</span>
-              <Folder className="mt-6 size-[90px] text-muted" fill="currentColor" strokeWidth={0.6} />
+              <Folder className="mt-6 size-[90px] text-muted-foreground/40" fill="currentColor" strokeWidth={0.6} />
               <p className="mt-8 text-[17px] font-semibold">从本地文件开始</p>
               <p className="mt-1.5 text-[15px] text-muted-foreground">在 Artrail Studio 中打开本地文件</p>
             </button>
