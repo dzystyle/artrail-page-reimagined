@@ -1,23 +1,217 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  Search, PanelLeft, SquarePen, Monitor, Library, Shapes, Workflow, LayoutGrid,
+  MoreHorizontal, FolderPlus, FileText, Gamepad2, MessageCircle, Loader, Cloud,
+  Briefcase, Plus, Mic, AudioLines, ArrowUp, ChevronDown, ChevronRight, Sparkles,
+  Gift, MonitorSmartphone, Bell, Hammer, Folder, Film, Smartphone, Presentation, Bot,
+} from "lucide-react";
+import thumbVideo from "@/assets/thumb-video.jpg";
+import thumbApp from "@/assets/thumb-app.jpg";
+import thumbSlides from "@/assets/thumb-slides.jpg";
 
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Artrail — 你的 AI 智能体工作台" },
+      { name: "description", content: "Artrail：构建网站、应用和游戏，创建幻灯片、图片和视频。" },
+      { property: "og:title", content: "Artrail — AI 智能体工作台" },
+      { property: "og:description", content: "构建网站、应用和游戏，创建幻灯片、图片和视频。" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Logo({ className = "" }: { className?: string }) {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 6l1.5 5M19 3v6M26 5l-2 5M8 12l4 3" />
+      <path d="M13 17c4-3 11-3 14 1s1 9-4 10l3 7M13 17c-3 3-3 8 0 11 3 2 6 1 8-1" />
+      <circle cx="21" cy="21" r="2" />
+    </svg>
+  );
+}
+
+const nav = [
+  { icon: SquarePen, label: "新建任务" },
+  { icon: Monitor, label: "电脑" },
+  { icon: Bot, label: "Agent", badge: "Cue!" },
+  { icon: Library, label: "资料库" },
+  { icon: Shapes, label: "创作" },
+  { icon: Workflow, label: "自动化" },
+  { icon: LayoutGrid, label: "插件" },
+  { icon: MoreHorizontal, label: "更多" },
+];
+const tasks = [
+  { icon: FileText, label: "新建任务" },
+  { icon: Cloud, label: "测试并演示 Canva 连接器功能" },
+  { icon: MessageCircle, label: "开发基于照片互动的AI虚拟伴侣游戏" },
+  { icon: Gamepad2, label: "根据文档开发游戏" },
+  { icon: Gamepad2, label: "开发多人对战派对小游戏" },
+  { icon: Gamepad2, label: "分析小游戏创意方向" },
+  { icon: Loader, label: "开发机甲美女题材游戏", spin: true },
+];
+
+function Item({ icon: Icon, label, badge, spin }: { icon: typeof Search; label: string; badge?: string; spin?: boolean }) {
+  return (
+    <button className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent">
+      <Icon className={`size-[18px] shrink-0 ${spin ? "text-create" : ""} ${label === "Agent" ? "text-link" : ""}`} />
+      <span className="truncate">{label}</span>
+      {badge && <span className="rounded-md bg-accent px-1.5 py-0.5 text-xs font-medium">{badge}</span>}
+    </button>
+  );
+}
+
+function Sidebar() {
+  return (
+    <aside className="flex h-screen w-[333px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-2.5">
+      <div className="flex h-[52px] items-center justify-between px-1.5">
+        <div className="flex items-center gap-1.5">
+          <Logo className="size-7" />
+          <span className="font-brand text-lg font-bold tracking-tight">artrail</span>
+        </div>
+        <div className="flex gap-3 text-muted-foreground">
+          <Search className="size-5" /><PanelLeft className="size-5" />
+        </div>
+      </div>
+      <nav className="mt-2 space-y-[5px]">{nav.map((n) => <Item key={n.label} {...n} />)}</nav>
+      <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">项目</p>
+      <Item icon={FolderPlus} label="新项目" />
+      <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">任务</p>
+      <div className="space-y-[5px] overflow-y-auto">{tasks.map((t, i) => <Item key={i} {...t} />)}</div>
+      <div className="mt-auto pb-2">
+        <button className="flex w-full items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 text-left">
+          <Gift className="size-5" />
+          <div className="flex-1">
+            <p className="text-[15px]">赚取 2,500 积分</p>
+            <p className="text-xs text-muted-foreground">每邀请一位好友</p>
+          </div>
+          <ChevronRight className="size-4 text-muted-foreground" />
+        </button>
+        <div className="mt-2 flex items-center gap-2.5 px-1 py-1.5">
+          <span className="grid size-8 place-items-center rounded-full bg-build text-sm text-foreground">y</span>
+          <span className="flex-1 text-[15px]">yang yang</span>
+          <MonitorSmartphone className="size-5" /><Bell className="ml-2 size-5" />
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function GridDeco() {
+  return (
+    <div className="pointer-events-none absolute -right-2 top-5 h-[140px] w-[160px] opacity-50"
+      style={{ backgroundImage: "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)", backgroundSize: "40px 40px" }}>
+      <div className="absolute left-7 top-7 size-[110px] rounded-full border-[26px] border-accent" />
+    </div>
+  );
+}
+function CardsDeco() {
+  return (
+    <div className="pointer-events-none absolute -right-4 top-4 h-[150px] w-[160px]">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="absolute h-[100px] w-[110px] rounded-lg border border-border bg-accent/40"
+          style={{ left: 10 + i * 18, top: 18 + i * 4, transform: `rotate(${-14 + i * 6}deg)` }} />
+      ))}
+    </div>
+  );
+}
+
+function Index() {
+  const examples = [
+    { img: thumbVideo, tag: "视频", Icon: Film, title: "创作一支动漫短片" },
+    { img: thumbApp, tag: "应用", Icon: Smartphone, title: "制作个人预算应用" },
+    { img: thumbSlides, tag: "幻灯片", Icon: Presentation, title: "把教案做成幻灯片" },
+  ];
+  return (
+    <div className="flex min-h-screen bg-background text-foreground">
+      <Sidebar />
+      <main className="relative flex h-screen flex-1 flex-col overflow-y-auto">
+        <header className="flex h-[52px] items-center justify-between px-6">
+          <button className="flex items-center gap-1 text-[17px] font-medium">Artrail 2.0 Lite <ChevronDown className="size-4 text-muted-foreground" /></button>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center rounded-lg border border-border text-[15px]">
+              <span className="px-3 py-1.5 text-muted-foreground">免费计划</span>
+              <span className="h-4 w-px bg-border" />
+              <span className="px-3 py-1.5 text-link">升级</span>
+            </div>
+            <span className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[15px]"><Sparkles className="size-4" />300</span>
+          </div>
+        </header>
+
+        <div className="mx-auto w-full max-w-[853px] flex-1 pt-[80px]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Logo className="size-16" />
+              <span className="font-brand text-[50px] font-bold leading-none tracking-tight">artrail</span>
+            </div>
+            <div className="flex h-[62px] w-[280px] items-center gap-3 rounded-xl bg-surface-deep px-4">
+              <img src={thumbVideo} alt="" className="h-8 w-10 rounded object-cover" />
+              <div>
+                <p className="text-sm font-semibold">创建你的视频</p>
+                <p className="text-xs text-muted-foreground">让想法变为现实</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-9 grid grid-cols-[540px_1fr] gap-3.5">
+            <div className="flex flex-col gap-3.5">
+              {[
+                { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏", D: GridDeco },
+                { Icon: Shapes, c: "text-create", t: "创建", s: "幻灯片、图片和视频", D: CardsDeco },
+              ].map(({ Icon, c, t, s, D }) => (
+                <button key={t} className="relative h-[144px] overflow-hidden rounded-2xl bg-card p-[22px] text-left transition-colors hover:bg-accent">
+                  <Icon className={`size-6 ${c}`} fill="currentColor" />
+                  <p className="mt-4 flex items-center gap-1 text-[17px] font-semibold">{t}<ChevronRight className="size-4" /></p>
+                  <p className="mt-1 text-[15px] text-muted-foreground">{s}</p>
+                  <D />
+                </button>
+              ))}
+            </div>
+            <button className="relative flex flex-col items-center justify-center rounded-2xl bg-card text-center transition-colors hover:bg-accent">
+              <span className="absolute right-2.5 top-2.5 rounded-md bg-accent px-2 py-0.5 text-xs text-muted-foreground">仅限 Studio</span>
+              <Folder className="mt-6 size-[90px] text-muted" fill="currentColor" strokeWidth={0.6} />
+              <p className="mt-8 text-[17px] font-semibold">从本地文件开始</p>
+              <p className="mt-1.5 text-[15px] text-muted-foreground">在 Artrail Studio 中打开本地文件</p>
+            </button>
+          </div>
+
+          <div className="mt-8 grid grid-cols-3 gap-3">
+            {examples.map(({ img, tag, Icon, title }) => (
+              <button key={title} className="group text-center">
+                <div className="relative h-[155px] overflow-hidden rounded-xl border border-border">
+                  <img src={img} alt={title} loading="lazy" width={1040} height={640} className="size-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                  <span className="absolute left-2 top-2 flex items-center gap-1 rounded-md bg-surface-deep/80 px-1.5 py-0.5 text-xs font-medium"><Icon className="size-3" />{tag}</span>
+                </div>
+                <p className="mt-3 text-[15px] font-semibold">{title}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="sticky bottom-0 mx-auto w-full max-w-[853px] pb-9 pt-6">
+          <div className="rounded-[22px] border border-border bg-card">
+            <div className="flex gap-6 px-4 py-3 text-[15px] text-muted-foreground">
+              <span className="flex items-center gap-1.5"><Cloud className="size-4" />云服务</span>
+              <span className="flex items-center gap-1.5"><Briefcase className="size-4" />选择项目</span>
+            </div>
+            <div className="rounded-[22px] border-t border-border bg-background/40 px-4 pb-3 pt-4">
+              <textarea rows={2} placeholder="分配一个任务或输入 / 查看更多" className="w-full resize-none bg-transparent text-[16px] outline-none placeholder:text-muted-foreground" />
+              <div className="mt-2 flex items-center justify-between">
+                <div className="flex gap-2">
+                  <span className="grid size-8 place-items-center rounded-full border border-border"><Plus className="size-4" /></span>
+                  <span className="grid size-8 place-items-center rounded-full border border-border"><span className="size-4 rounded-full bg-build" /></span>
+                </div>
+                <div className="flex items-center gap-4 text-muted-foreground">
+                  <AudioLines className="size-[18px]" /><Mic className="size-[18px]" />
+                  <span className="grid size-9 place-items-center rounded-full bg-accent"><ArrowUp className="size-4" /></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
