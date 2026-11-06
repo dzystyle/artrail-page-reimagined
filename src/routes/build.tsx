@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef } from "react";
-import { ArrowLeft, Globe, Image, Gamepad2, Umbrella, Moon, Ghost } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
 import { Button } from "@/components/ui/button";
@@ -30,12 +30,6 @@ export const Route = createFileRoute("/build")({
   component: BuildPage,
 });
 
-const recent = [
-  { name: "游戏官网首页", time: "50 分钟前", icon: Umbrella, type: Globe },
-  { name: "测试", time: "1 小时前", icon: Moon, type: Globe },
-  { name: "小猫钓鱼图", time: "1 小时前", icon: Ghost, type: Image },
-  { name: "超级马里奥", time: "18 小时前", icon: Moon, type: Gamepad2 },
-];
 const works = [
   { name: "电路工匠", image: explore1, type: "网页游戏" },
   { name: "潮汐研讨会", image: explore2, type: "网页游戏" },
@@ -67,16 +61,7 @@ function BuildPage() {
           <h1 className="text-center text-2xl font-semibold sm:text-[28px]">我们今天要做什么？</h1>
           <HomeComposer scrollRoot={mainRef} />
         </section>
-        <section aria-labelledby="recent-projects" className="mt-3">
-          <h2 id="recent-projects" className="mb-4 text-base font-semibold">近期项目</h2>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-6 xl:grid-cols-4">
-            {recent.map((p, i) => <div key={p.name}>
-              <div className={`grid aspect-[1.8] place-items-center rounded-lg ${i === 3 ? "bg-project-mint" : "bg-project-lilac"}`}><p.icon className="size-10 text-foreground/80" strokeWidth={1.5} /></div>
-              <div className="mt-3 flex gap-2"><p.type className="mt-0.5 size-4 shrink-0 text-muted-foreground" /><div><p className="text-sm font-medium">{p.name}</p><p className="mt-0.5 text-xs text-muted-foreground">编辑于 {p.time}</p></div></div>
-            </div>)}
-          </div>
-        </section>
-        <section aria-labelledby="explore-works" className="mt-9">
+        <section aria-labelledby="explore-works" className="mt-3">
           <h2 id="explore-works" className="mb-4 text-base font-semibold">探索</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-6 xl:grid-cols-4">
             {works.map(w => <div key={w.name}><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover" /><h3 className="mt-2 text-sm font-medium">{w.name}</h3><p className="mt-0.5 text-xs text-muted-foreground">{w.type}</p></div>)}
