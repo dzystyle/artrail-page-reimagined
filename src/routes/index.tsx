@@ -18,9 +18,9 @@ import thumbSlides from "@/assets/thumb-slides.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Artrail — 你的 AI 智能体工作台" },
-      { name: "description", content: "Artrail：构建网站、应用和游戏，创建幻灯片、图片和视频。" },
-      { property: "og:title", content: "Artrail — AI 智能体工作台" },
+      { title: "ArTrail — 你的 AI 智能体工作台" },
+      { name: "description", content: "ArTrail：构建网站、应用和游戏，创建幻灯片、图片和视频。" },
+      { property: "og:title", content: "ArTrail — AI 智能体工作台" },
       { property: "og:description", content: "构建网站、应用和游戏，创建幻灯片、图片和视频。" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -74,7 +74,7 @@ function Sidebar() {
       <div className="flex h-[52px] items-center justify-between px-1.5">
         <div className="flex items-center gap-1.5">
           <Logo className="size-7" />
-          <span className="font-brand text-lg font-bold tracking-tight">artrail</span>
+          <span className="font-brand text-lg font-bold tracking-tight">ArTrail</span>
         </div>
         <div className="flex gap-3 text-muted-foreground">
           <Search className="size-5" /><PanelLeft className="size-5" />
@@ -126,10 +126,10 @@ function CardsDeco() {
 }
 
 type Model = { id: string; name: string; badge?: string; desc: string };
-const maxModel: Model = { id: "max", name: "Artrail 2.0 Max", badge: "Pro", desc: "为复杂任务设计的高性能代理。" };
-const stdModel: Model = { id: "std", name: "Artrail 2.0", badge: "Pro", desc: "多功能代理，能够执行大部分任务。" };
-const liteModel: Model = { id: "lite", name: "Artrail 2.0 Lite", desc: "一个适合日常任务的轻量级代理。" };
-const flexModel: Model = { id: "flex", name: "Artrail Flex", badge: "Beta", desc: "使用你自己的模型 API 密钥来驱动 Artrail。" };
+const maxModel: Model = { id: "max", name: "ArTrail 2.0 Max", badge: "Pro", desc: "为复杂任务设计的高性能代理。" };
+const stdModel: Model = { id: "std", name: "ArTrail 2.0", badge: "Pro", desc: "多功能代理，能够执行大部分任务。" };
+const liteModel: Model = { id: "lite", name: "ArTrail 2.0 Lite", desc: "一个适合日常任务的轻量级代理。" };
+const flexModel: Model = { id: "flex", name: "ArTrail Flex", badge: "Beta", desc: "使用你自己的模型 API 密钥来驱动 ArTrail。" };
 const models: Model[] = [maxModel, stdModel, liteModel, flexModel];
 const providers = ["OpenAI", "Anthropic", "Google Gemini", "DeepSeek", "自定义端点"];
 
@@ -156,11 +156,11 @@ function FlexDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: b
             <RingsIcon className="size-7" />
           </span>
           <DialogTitle className="mt-4 flex items-center gap-2 text-xl font-semibold text-foreground">
-            Artrail Flex
+            ArTrail Flex
             <span className="rounded-md bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">Beta</span>
           </DialogTitle>
           <DialogDescription className="mt-2 text-[13px] leading-relaxed">
-            使用您自己的 API 密钥和模型运行 Artrail。第三方模型的性能可能有所不同，且不受 Artrail 保证。
+            使用您自己的 API 密钥和模型运行 ArTrail。第三方模型的性能可能有所不同，且不受 ArTrail 保证。
           </DialogDescription>
         </div>
 
@@ -281,7 +281,7 @@ export function Index() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Logo className="size-16" />
-              <span className="font-brand text-[50px] font-bold leading-none tracking-tight">artrail</span>
+              <span className="font-brand text-[50px] font-bold leading-none tracking-tight">ArTrail</span>
             </div>
             <div className="flex h-[62px] w-[280px] items-center gap-3 rounded-xl bg-surface-deep px-4">
               <img src={thumbVideo} alt="" className="h-8 w-10 rounded object-cover" />
