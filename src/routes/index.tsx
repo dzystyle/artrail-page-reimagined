@@ -3,7 +3,7 @@ import {
   Search, PanelLeft, SquarePen, Monitor, Library, Shapes, Workflow, LayoutGrid,
   MoreHorizontal, FolderPlus, FileText, Gamepad2, MessageCircle, Loader, Cloud,
   Briefcase, Plus, Mic, AudioLines, ArrowUp, ChevronDown, ChevronRight, Sparkles,
-  Gift, MonitorSmartphone, Bell, Hammer, Folder, Film, Smartphone, Presentation, MessageSquarePlus, Box,
+  Gift, MonitorSmartphone, Bell, Hammer, Folder, Clapperboard, Film, Smartphone, Presentation, MessageSquarePlus, Box,
 } from "lucide-react";
 import thumbVideo from "@/assets/thumb-video.jpg";
 import thumbApp from "@/assets/thumb-app.jpg";
@@ -171,10 +171,9 @@ function Index() {
               ))}
             </div>
             <button className="relative flex flex-col items-center justify-center rounded-2xl bg-card text-center transition-colors hover:bg-accent">
-              <span className="absolute right-2.5 top-2.5 rounded-md bg-accent px-2 py-0.5 text-xs text-muted-foreground">仅限 Studio</span>
-              <Folder className="mt-6 size-[90px] text-muted-foreground/40" fill="currentColor" strokeWidth={0.6} />
-              <p className="mt-8 text-[17px] font-semibold">从本地文件开始</p>
-              <p className="mt-1.5 text-[15px] text-muted-foreground">在 Artrail Studio 中打开本地文件</p>
+              <Clapperboard className="size-[72px] text-muted-foreground/60" strokeWidth={1.2} />
+              <p className="mt-8 text-[17px] font-semibold">互动故事</p>
+              <p className="mt-1.5 text-[15px] text-muted-foreground">场景、选择和分支</p>
             </button>
           </div>
 
