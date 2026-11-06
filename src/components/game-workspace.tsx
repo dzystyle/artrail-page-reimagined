@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowUp, Check, ChevronDown, Code2, Download, FileText, Folder, Gamepad2, Hand, Image, Layers, Maximize, MessageSquare, Minus, MousePointer2, PanelLeftClose, PanelLeftOpen, Play, Plus, Search, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUp, Check, ChevronDown, Code2, Download, FileText, Folder, Gamepad2, Hand, Image, Layers, Maximize, MessageSquare, Minus, MousePointer2, PanelLeftClose, PanelLeftOpen, Play, Plus, Search, Sparkles, Swords } from "lucide-react";
+import { MultiplayerPanel } from "@/components/multiplayer-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +13,7 @@ import scene from "@/assets/build-templates-6.jpg";
 import effects from "@/assets/build-templates-8.jpg";
 import icons from "@/assets/build-templates-4.jpg";
 
-const tabs = [{ id: "game", label: "Game", icon: Gamepad2 }, { id: "design", label: "Design", icon: FileText }, { id: "canvas", label: "Canvas", icon: Layers }, { id: "assets", label: "Assets", icon: Image }, { id: "code", label: "Code", icon: Code2 }] as const;
+const tabs = [{ id: "game", label: "Game", icon: Gamepad2 }, { id: "design", label: "Design", icon: FileText }, { id: "canvas", label: "Canvas", icon: Layers }, { id: "assets", label: "Assets", icon: Image }, { id: "code", label: "Code", icon: Code2 }, { id: "multiplayer", label: "多人游戏", icon: Swords }] as const;
 const assets = [{ name: "concept.jpg", image: concept, kind: "概念" }, { name: "character.jpg", image: character, kind: "角色" }, { name: "environment.jpg", image: scene, kind: "场景" }, { name: "effects.jpg", image: effects, kind: "特效" }, { name: "ui-icons.jpg", image: icons, kind: "界面" }];
 const sections = ["游戏概述", "主题与目标", "核心玩法", "美术与资产", "技术与交付", "验收标准"];
 const files: Record<string, string> = {
@@ -50,6 +51,7 @@ export function GameWorkspace({ tab, prompt, project, onTab }: { tab: WorkspaceT
         {tab === "assets" && <div className="flex-1 overflow-y-auto p-4 sm:p-6"><div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div className="flex flex-wrap gap-1">{["全部", "概念", "角色", "场景", "特效", "界面"].map(k => <Button key={k} size="sm" variant={assetKind === k ? "secondary" : "ghost"} onClick={() => setAssetKind(k)}>{k}{k === "全部" ? ` ${assets.length}` : ""}</Button>)}</div><Input aria-label="搜索游戏资产" placeholder="搜索资产…" className="w-full sm:w-56" value={assetQuery} onChange={e => setAssetQuery(e.target.value)} /></div><div className="grid grid-cols-2 gap-4 xl:grid-cols-4">{assets.filter(a => (assetKind === "全部" || assetKind === a.kind) && a.name.includes(assetQuery.toLowerCase())).map(a => <div key={a.name}><a href={a.image} target="_blank" rel="noreferrer" aria-label={`打开 ${a.name}`}><img src={a.image} alt={a.kind} className="aspect-[1.35] w-full rounded-lg object-cover" /></a><p className="mt-2 truncate text-xs">{a.name}</p><p className="mt-1 text-[10px] text-muted-foreground">Image · 示例资产</p></div>)}</div>{!assets.some(a => (assetKind === "全部" || assetKind === a.kind) && a.name.includes(assetQuery.toLowerCase())) && <p className="mt-20 text-center text-sm text-muted-foreground">没有匹配的资产</p>}</div>}
         {tab === "code" && <div className="flex min-h-0 flex-1"><aside className="w-36 shrink-0 border-r border-border p-2 sm:w-48"><Input aria-label="搜索代码文件" placeholder="查找文件…" value={fileQuery} onChange={e => setFileQuery(e.target.value)} className="mb-3 h-8 text-xs" />{Object.keys(files).filter(f => f.includes(fileQuery)).map(f => <Button variant={selectedFile === f ? "secondary" : "ghost"} key={f} className="h-8 w-full justify-start px-2 text-xs" onClick={() => setSelectedFile(f)}><FileText className="shrink-0" /><span className="truncate">{f}</span></Button>)}</aside>{selectedFile ? <div className="min-w-0 flex-1 overflow-auto"><div className="flex items-center justify-between border-b border-border px-4 py-2"><span className="text-xs">{selectedFile} · 示例</span><Button variant="ghost" size="icon" aria-label="下载代码文件" title="下载文件" onClick={() => download(files[selectedFile] ?? "", selectedFile.split("/").at(-1) ?? "file.txt")}><Download /></Button></div><pre className="p-5 font-mono text-xs leading-6 text-project-mint">{files[selectedFile]}</pre></div> : <div className="flex flex-1 flex-col items-center justify-center gap-3 text-muted-foreground"><Folder className="size-7" /><p className="text-xs">选择一个文件</p></div>}</div>}
         {tab === "game" && <GamePlaytest />}
+        {tab === "multiplayer" && <MultiplayerPanel />}
         {notice && <p role="status">{notice}</p>}
       </main>
     </div>
