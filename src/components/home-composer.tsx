@@ -79,11 +79,11 @@ export function HomeComposer({ scrollRoot }: { scrollRoot?: React.RefObject<HTML
     if (!el || typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(([entry]) => {
       if (!entry) return;
-      const out = !entry.isIntersecting && entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0) + 1;
+      const out = entry.intersectionRatio < 0.98 && entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0) + 1;
       if (out && el.firstElementChild) setAnchorHeight(el.offsetHeight);
       setDocked(out);
       if (!out) setExpanded(false);
-    }, { root: scrollRoot?.current ?? null, threshold: 0 });
+    }, { root: scrollRoot?.current ?? null, threshold: [0, 0.98, 1] });
     io.observe(el);
     return () => io.disconnect();
   }, [scrollRoot]);

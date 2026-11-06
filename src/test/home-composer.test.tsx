@@ -44,7 +44,7 @@ describe("Composer docking", () => {
     (globalThis as any).IntersectionObserver = class { constructor(c: IntersectionObserverCallback) { cb = c; } observe() {} disconnect() {} };
     render(<HomeComposer />);
     fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "森林冒险" } });
-    act(() => cb([{ isIntersecting: false, boundingClientRect: { top: -500 }, rootBounds: { top: 0 } } as any], {} as any));
+    act(() => cb([{ isIntersecting: false, intersectionRatio: 0, boundingClientRect: { top: -500 }, rootBounds: { top: 0 } } as any], {} as any));
     const pill = screen.getByRole("button", { name: "展开创作输入框" });
     expect(pill).toHaveTextContent("森林冒险");
     fireEvent.click(pill);
