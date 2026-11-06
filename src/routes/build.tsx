@@ -1,9 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
-import { ExploreGames } from "@/components/explore-games";
+import { ExploreGames, type ExploreGame } from "@/components/explore-games";
 import { Button } from "@/components/ui/button";
 import { parseCreationMode, worksForMode } from "@/lib/creation-mode";
 import explore1 from "@/assets/build-explore-1.jpg";
@@ -61,6 +61,9 @@ function BuildPage() {
   const { mode } = Route.useSearch();
   const story = mode === "story";
   const visibleWorks = worksForMode(works, mode);
+  const [baseGame, setBaseGame] = useState<ExploreGame | null>(null);
+  const [seed, setSeed] = useState<{ text: string; n: number } | null>(null);
+  const toComposer = () => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   return <div className="flex min-h-screen bg-background text-foreground">
     <Sidebar />
     <main ref={mainRef} className="h-screen min-w-0 flex-1 overflow-y-auto">
@@ -70,14 +73,14 @@ function BuildPage() {
       <div className="mx-auto max-w-[1240px] px-5 pb-14 sm:px-8">
         <section className="mx-auto max-w-[800px] pt-3">
           <h1 className="sr-only">{story ? "互动故事创作" : "探索游戏"}</h1>
-          <HomeComposer key={mode} scrollRoot={mainRef} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
+          <HomeComposer key={mode} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
         </section>
         {story ? <section aria-labelledby="explore-works" className="mt-3">
           <h2 id="explore-works" className="mb-4 text-base font-semibold">{story ? "互动故事案例" : "探索"}</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-6 xl:grid-cols-4">
             {visibleWorks.map(w => <div key={w.name}><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover" /><h3 className="mt-2 text-sm font-medium">{w.name}</h3><p className="mt-0.5 text-xs text-muted-foreground">{w.type}</p></div>)}
           </div>
-        </section> : <ExploreGames />}
+        </section> : <ExploreGames onContinue={g => { setBaseGame(g); toComposer(); }} onUsePrompt={g => { setSeed({ text: g.prompt, n: Date.now() }); toComposer(); }} />}
         {!story && <section aria-labelledby="asset-templates" className="mt-10 border-t border-border pt-8">
           <h2 id="asset-templates" className="mb-5 text-xl font-semibold">资产模板</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-7 xl:grid-cols-4">
