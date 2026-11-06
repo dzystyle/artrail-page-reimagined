@@ -48,7 +48,7 @@ export function RecentCanvases() {
   const tabs = ["画布创作", "最近使用", "本周热门", "推荐技能"];
   const [tab, setTab] = useState(tabs[0]!);
   return (
-    <section aria-label="最近画布" className="mt-4">
+    <section aria-label="最近画布">
       <Tabs items={tabs} active={tab} onChange={setTab} dots />
       <div className="mt-6 flex items-baseline justify-between">
         <h2 className="text-xl font-semibold">最近画布 <span className="text-sm font-normal text-muted-foreground">(10)</span></h2>
