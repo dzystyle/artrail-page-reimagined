@@ -11,6 +11,9 @@ import { Sidebar, Logo } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases, FeaturedWorks } from "@/components/home-gallery";
 import { isGameCreation } from "@/lib/game-workspace";
+import entryBuild from "@/assets/entry-build.jpg";
+import entryCreate from "@/assets/entry-create.jpg";
+import entryStory from "@/assets/entry-story.jpg";
 import thumbVideo from "@/assets/thumb-video.jpg";
 import thumbApp from "@/assets/thumb-app.jpg";
 import thumbSlides from "@/assets/thumb-slides.jpg";
@@ -87,23 +90,24 @@ export function Index() {
           </div>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
             <div className="grid gap-3">
-              <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[84px] flex-col justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 transition-colors hover:bg-accent">
-                <GridDeco />
+              <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[84px] flex-col justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 transition-colors hover:border-foreground/30">
+                <img src={entryBuild} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />
                 <Hammer className="relative mb-1.5 size-5 text-build" />
                 <span className="relative flex items-center gap-1 text-[15px] font-semibold">构建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
                 <span className="relative text-xs text-muted-foreground">网站、应用和游戏</span>
               </Link>
-              <button type="button" className="group relative flex h-[84px] flex-col items-start justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 text-left transition-colors hover:bg-accent">
-                <CardsDeco />
+              <button type="button" className="group relative flex h-[84px] flex-col items-start justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 text-left transition-colors hover:border-foreground/30">
+                <img src={entryCreate} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />
                 <Shapes className="relative mb-1.5 size-5 text-create" />
                 <span className="relative flex items-center gap-1 text-[15px] font-semibold">创建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
                 <span className="relative text-xs text-muted-foreground">图片和视频</span>
               </button>
             </div>
-            <Link to="/build" search={{ mode: "story" }} className="group flex min-h-[180px] flex-col items-center justify-center gap-2 rounded-xl border border-border bg-card/60 p-4 text-center transition-colors hover:bg-accent">
-              <span className="grid size-11 place-items-center rounded-xl bg-secondary"><Clapperboard className="size-5 text-muted-foreground" /></span>
-              <span className="flex items-center gap-1 text-[15px] font-semibold">互动影游<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-              <span className="text-xs text-muted-foreground">场景、选择和分支</span>
+            <Link to="/build" search={{ mode: "story" }} className="group relative flex min-h-[180px] flex-col items-center justify-end gap-1.5 overflow-hidden rounded-xl border border-border bg-card/60 p-4 text-center transition-colors hover:border-foreground/30">
+              <img src={entryStory} alt="" aria-hidden width={816} height={816} className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+              <span className="relative grid size-11 place-items-center rounded-xl bg-secondary/80 backdrop-blur"><Clapperboard className="size-5 text-muted-foreground" /></span>
+              <span className="relative flex items-center gap-1 text-[15px] font-semibold">互动影游<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+              <span className="relative text-xs text-muted-foreground">场景、选择和分支</span>
             </Link>
           </div>
           <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
