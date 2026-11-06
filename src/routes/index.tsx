@@ -179,27 +179,6 @@ function Index() {
 
         </div>
 
-        <div className="sticky bottom-0 mx-auto w-full max-w-[853px] pb-9 pt-6">
-          <div className="rounded-[22px] border border-border bg-card">
-            <div className="flex gap-6 px-4 py-3 text-[15px] text-muted-foreground">
-              <span className="flex items-center gap-1.5"><Cloud className="size-4" />云服务</span>
-              <span className="flex items-center gap-1.5"><Briefcase className="size-4" />选择项目</span>
-            </div>
-            <div className="rounded-[22px] border-t border-border bg-background/40 px-4 pb-3 pt-4">
-              <textarea rows={2} placeholder="分配一个任务或输入 / 查看更多" className="w-full resize-none bg-transparent text-[16px] outline-none placeholder:text-muted-foreground" />
-              <div className="mt-2 flex items-center justify-between">
-                <div className="flex gap-2">
-                  <span className="grid size-8 place-items-center rounded-full border border-border"><Plus className="size-4" /></span>
-                  <span className="grid size-8 place-items-center rounded-full border border-border"><span className="size-4 rounded-full bg-build" /></span>
-                </div>
-                <div className="flex items-center gap-4 text-muted-foreground">
-                  <AudioLines className="size-[18px]" /><Mic className="size-[18px]" />
-                  <span className="grid size-9 place-items-center rounded-full bg-accent"><ArrowUp className="size-4" /></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );
