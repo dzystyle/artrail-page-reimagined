@@ -10,3 +10,4 @@
 - [x] Implement Design, Canvas, Assets, Code and Game sample playtest views.
 - [x] Verify entry flows, view switching and sample playtest on desktop/mobile.
 - [x] Add and verify homepage personal/team subscription dialogs matching the references (presentation only).
+- [x] Add homepage light/dark toggle with shared theme tokens; verify switching, refresh persistence, and mobile layout.
