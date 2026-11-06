@@ -70,7 +70,7 @@ function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpenChange:
 }
 
 /** Keeps the composer in one instance so the draft survives docking/expanding. */
-export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined } = {}) {
+export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null } = {}) {
   const anchor = useRef<HTMLDivElement>(null);
   const [docked, setDocked] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -110,6 +110,8 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
   const [notice, setNotice] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
   const textarea = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => { if (seed) { setText(seed.text); textarea.current?.focus(); } }, [seed]);
+  useEffect(() => { if (baseGame) textarea.current?.focus(); }, [baseGame]);
   if (!type) return null;
   const TypeIcon = type.icon;
   const floating = docked && expanded;
@@ -122,8 +124,9 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
       <span className="flex size-9 items-center justify-center rounded-full bg-secondary text-muted-foreground"><ArrowUp className="size-4" /></span>
     </button>}
   <section aria-label="创作输入框" className={floating ? "fixed bottom-6 left-1/2 z-50 w-[min(885px,calc(100vw-32px))] -translate-x-1/2 animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 lg:ml-[166px]" : hiddenFull ? "hidden" : ""}>
-    <form className="rounded-2xl border border-input bg-card p-4 sm:p-5" onSubmit={e => { e.preventDefault(); if (!text.trim()) return; if (onCreate) onCreate({ prompt: text.trim(), type: type.name, project, model, depth }); else setNotice("尚未连接创作服务，你的输入已保留。"); }}>
+    <form className="rounded-2xl border border-input bg-card p-4 sm:p-5" onSubmit={e => { e.preventDefault(); if (!text.trim()) return; if (onCreate) onCreate({ prompt: baseGame ? `基于《${baseGame.name}》继续制作：${text.trim()}` : text.trim(), type: type.name, project, model, depth }); else setNotice("尚未连接创作服务，你的输入已保留。"); }}>
       <Textarea ref={textarea} aria-label="创作描述" placeholder="描述你想创作的内容…" value={text} onChange={e => { setText(e.target.value); setNotice(""); }} className="h-[112px] resize-none border-0 p-0 text-base shadow-none focus-visible:ring-0 md:text-base" />
+      {baseGame && <div className="mb-3 flex"><div className="flex items-center gap-2 rounded-xl border border-border py-1.5 pl-1.5 pr-2 text-[15px]"><img src={baseGame.image} alt="" className="size-6 rounded-md object-cover" /><span>{baseGame.name}</span><button type="button" aria-label={`移除 ${baseGame.name}`} onClick={onRemoveBaseGame} className="text-muted-foreground hover:text-foreground"><X className="size-4" /></button></div></div>}
       {files.length > 0 && <div className="mb-3 flex flex-wrap gap-2">{files.map((file, i) => <div key={`${file.name}-${i}`} className="flex max-w-full items-center gap-1 rounded-md bg-secondary pl-2 text-xs"><span className="truncate">{file.name}</span><Button type="button" size="icon" variant="ghost" className="size-7" aria-label={`移除 ${file.name}`} onClick={() => setFiles(list => list.filter((_, index) => index !== i))}><X /></Button></div>)}</div>}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex min-w-0 flex-wrap items-center gap-1">
