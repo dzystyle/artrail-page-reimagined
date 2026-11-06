@@ -117,5 +117,3 @@ export const works: Work[] = [
 export function findWork(id: string): Work | undefined {
   return works.find((w) => w.id === id);
 }
-
-export const canvasPreviews = [canvas1, canvas2, canvas3, canvas4];
