@@ -11,7 +11,7 @@ export function turn(cur: Dir, next: Dir): Dir {
 
 /** Advance snake one cell. Returns null when it hits a wall or itself. */
 export function step(snake: Pt[], dir: Dir, cols: number, rows: number, grow: boolean): Pt[] | null {
-  const h = snake[0];
+  const h = snake[0]!;
   const n = { x: h.x + delta[dir].x, y: h.y + delta[dir].y };
   if (n.x < 0 || n.y < 0 || n.x >= cols || n.y >= rows) return null;
   const body = grow ? snake : snake.slice(0, -1);

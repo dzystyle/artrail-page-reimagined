@@ -51,7 +51,7 @@ export function SnakeHero() {
     const id = window.setInterval(() => {
       dir.current = turn(dir.current, pending.current);
       const base = box.current!.getBoundingClientRect();
-      const h = snakeRef.current[0];
+      const h = snakeRef.current[0]!;
       const nx = h.x + (dir.current === "right" ? 1 : dir.current === "left" ? -1 : 0);
       const ny = h.y + (dir.current === "down" ? 1 : dir.current === "up" ? -1 : 0);
       const px = nx * CELL + CELL / 2, py = ny * CELL + CELL / 2;
@@ -83,7 +83,7 @@ export function SnakeHero() {
 
   const touch = useRef<Pt | null>(null);
   const onTouchEnd = (e: React.TouchEvent) => {
-    const t0 = touch.current, t = e.changedTouches[0]; if (!t0) return;
+    const t0 = touch.current, t = e.changedTouches[0]; if (!t0 || !t) return;
     const dx = t.clientX - t0.x, dy = t.clientY - t0.y;
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
     pending.current = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
@@ -100,11 +100,11 @@ export function SnakeHero() {
   return <section aria-label="贪吃蛇小游戏" className="relative -mx-5 overflow-hidden sm:-mx-8">
     <div ref={box} tabIndex={0} role="application" aria-label="点击开始贪吃蛇，方向键控制"
       onClick={start} onKeyDown={onKey}
-      onTouchStart={e => { touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; if (state !== "run") start(); }}
+      onTouchStart={e => { touch.current = { x: e.touches[0]!.clientX, y: e.touches[0]!.clientY }; if (state !== "run") start(); }}
       onTouchEnd={onTouchEnd}
       className="relative h-[340px] cursor-pointer select-none outline-none sm:h-[380px]">
       <div aria-hidden className="pointer-events-none absolute inset-0 grid grid-cols-[repeat(auto-fill,60px)] content-start justify-center gap-0 text-foreground/[0.07]">
-        {Array.from({ length: 240 }, (_, i) => { const I = ICONS[(i * 7 + (i >> 3)) % ICONS.length]; return <div key={i} className="flex size-[60px] items-center justify-center"><I className="size-5" fill={i % 3 ? "none" : "currentColor"} /></div>; })}
+        {Array.from({ length: 240 }, (_, i) => { const I = ICONS[(i * 7 + (i >> 3)) % ICONS.length]!; return <div key={i} className="flex size-[60px] items-center justify-center"><I className="size-5" fill={i % 3 ? "none" : "currentColor"} /></div>; })}
       </div>
       <div className="pointer-events-none relative flex flex-col items-center pt-8 text-center">
         <p className="text-sm font-semibold tracking-wide text-muted-foreground">
