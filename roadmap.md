@@ -5,3 +5,4 @@
 - [x] Add build workspace combining recent projects, exploration and asset templates; keep sidebar unchanged.
 - [x] Verify homepage build navigation and new workspace on desktop and mobile.
 - [x] Separate build and story entry content and verify both navigation flows.
+- [x] Add featured work detail page (preview gallery, Skill card, 制作这款游戏 button) and link it from the homepage gallery.
