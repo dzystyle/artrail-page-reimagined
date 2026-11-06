@@ -71,16 +71,16 @@ export function FeaturedWorks() {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {works.map((w) => (
-          <button key={w.title} className="group text-left">
+          <Link key={w.id} to="/works/$workId" params={{ workId: w.id }} className="group text-left">
             <div className="relative overflow-hidden rounded-xl border border-border bg-card">
-              <img src={w.img} alt={w.title} loading="lazy" width={992} height={672} className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+              <img src={w.images[0]} alt={w.title} loading="lazy" width={992} height={672} className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
               <div className="absolute inset-0 flex items-center justify-center bg-background/50 opacity-0 transition-opacity group-hover:opacity-100">
                 <span className="rounded-full bg-foreground px-5 py-1.5 text-sm font-semibold text-background">查看</span>
               </div>
               <span className="absolute bottom-2 left-3 text-xs text-foreground/90 opacity-0 transition-opacity group-hover:opacity-100">@ {w.author}</span>
             </div>
             <p className="mt-2.5 truncate text-[15px]">{w.title}</p>
-          </button>
+          </Link>
         ))}
       </div>
     </section>
