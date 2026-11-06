@@ -9,6 +9,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Sidebar, Logo } from "@/components/app-sidebar";
 import { SubscriptionDialog } from "@/components/subscription-dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases, FeaturedWorks } from "@/components/home-gallery";
 import { isGameCreation } from "@/lib/game-workspace";
@@ -80,6 +81,7 @@ export function Index() {
               <Button variant="ghost" className="h-auto rounded-l-none px-3 py-1.5 text-[15px] font-normal text-link" onClick={() => setSubscriptionOpen(true)}>升级</Button>
             </div>
             <span className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[15px]"><Sparkles className="size-4" />300</span>
+            <ThemeToggle />
           </div>
         </header>
 

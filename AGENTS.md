@@ -14,3 +14,4 @@
 - Featured-work detail content is browser-safe demo data in src/lib/works.ts; the detail route resolves it by id and 404s unknown ids instead of rendering an empty panel.
 - Game workspace uses validated URL tabs and passes submitted text into Canvas; browser-only Phaser is dynamically imported after mounting, and demo playtests never imply AI generation or persistent project storage.
 - Subscription dialogs keep reference pricing in a browser-safe shared module and session-only selections; payment and entitlement actions must not imply a completed purchase without a separately connected payment service.
+- Theme state is shared by a browser-safe root provider and persisted as a local device preference; semantic CSS tokens switch the whole workspace without changing layouts.
