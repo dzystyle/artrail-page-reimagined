@@ -15,3 +15,4 @@
 - [x] Test threshold and verify both stages through actual play on desktop/mobile.
 - [x] Replace fixed progression with a fresh random pick among three games on each entry.
 - [x] Implement reference spaceship word shooter and verify movement, hits, lives and restart.
+- [ ] Add sidebar search dialog with project, canvas, work and navigation results; verify search and selection on desktop/mobile.

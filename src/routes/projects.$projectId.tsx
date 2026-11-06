@@ -4,6 +4,7 @@ import { Search, Plus, ChevronDown, Users, Workflow, Sparkles } from "lucide-rea
 import { Sidebar } from "@/components/app-sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { projects, canvasNames } from "@/lib/project-catalog";
 import c1 from "@/assets/canvas-1.jpg";
 import c2 from "@/assets/canvas-2.jpg";
 import c3 from "@/assets/canvas-3.jpg";
@@ -17,13 +18,12 @@ import w6 from "@/assets/work-6.jpg";
 import w7 from "@/assets/work-7.jpg";
 import w8 from "@/assets/work-8.jpg";
 
-const projects: Record<string, string> = { "new-hope": "NEW-HOPE", f3fx: "F3/FX", artrail: "ArTrail" };
 const pool = [c1, c2, c3, c4, w1, w2, w3, w4, w5, w6, w7, w8];
-const names = ["平铺", "背包塔防", "1213", "戴安娜-Diana", "节点", "潜水洗机甲", "插图2", "ICON", "剧情", "test", "插图第2批", "矿场概念探索", "插图修改", "建筑尝试", "211", "111", "剧情美女", "美女机甲"];
 const people = ["郭智妍", "杨宇轩", "胡有为", "宋扬", "zhanghua", "朱玉儿", "杜致阳", "陈柏元"];
 const times = ["1 分钟前编辑", "13 分钟前编辑", "25 分钟前编辑", "14 小时前编辑", "1 天前编辑", "2 天前编辑"];
 
 export const Route = createFileRoute("/projects/$projectId")({
+  validateSearch: (search: Record<string, unknown>) => ({ q: typeof search.q === "string" ? search.q : "" }),
   loader: ({ params }) => {
     const name = projects[params.projectId];
     if (!name) throw notFound();
@@ -48,9 +48,11 @@ function ProjectPage() {
   const { name } = Route.useLoaderData();
   const { projectId } = Route.useParams();
   const [tab, setTab] = useState("全部");
-  const [q, setQ] = useState("");
+  const { q } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const setQ = (value: string) => void navigate({ search: { q: value }, replace: true });
   const seed = projectId.length;
-  const canvases = names.map((n, i) => ({
+  const canvases = canvasNames.map((n, i) => ({
     name: n, count: ((i * 37 + seed * 11) % 200) + 1,
     meta: `${times[i % times.length]} · ${people[(i + seed) % people.length]}`,
     imgs: i === 7 ? [] : [0, 1, 2, 3].map((k) => pool[(i + k * 3 + seed) % pool.length]),

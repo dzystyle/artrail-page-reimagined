@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, LayoutGrid, Folder, Box, Puzzle, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell } from "lucide-react";
+import { WorkspaceSearch } from "@/components/workspace-search";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
@@ -60,10 +61,10 @@ export function Sidebar() {
           <span className="font-brand text-lg font-bold tracking-tight">ArTrail</span>
         </div>
         <div className="flex gap-3 text-muted-foreground">
-          <Search className="size-5" /><PanelLeft className="size-5" />
+          <PanelLeft className="size-5" />
         </div>
       </div>
-      <nav className="mt-2 space-y-[5px]">{nav.map((n) => <Item key={n.label} {...n} />)}
+      <nav className="mt-2 space-y-[5px]"><WorkspaceSearch />{nav.map((n) => <Item key={n.label} {...n} />)}
         <div className="mx-1.5 my-2 h-px bg-sidebar-border" />
         {nav2.map((n) => <Item key={n.label} {...n} />)}</nav>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">项目</p>
