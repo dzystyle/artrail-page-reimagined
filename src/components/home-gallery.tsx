@@ -48,19 +48,19 @@ export function RecentCanvases() {
   const tabs = ["画布创作", "最近使用", "本周热门", "推荐技能"];
   const [tab, setTab] = useState(tabs[0]!);
   return (
-    <section aria-label="最近画布" className="mt-4">
+    <section aria-label="最近画布">
       <Tabs items={tabs} active={tab} onChange={setTab} dots />
-      <div className="mt-6 flex items-baseline justify-between">
-        <h2 className="text-xl font-semibold">最近画布 <span className="text-sm font-normal text-muted-foreground">(10)</span></h2>
+      <div className="mt-5 flex items-baseline justify-between">
+        <h2 className="text-lg font-semibold">最近画布 <span className="text-sm font-normal text-muted-foreground">(10)</span></h2>
         <button className="flex items-center text-sm text-muted-foreground hover:text-foreground">查看全部<ChevronRight className="size-4" /></button>
       </div>
-      <div className="-mx-1 mt-4 flex snap-x gap-3 overflow-x-auto px-1 pb-2">
-        <button className="flex w-[200px] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-2xl bg-card p-3 transition-colors hover:bg-accent">
+      <div className="mt-4 grid auto-cols-[minmax(180px,1fr)] grid-flow-col gap-3 overflow-x-auto pb-2">
+        <button className="flex flex-col items-center justify-center gap-3 rounded-2xl bg-card p-3 transition-colors hover:bg-accent">
           <Plus className="size-6" />
           <span className="text-sm font-semibold">新建画布</span>
         </button>
         {canvases.map((c) => (
-          <button key={c.title} className="w-[200px] shrink-0 snap-start rounded-2xl bg-card p-2.5 text-left transition-colors hover:bg-accent">
+          <button key={c.title} className="rounded-2xl bg-card p-2.5 text-left transition-colors hover:bg-accent">
             <img src={c.img} alt={c.title} loading="lazy" width={992} height={672} className="aspect-[16/11] w-full rounded-xl object-cover" />
             <div className="mt-2.5 flex items-center gap-2 px-1">
               <div className="min-w-0 flex-1">
@@ -80,7 +80,7 @@ export function FeaturedWorks() {
   const tabs = ["精选作品", "创作课程"];
   const [tab, setTab] = useState(tabs[0]!);
   return (
-    <section aria-label="精选作品" className="pb-32">
+    <section aria-label="精选作品">
       <div className="flex gap-8 border-b border-border">
         {tabs.map((t) => (
           <button key={t} onClick={() => setTab(t)} className={`-mb-px border-b-2 pb-3 text-[16px] transition-colors ${tab === t ? "border-foreground font-semibold" : "border-transparent text-muted-foreground hover:text-foreground"}`}>{t}</button>
