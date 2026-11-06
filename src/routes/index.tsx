@@ -81,25 +81,25 @@ export function Index() {
             <span className="font-brand text-[30px] font-bold leading-none tracking-tight">ArTrail</span>
           </div>
           <p className="mt-3 text-center text-[15px] text-muted-foreground">一句话描述你想创作的内容，剩下的交给 ArTrail</p>
-          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
+          <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
             <div className="grid gap-3">
-              <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[130px] flex-col justify-end overflow-hidden rounded-2xl border border-border bg-card/60 p-5 transition-colors hover:bg-accent">
+              <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[84px] flex-col justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 transition-colors hover:bg-accent">
                 <GridDeco />
-                <Hammer className="mb-auto size-6 text-build" />
-                <span className="relative flex items-center gap-1 text-[17px] font-semibold">构建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-                <span className="relative text-sm text-muted-foreground">网站、应用和游戏</span>
+                <Hammer className="relative mb-1.5 size-5 text-build" />
+                <span className="relative flex items-center gap-1 text-[15px] font-semibold">构建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+                <span className="relative text-xs text-muted-foreground">网站、应用和游戏</span>
               </Link>
-              <button type="button" className="group relative flex h-[130px] flex-col items-start justify-end overflow-hidden rounded-2xl border border-border bg-card/60 p-5 text-left transition-colors hover:bg-accent">
+              <button type="button" className="group relative flex h-[84px] flex-col items-start justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 text-left transition-colors hover:bg-accent">
                 <CardsDeco />
-                <Shapes className="mb-auto size-6 text-create" />
-                <span className="relative flex items-center gap-1 text-[17px] font-semibold">创建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-                <span className="relative text-sm text-muted-foreground">图片和视频</span>
+                <Shapes className="relative mb-1.5 size-5 text-create" />
+                <span className="relative flex items-center gap-1 text-[15px] font-semibold">创建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+                <span className="relative text-xs text-muted-foreground">图片和视频</span>
               </button>
             </div>
-            <Link to="/build" search={{ mode: "story" }} className="group flex min-h-[200px] flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card/60 p-5 text-center transition-colors hover:bg-accent">
-              <span className="grid size-16 place-items-center rounded-2xl bg-secondary"><Clapperboard className="size-8 text-muted-foreground" /></span>
-              <span className="flex items-center gap-1 text-[17px] font-semibold">互动影游<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-              <span className="text-sm text-muted-foreground">场景、选择和分支</span>
+            <Link to="/build" search={{ mode: "story" }} className="group flex min-h-[180px] flex-col items-center justify-center gap-2 rounded-xl border border-border bg-card/60 p-4 text-center transition-colors hover:bg-accent">
+              <span className="grid size-11 place-items-center rounded-xl bg-secondary"><Clapperboard className="size-5 text-muted-foreground" /></span>
+              <span className="flex items-center gap-1 text-[15px] font-semibold">互动影游<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+              <span className="text-xs text-muted-foreground">场景、选择和分支</span>
             </Link>
           </div>
           <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
