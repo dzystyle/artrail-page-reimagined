@@ -6,7 +6,7 @@ import {
   Briefcase, Plus, Mic, AudioLines, ArrowUp, ChevronDown, ChevronRight, Sparkles,
   Gift, MonitorSmartphone, Bell, Hammer, Folder, Clapperboard, Film, Smartphone, Presentation, MessageSquarePlus, Box, Play,
 } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Sidebar, Logo } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases, FeaturedWorks } from "@/components/home-gallery";
@@ -32,6 +32,31 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+
+const promos = [
+  { title: "创建你的视频", desc: "让想法变为现实", img: thumbVideo },
+  { title: "游戏开发", desc: "把创意变成游戏", img: thumbApp },
+  { title: "互动影游", desc: "每个选择都改写结局", img: entryStory },
+];
+function PromoCarousel() {
+  const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  useEffect(() => { if (paused) return; const t = setInterval(() => setI(v => (v + 1) % promos.length), 3500); return () => clearInterval(t); }, [paused]);
+  return <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} className="flex w-full items-center gap-3 sm:w-[320px] sm:shrink-0">
+    <div aria-live="polite" className="relative h-[76px] min-w-0 flex-1 overflow-hidden rounded-2xl border border-border/70 bg-surface-deep">
+      <div className="transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)]" style={{ transform: `translateY(-${i * 76}px)` }}>
+        {promos.map((p, k) => <div key={p.title} aria-hidden={k !== i} className={`flex h-[76px] items-center gap-4 px-5 transition-opacity duration-500 ${k === i ? "opacity-100" : "opacity-0"}`}>
+          <span className="relative shrink-0"><img src={p.img} alt="" width={44} height={44} className="size-11 rounded-md border-2 border-foreground/70 object-cover" />
+            {k === 0 && <span className="absolute -bottom-1 -left-1 grid size-4 place-items-center rounded-full bg-primary text-primary-foreground"><Play className="size-2.5 fill-current" /></span>}</span>
+          <span className="min-w-0"><span className="block text-[16px] font-semibold">{p.title}</span><span className="mt-1 block text-sm text-muted-foreground">{p.desc}</span></span>
+        </div>)}
+      </div>
+    </div>
+    <div role="tablist" aria-label="推荐切换" className="flex flex-col items-center gap-1.5">
+      {promos.map((p, k) => <button key={p.title} type="button" role="tab" aria-selected={k === i} aria-label={p.title} onClick={() => setI(k)} className={`w-1.5 rounded-full transition-all duration-300 ${k === i ? "h-5 bg-foreground/70" : "h-1.5 bg-muted-foreground/40 hover:bg-muted-foreground"}`} />)}
+    </div>
+  </div>;
+}
 
 export function Index() {
   const navigate = useNavigate();
@@ -62,13 +87,7 @@ export function Index() {
               <Logo className="size-12 shrink-0 sm:size-14" />
               <span className="font-brand text-[36px] font-bold leading-none sm:text-[42px]">ArTrail</span>
             </div>
-            <div className="flex min-h-[76px] w-full items-center gap-4 rounded-2xl border border-border/70 bg-surface-deep px-5 py-4 transition-colors hover:border-foreground/30 text-left sm:w-[300px] sm:shrink-0">
-              <span className="relative shrink-0">
-                <img src={thumbVideo} alt="" width={44} height={44} className="size-11 rounded-md border-2 border-foreground/80 object-cover" />
-                <span className="absolute -bottom-1 -left-1 grid size-4 place-items-center rounded-full bg-primary text-primary-foreground"><Play className="size-2.5 fill-current" /></span>
-              </span>
-              <span className="min-w-0 whitespace-normal"><span className="block text-[16px] font-semibold">创建你的视频</span><span className="mt-1 block text-sm font-normal text-muted-foreground">让想法变为现实</span></span>
-            </div>
+            <PromoCarousel />
           </div>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
             <div className="grid gap-3">
