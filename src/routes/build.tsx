@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
 import { Button } from "@/components/ui/button";
+import { parseCreationMode, worksForMode } from "@/lib/creation-mode";
 import explore1 from "@/assets/build-explore-1.jpg";
 import explore2 from "@/assets/build-explore-2.jpg";
 import explore3 from "@/assets/build-explore-3.jpg";
@@ -19,14 +20,19 @@ import template7 from "@/assets/build-templates-7.jpg";
 import template8 from "@/assets/build-templates-8.jpg";
 
 export const Route = createFileRoute("/build")({
-  head: () => ({ meta: [
-    { title: "构建网站、应用和游戏 — ArTrail" },
-    { name: "description", content: "在 ArTrail 开始构建，浏览游戏作品和资产模板。" },
-    { property: "og:title", content: "构建网站、应用和游戏 — ArTrail" },
-    { property: "og:description", content: "开始创作，探索游戏作品与人物、地图、场景等资产模板。" },
+  validateSearch: (search: Record<string, unknown>) => ({ mode: parseCreationMode(search.mode) }),
+  head: ({ match }) => {
+    const story = match.search.mode === "story";
+    const title = story ? "互动故事创作 — ArTrail" : "构建网站、应用和游戏 — ArTrail";
+    const description = story ? "在 ArTrail 创作互动故事，探索场景、选择和分支故事案例。" : "在 ArTrail 开始构建，浏览游戏作品和资产模板。";
+    return { meta: [
+    { title },
+    { name: "description", content: description },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
-  ] }),
+  ] }; },
   component: BuildPage,
 });
 
@@ -50,6 +56,9 @@ const templates = [
 
 function BuildPage() {
   const mainRef = useRef<HTMLElement>(null);
+  const { mode } = Route.useSearch();
+  const story = mode === "story";
+  const visibleWorks = worksForMode(works, mode);
   return <div className="flex min-h-screen bg-background text-foreground">
     <Sidebar />
     <main ref={mainRef} className="h-screen min-w-0 flex-1 overflow-y-auto">
@@ -59,20 +68,20 @@ function BuildPage() {
       <div className="mx-auto max-w-[1240px] px-5 pb-14 sm:px-8">
         <section className="mx-auto max-w-[800px] pt-3">
           <h1 className="text-center text-2xl font-semibold sm:text-[28px]">我们今天要做什么？</h1>
-          <HomeComposer scrollRoot={mainRef} />
+          <HomeComposer key={mode} scrollRoot={mainRef} initialType={story ? "Interactive Story" : "Asset Canvas"} />
         </section>
         <section aria-labelledby="explore-works" className="mt-3">
-          <h2 id="explore-works" className="mb-4 text-base font-semibold">探索</h2>
+          <h2 id="explore-works" className="mb-4 text-base font-semibold">{story ? "互动故事案例" : "探索"}</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-6 xl:grid-cols-4">
-            {works.map(w => <div key={w.name}><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover" /><h3 className="mt-2 text-sm font-medium">{w.name}</h3><p className="mt-0.5 text-xs text-muted-foreground">{w.type}</p></div>)}
+            {visibleWorks.map(w => <div key={w.name}><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover" /><h3 className="mt-2 text-sm font-medium">{w.name}</h3><p className="mt-0.5 text-xs text-muted-foreground">{w.type}</p></div>)}
           </div>
         </section>
-        <section aria-labelledby="asset-templates" className="mt-10 border-t border-border pt-8">
+        {!story && <section aria-labelledby="asset-templates" className="mt-10 border-t border-border pt-8">
           <h2 id="asset-templates" className="mb-5 text-xl font-semibold">资产模板</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-7 xl:grid-cols-4">
             {templates.map(t => <div key={t.name}><img src={t.image} alt={t.name} width={400} height={504} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover" /><h3 className="mt-3 text-base font-medium">{t.name}</h3><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t.desc}</p></div>)}
           </div>
-        </section>
+        </section>}
       </div>
     </main>
   </div>;
