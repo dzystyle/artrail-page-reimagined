@@ -71,17 +71,17 @@ export function Index() {
           </div>
         </header>
 
-        <section className="mx-auto flex w-full max-w-[820px] flex-col px-6 pb-6 pt-4 sm:px-8 sm:pt-8">
+        <section className="mx-auto flex w-full max-w-[820px] flex-col px-6 pb-0 pt-2 sm:px-8 sm:pt-3 [&>div:last-child]:mb-0 [&>div:last-child]:mt-5">
           <Link to="/build" search={{ mode: "story" }} className="mx-auto flex items-center gap-2 rounded-full border border-border bg-card/60 py-1 pl-1 pr-3 text-sm transition-colors hover:bg-accent">
             <img src={thumbVideo} alt="" width={28} height={28} className="size-7 rounded-full object-cover" />
             <span className="text-muted-foreground">新功能</span><span className="h-3 w-px bg-border" /><span>互动故事上线</span><ChevronRight className="size-4 text-muted-foreground" />
           </Link>
-          <div className="mt-6 flex items-center justify-center gap-3">
+          <div className="mt-4 flex items-center justify-center gap-3">
             <Logo className="size-9 shrink-0" />
             <span className="font-brand text-[30px] font-bold leading-none tracking-tight">ArTrail</span>
           </div>
-          <p className="mt-3 text-center text-[15px] text-muted-foreground">一句话描述你想创作的内容，剩下的交给 ArTrail</p>
-          <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
+          <p className="mt-2 text-center text-[15px] text-muted-foreground">一句话描述你想创作的内容，剩下的交给 ArTrail</p>
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
             <div className="grid gap-3">
               <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[84px] flex-col justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 transition-colors hover:bg-accent">
                 <GridDeco />
@@ -104,7 +104,7 @@ export function Index() {
           </div>
           <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
         </section>
-        <div className="mx-auto w-full max-w-[1200px] px-6 pt-10 sm:px-8">
+        <div className="mx-auto w-full max-w-[1200px] px-6 pt-8 sm:px-8">
           <RecentCanvases />
           <FeaturedWorks />
         </div>

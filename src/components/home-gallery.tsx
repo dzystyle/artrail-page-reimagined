@@ -33,7 +33,7 @@ export function RecentCanvases() {
   return (
     <section aria-label="最近画布">
       <Tabs items={tabs} active={tab} onChange={setTab} dots />
-      <div className="mt-6 flex items-baseline justify-between">
+      <div className="mt-4 flex items-baseline justify-between">
         <h2 className="text-xl font-semibold">最近画布 <span className="text-sm font-normal text-muted-foreground">(10)</span></h2>
         <button className="flex items-center text-sm text-muted-foreground hover:text-foreground">查看全部<ChevronRight className="size-4" /></button>
       </div>
@@ -63,13 +63,13 @@ export function FeaturedWorks() {
   const tabs = ["精选作品", "创作课程"];
   const [tab, setTab] = useState(tabs[0]!);
   return (
-    <section aria-label="精选作品" className="mt-14 pb-32">
+    <section aria-label="精选作品" className="mt-8 pb-20">
       <div className="flex gap-8 border-b border-border">
         {tabs.map((t) => (
           <button key={t} onClick={() => setTab(t)} className={`-mb-px border-b-2 pb-3 text-[16px] transition-colors ${tab === t ? "border-foreground font-semibold" : "border-transparent text-muted-foreground hover:text-foreground"}`}>{t}</button>
         ))}
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {works.map((w) => (
           <Link key={w.id} to="/works/$workId" params={{ workId: w.id }} className="group text-left">
             <div className="relative overflow-hidden rounded-xl border border-border bg-card">
