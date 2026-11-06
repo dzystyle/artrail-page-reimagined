@@ -15,6 +15,7 @@ export function BrickBash() {
     let observer: ResizeObserver | undefined;
     void import("phaser").then(({ default: P }) => {
       if (disposed) return;
+      const resolution = window.devicePixelRatio || 1;
       const color = getComputedStyle(parent).color;
       const muted = getComputedStyle(parent).getPropertyValue("--muted-foreground").trim();
       // Canvas APIs resolve the same semantic tokens used by the surrounding page.
@@ -38,15 +39,16 @@ export function BrickBash() {
         trail: { x: number; y: number }[] = [];
         declare trailGraphics: Phaser.GameObjects.Graphics;
         create() {
-          const w = this.scale.width, h = this.scale.height;
+          const w = this.scale.width / resolution, h = this.scale.height / resolution;
+          this.cameras.main.setOrigin(0, 0).setZoom(resolution);
           const icons = ["◯", "▢", "♥", "✚", "△", "✕", "▣", "⬆"];
           for (let x = 30, i = 0; x < w; x += 60) for (let y = 20; y < h; y += 60, i++) {
-            if ((i * 7) % 5 < 2) this.add.text(x, y, icons[i % icons.length] ?? "◯", { fontSize: "18px", color }).setAlpha(0.07);
+            if ((i * 7) % 5 < 2) this.add.text(x, y, icons[i % icons.length] ?? "◯", { fontSize: "18px", color, resolution }).setAlpha(0.07);
           }
-          this.hud = this.add.text(w / 2, 65, "", { fontFamily: "system-ui", fontSize: "15px", fontStyle: "bold", color: muted }).setOrigin(0.5);
+          this.hud = this.add.text(w / 2, 65, "", { fontFamily: "system-ui", fontSize: "15px", fontStyle: "600", color: muted, resolution }).setOrigin(0.5);
           const fontSize = Math.min(64, w / 13);
           const widths = [...HERO_TITLE].map(ch => {
-            const text = this.add.text(0, 0, ch, { fontFamily: "serif", fontSize: `${fontSize}px`, color });
+            const text = this.add.text(0, 0, ch, { fontFamily: '"Noto Serif SC", serif', fontStyle: "600", fontSize: `${fontSize}px`, color, resolution });
             return text;
           });
           let x = (w - widths.reduce((sum, t) => sum + t.width, 0)) / 2;
@@ -57,7 +59,7 @@ export function BrickBash() {
             this.bricks.push({ text, body: zone });
             x += text.width;
           });
-          this.add.text(w / 2, 121 + fontSize * 0.95, HERO_SUBTITLE, { fontFamily: "system-ui", fontSize: `${w < 500 ? 11 : 15}px`, color: muted }).setOrigin(0.5);
+          this.add.text(w / 2, 121 + fontSize * 0.95, HERO_SUBTITLE, { fontFamily: "system-ui", fontSize: `${w < 500 ? 11 : 15}px`, color: muted, resolution }).setOrigin(0.5);
           this.paddle = this.add.rectangle(w / 2, h - 20, Math.min(130, w * 0.24), 9, fg);
           this.physics.add.existing(this.paddle, true);
           this.trailGraphics = this.add.graphics();
@@ -66,6 +68,7 @@ export function BrickBash() {
           const body = this.ball.body as Phaser.Physics.Arcade.Body;
           body.setBounce(1).setCollideWorldBounds(true);
           this.physics.world.setBoundsCollision(true, true, true, false);
+          this.physics.world.setBounds(0, 0, w, h);
           this.physics.add.collider(this.ball, this.paddle, () => {
             const offset = P.Math.Clamp((this.ball.x - this.paddle.x) / (this.paddle.width / 2), -1, 1);
             body.setVelocity(260 * offset, -Math.sqrt(320 ** 2 - (260 * offset) ** 2));
@@ -78,12 +81,12 @@ export function BrickBash() {
             this.updateHud();
             if (this.bricks.every(b => !b.body.active)) this.finish(true);
           }));
-          this.message = this.add.text(w / 2, h * 0.65, "", { fontFamily: "system-ui", fontSize: "18px", color, align: "center" }).setOrigin(0.5);
+          this.message = this.add.text(w / 2, h * 0.65, "", { fontFamily: "system-ui", fontSize: "18px", color, align: "center", resolution }).setOrigin(0.5);
           this.cursor = this.input.keyboard?.createCursorKeys();
-          this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => this.movePaddle(pointer.x));
+          this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => this.movePaddle(pointer.worldX));
           this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
             if (this.ended) this.scene.restart();
-            else this.movePaddle(pointer.x);
+            else this.movePaddle(pointer.worldX);
           });
           this.input.keyboard?.on("keydown-SPACE", () => { if (this.ended) this.scene.restart(); });
           this.launch();
@@ -96,12 +99,12 @@ export function BrickBash() {
           setStatus(`${text} · ${this.lives}条生命${this.ended ? " · 点击重新开始" : ""}`);
         }
         movePaddle(x: number) {
-          this.paddle.x = P.Math.Clamp(x, this.paddle.width / 2, this.scale.width - this.paddle.width / 2);
+          this.paddle.x = P.Math.Clamp(x, this.paddle.width / 2, this.scale.width / resolution - this.paddle.width / 2);
           (this.paddle.body as Phaser.Physics.Arcade.StaticBody).updateFromGameObject();
         }
         launch() {
           this.trail = [];
-          this.ball.setPosition(this.paddle.x, this.scale.height - 36);
+          this.ball.setPosition(this.paddle.x, this.scale.height / resolution - 36);
           const body = this.ball.body as Phaser.Physics.Arcade.Body;
           body.reset(this.ball.x, this.ball.y);
           body.setVelocity(100, -300);
@@ -120,19 +123,19 @@ export function BrickBash() {
           this.trail.length = Math.min(7, this.trail.length);
           this.trailGraphics.clear();
           this.trail.forEach((p, i) => this.trailGraphics.fillStyle(fg, (1 - i / 7) * 0.15).fillRect(p.x - 4, p.y - 4, 8, 8));
-          if (this.ball.y > this.scale.height + 12) {
+          if (this.ball.y > this.scale.height / resolution + 12) {
             this.lives--;
             if (this.lives <= 0) this.finish(false);
             else { this.launch(); this.updateHud(); }
           }
         }
       }
-      game = new P.Game({ type: P.CANVAS, parent, width: parent.clientWidth, height: 380, transparent: true, scene: BrickScene, physics: { default: "arcade", arcade: { gravity: { x: 0, y: 0 } } }, audio: { noAudio: true } });
+      game = new P.Game({ type: P.CANVAS, parent, width: Math.round(parent.clientWidth * resolution), height: Math.round(380 * resolution), transparent: true, scene: BrickScene, physics: { default: "arcade", arcade: { gravity: { x: 0, y: 0 } } }, audio: { noAudio: true } });
       let width = parent.clientWidth;
       observer = new ResizeObserver(() => {
         if (!game || width === parent.clientWidth) return;
         width = parent.clientWidth;
-        game.scale.resize(width, 380);
+        game.scale.resize(Math.round(width * resolution), Math.round(380 * resolution));
         game.scene.scenes.forEach(scene => scene.scene.restart());
       });
       observer.observe(parent);
@@ -142,6 +145,6 @@ export function BrickBash() {
   return <div className="relative">
     <h2 className="sr-only">BRICK BASH 文字打砖块</h2>
     <p role="status" className="sr-only">{status}</p>
-    <div ref={host} role="application" aria-label="文字打砖块：移动鼠标或滑动控制挡板，左右方向键移动，结束后点击重玩" className="h-[380px] w-full touch-none text-foreground [&_canvas]:block" />
+    <div ref={host} role="application" aria-label="文字打砖块：移动鼠标或滑动控制挡板，左右方向键移动，结束后点击重玩" className="h-[380px] w-full touch-none text-foreground [&_canvas]:block [&_canvas]:!h-[380px] [&_canvas]:!w-full" />
   </div>;
 }
