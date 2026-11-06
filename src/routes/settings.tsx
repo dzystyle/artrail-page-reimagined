@@ -70,7 +70,7 @@ function SettingsPage() {
         <div className="flex flex-col items-center rounded-xl border border-border py-10 text-center"><Cloud className="size-9 text-link" /><p className="mt-4 text-sm font-semibold">没有云端计算机</p><p className="mt-1 text-sm text-muted-foreground">创建一个全天候在线的工作区，让您的 Agent 全天候工作。</p><Button variant="outline" size="sm" className="mt-4" onClick={() => setOpen(true)}>立即创建</Button></div>
         <div className="mb-4 mt-10 flex items-center justify-between"><h2 className="text-base font-semibold">本地计算机</h2><Button variant="outline" size="sm">管理访问权限</Button></div>
         <div className="flex flex-col items-center rounded-xl border border-border py-10 text-center"><Laptop className="size-9 text-link" /><p className="mt-4 text-sm font-semibold">没有本地计算机</p><p className="mt-1 text-sm text-muted-foreground">下载 ArTrail 桌面应用以处理本地文件夹。</p><Button variant="outline" size="sm" className="mt-4">下载桌面应用</Button></div>
-        <p className="mt-6 text-center text-xs text-muted-foreground"><Link to="/game" search={{ tab: "multiplayer" }} className="underline underline-offset-4">返回多人游戏</Link></p>
+        <p className="mt-6 text-center text-xs text-muted-foreground"><Link to="/game" search={{ tab: "multiplayer", prompt: "", project: "ArTrail" }} className="underline underline-offset-4">返回多人游戏</Link></p>
       </div>
     </main>
     <Dialog open={open} onOpenChange={v => !v && close()}>

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BuildRouteImport } from './routes/build'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as PluginsRouteImport } from './routes/plugins'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
 
@@ -36,6 +37,11 @@ const PluginsRoute = PluginsRouteImport.update({
   path: '/plugins',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/projects/$projectId',
   path: '/projects/$projectId',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/build': typeof BuildRoute
   '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
+  '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/build': typeof BuildRoute
   '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
+  '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/build': typeof BuildRoute
   '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
+  '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/build'
     | '/game'
     | '/plugins'
+    | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/build'
     | '/game'
     | '/plugins'
+    | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/build'
     | '/game'
     | '/plugins'
+    | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   BuildRoute: typeof BuildRoute
   GameRoute: typeof GameRoute
   PluginsRoute: typeof PluginsRoute
+  SettingsRoute: typeof SettingsRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   WorksWorkIdRoute: typeof WorksWorkIdRoute
 }
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PluginsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$projectId': {
       id: '/projects/$projectId'
       path: '/projects/$projectId'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuildRoute: BuildRoute,
   GameRoute: GameRoute,
   PluginsRoute: PluginsRoute,
+  SettingsRoute: SettingsRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   WorksWorkIdRoute: WorksWorkIdRoute,
 }
