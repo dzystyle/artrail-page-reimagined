@@ -3,7 +3,7 @@ import {
   Search, PanelLeft, SquarePen, Monitor, Library, Shapes, Workflow, LayoutGrid,
   MoreHorizontal, FolderPlus, FileText, Gamepad2, MessageCircle, Loader, Cloud,
   Briefcase, Plus, Mic, AudioLines, ArrowUp, ChevronDown, ChevronRight, Sparkles,
-  Gift, MonitorSmartphone, Bell, Hammer, Folder, Film, Smartphone, Presentation, Bot,
+  Gift, MonitorSmartphone, Bell, Hammer, Folder, Film, Smartphone, Presentation, MessageSquarePlus, Box,
 } from "lucide-react";
 import thumbVideo from "@/assets/thumb-video.jpg";
 import thumbApp from "@/assets/thumb-app.jpg";
@@ -34,14 +34,13 @@ function Logo({ className = "" }: { className?: string }) {
 }
 
 const nav = [
-  { icon: SquarePen, label: "新建任务" },
-  { icon: Monitor, label: "电脑" },
-  { icon: Bot, label: "Agent", badge: "Cue!" },
-  { icon: Library, label: "资料库" },
-  { icon: Shapes, label: "创作" },
-  { icon: Workflow, label: "自动化" },
-  { icon: LayoutGrid, label: "插件" },
-  { icon: MoreHorizontal, label: "更多" },
+  { icon: Sparkles, label: "创作", active: true },
+  { icon: MessageSquarePlus, label: "新会话" },
+  { icon: LayoutGrid, label: "画布" },
+];
+const nav2 = [
+  { icon: Folder, label: "资产" },
+  { icon: Box, label: "Skill" },
 ];
 const tasks = [
   { icon: FileText, label: "新建任务" },
@@ -53,10 +52,10 @@ const tasks = [
   { icon: Loader, label: "开发机甲美女题材游戏", spin: true },
 ];
 
-function Item({ icon: Icon, label, badge, spin }: { icon: typeof Search; label: string; badge?: string; spin?: boolean }) {
+function Item({ icon: Icon, label, badge, spin, active }: { icon: typeof Search; label: string; badge?: string; spin?: boolean; active?: boolean }) {
   return (
-    <button className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent">
-      <Icon className={`size-[18px] shrink-0 ${spin ? "text-create" : ""} ${label === "Agent" ? "text-link" : ""}`} />
+    <button className={`flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent ${active ? "bg-sidebar-accent font-semibold" : ""}`}>
+      <Icon className={`size-[18px] shrink-0 ${spin ? "text-create" : ""}`} />
       <span className="truncate">{label}</span>
       {badge && <span className="rounded-md bg-accent px-1.5 py-0.5 text-xs font-medium">{badge}</span>}
     </button>
@@ -75,7 +74,9 @@ function Sidebar() {
           <Search className="size-5" /><PanelLeft className="size-5" />
         </div>
       </div>
-      <nav className="mt-2 space-y-[5px]">{nav.map((n) => <Item key={n.label} {...n} />)}</nav>
+      <nav className="mt-2 space-y-[5px]">{nav.map((n) => <Item key={n.label} {...n} />)}
+        <div className="mx-1.5 my-2 h-px bg-sidebar-border" />
+        {nav2.map((n) => <Item key={n.label} {...n} />)}</nav>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">项目</p>
       <Item icon={FolderPlus} label="新项目" />
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">任务</p>
