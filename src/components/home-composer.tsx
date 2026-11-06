@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, ArrowLeft, Box, Check, ChevronDown, ChevronRight, Clapperboard, Gamepad2, Globe, Image, Lightbulb, Plus, Search, Settings, X, KeyRound } from "lucide-react";
+import { ArrowUp, ArrowLeft, Box, Check, ChevronDown, ChevronRight, Clapperboard, Folder, Gamepad2, Globe, Image, Lightbulb, Plus, Search, Settings, X, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -96,6 +96,9 @@ export function HomeComposer({ scrollRoot }: { scrollRoot?: React.RefObject<HTML
   const [text, setText] = useState("");
   const [type, setType] = useState(types[2] ?? types[0]);
   const [typeOpen, setTypeOpen] = useState(false);
+  const [project, setProject] = useState("ArTrail");
+  const [projectOpen, setProjectOpen] = useState(false);
+  const [projectQuery, setProjectQuery] = useState("");
   const [model, setModel] = useState("deepseek-v4-pro");
   const [modelOpen, setModelOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -131,6 +134,12 @@ export function HomeComposer({ scrollRoot }: { scrollRoot?: React.RefObject<HTML
               <Button type="button" variant="ghost" className="h-auto w-full justify-start px-3 py-2" onClick={() => { setTypeOpen(false); setSettingsOpen(true); }}><Plus /><span className="text-left"><span className="block">More types…</span><span className="text-xs font-normal text-muted-foreground">提供商设置</span></span></Button>
             </PopoverContent>
           </Popover>
+          <Popover open={projectOpen} onOpenChange={v => { setProjectOpen(v); if (!v) setProjectQuery(""); }}><PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择项目" className="max-w-[180px] text-muted-foreground"><Folder /><span className="truncate">项目：{project}</span><ChevronDown /></Button></PopoverTrigger>
+            <PopoverContent align="start" side="bottom" className="w-[min(300px,calc(100vw-32px))] rounded-xl p-0">
+              <div className="border-b border-border p-2"><div className="relative"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input value={projectQuery} onChange={e => setProjectQuery(e.target.value)} placeholder="搜索项目..." className="rounded-full pl-9" /></div></div>
+              <div className="p-1.5">{["NEW-HOPE", "F3/FX", "ArTrail"].filter(n => n.toLowerCase().includes(projectQuery.toLowerCase())).map(n => <Button type="button" key={n} variant="ghost" onClick={() => { setProject(n); setProjectOpen(false); }} className={`h-11 w-full justify-start gap-3 px-2 font-normal ${n === project ? "bg-accent text-link" : ""}`}><span className="grid size-8 place-items-center rounded-full bg-secondary"><Folder className="size-4 text-link" /></span>{n}</Button>)}</div>
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="ml-auto flex min-w-0 items-center gap-2">
           <Popover open={modelOpen} onOpenChange={v => { setModelOpen(v); if (!v) { setDepthView(false); setSearch(""); } }}><PopoverTrigger asChild><Button type="button" aria-label="选择创作模型" variant="ghost" className="min-w-0 gap-1.5 px-2 text-muted-foreground sm:gap-2"><span className="rounded bg-secondary px-1.5 text-xs">A</span><span className="truncate text-foreground">{model}</span><span className="text-muted-foreground">{depth}</span><ChevronDown /></Button></PopoverTrigger>
@@ -147,7 +156,6 @@ export function HomeComposer({ scrollRoot }: { scrollRoot?: React.RefObject<HTML
         </div>
       </div>
     </form>
-    <div className="mt-2 flex justify-center gap-3 text-muted-foreground"><Button variant="ghost" onClick={() => { setText(""); setFiles([]); setNotice(""); textarea.current?.focus(); }}><Clapperboard />空白项目</Button><Button variant="ghost" onClick={() => { setText("创作一个在森林中探索的互动故事，每个选择都会改变故事的走向。"); textarea.current?.focus(); }}><Lightbulb />灵感</Button></div>
     {notice && <p role="status" className="mt-2 text-center text-sm text-muted-foreground">{notice}</p>}
   </section>
     <ProviderSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
