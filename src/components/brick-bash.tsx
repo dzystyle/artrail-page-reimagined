@@ -22,7 +22,9 @@ export function BrickBash() {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       ctx.fillStyle = color;
-      const fg = P.Display.Color.ValueToColor(ctx.fillStyle).color;
+      ctx.fillRect(0, 0, 1, 1);
+      const pixel = ctx.getImageData(0, 0, 1, 1).data;
+      const fg = ((pixel[0] ?? 0) << 16) | ((pixel[1] ?? 0) << 8) | (pixel[2] ?? 0);
       class BrickScene extends P.Scene {
         declare paddle: Phaser.GameObjects.Rectangle;
         declare ball: Phaser.GameObjects.Rectangle;
