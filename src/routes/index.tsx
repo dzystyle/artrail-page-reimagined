@@ -160,7 +160,7 @@ function Index() {
             <div className="flex flex-col gap-3.5">
               {[
                 { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏", D: GridDeco },
-                { Icon: Shapes, c: "text-create", t: "创建", s: "幻灯片、图片和视频", D: CardsDeco },
+                { Icon: Shapes, c: "text-create", t: "创建", s: "图片和视频", D: CardsDeco },
               ].map(({ Icon, c, t, s, D }) => (
                 <button key={t} className="relative h-[144px] overflow-hidden rounded-2xl bg-card p-[22px] text-left transition-colors hover:bg-accent">
                   <Icon className={`size-6 ${c}`} fill="currentColor" />
