@@ -144,8 +144,13 @@ export function Index() {
           </div>
         </header>
 
-        <section className="mx-auto flex w-full max-w-[860px] flex-col px-4 pb-12 pt-[12vh]">
+        <section className="mx-auto flex w-full max-w-[860px] flex-col px-4 pb-10 pt-6 sm:pt-10">
           <div className="flex flex-col items-center text-center">
+            <button className="mb-7 flex items-center gap-2 rounded-full border border-border bg-card/60 py-1 pl-1 pr-3 text-[13px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+              <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-link">新功能</span>
+              互动故事上线：用场景和选择分支讲故事
+              <ChevronRight className="size-3.5" />
+            </button>
             <div className="flex items-center gap-3">
               <Logo className="size-12" />
               <span className="font-brand text-[44px] font-bold leading-none tracking-tight">ArTrail</span>
