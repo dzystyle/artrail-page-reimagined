@@ -15,6 +15,7 @@ export function WordRaid() {
     let observer: ResizeObserver | undefined;
     void import("phaser").then(({ default: P }) => {
       if (disposed) return;
+      const resolution = window.devicePixelRatio || 1;
       const color = getComputedStyle(parent).color;
       const muted = getComputedStyle(parent).getPropertyValue("--muted-foreground").trim();
       const ctx = document.createElement("canvas").getContext("2d");
@@ -36,15 +37,16 @@ export function WordRaid() {
         lastFire = 0;
         init() { this.score = 0; this.lives = 3; this.ended = false; this.lastFire = 0; this.remaining = [...HERO_TITLE].length; }
         create() {
-          const w = this.scale.width, h = this.scale.height;
+          const w = this.scale.width / resolution, h = this.scale.height / resolution;
+          this.cameras.main.setOrigin(0, 0).setZoom(resolution);
           const icons = ["◯", "▢", "♥", "✚", "△", "✕", "▣", "⬆"];
           for (let x = 30, i = 0; x < w; x += 60) for (let y = 20; y < h; y += 60, i++) {
-            if ((i * 7) % 5 < 2) this.add.text(x, y, icons[i % icons.length] ?? "◯", { fontSize: "18px", color }).setAlpha(0.07);
+            if ((i * 7) % 5 < 2) this.add.text(x, y, icons[i % icons.length] ?? "◯", { fontSize: "18px", color, resolution }).setAlpha(0.07);
           }
-          this.hud = this.add.text(w / 2, 65, "", { fontFamily: "system-ui", fontSize: "15px", fontStyle: "bold", color: muted }).setOrigin(0.5);
+          this.hud = this.add.text(w / 2, 65, "", { fontFamily: "system-ui", fontSize: "15px", fontStyle: "600", color: muted, resolution }).setOrigin(0.5);
           this.enemies = this.physics.add.group({ allowGravity: false });
           const fontSize = Math.min(64, w / 13);
-          const letters = [...HERO_TITLE].map(ch => this.add.text(0, 0, ch, { fontFamily: "serif", fontSize: `${fontSize}px`, color }).setOrigin(0.5));
+          const letters = [...HERO_TITLE].map(ch => this.add.text(0, 0, ch, { fontFamily: '"Noto Serif SC", serif', fontStyle: "600", fontSize: `${fontSize}px`, color, resolution }).setOrigin(0.5));
           let x = (w - letters.reduce((sum, text) => sum + text.width, 0)) / 2;
           letters.forEach(text => {
             text.setPosition(x + text.width / 2, 121);
@@ -54,7 +56,7 @@ export function WordRaid() {
             text.setData("homeX", text.x).setData("homeY", text.y).setData("diving", false);
             x += text.width;
           });
-          this.add.text(w / 2, 121 + fontSize * 0.95, HERO_SUBTITLE, { fontFamily: "system-ui", fontSize: `${w < 500 ? 11 : 15}px`, color: muted }).setOrigin(0.5);
+          this.add.text(w / 2, 121 + fontSize * 0.95, HERO_SUBTITLE, { fontFamily: "system-ui", fontSize: `${w < 500 ? 11 : 15}px`, color: muted, resolution }).setOrigin(0.5);
           const shape = this.add.graphics();
           shape.fillStyle(fg);
           shape.fillRect(-4, -15, 8, 6).fillRect(-11, -9, 22, 6).fillRect(-19, -3, 38, 10);
@@ -76,10 +78,10 @@ export function WordRaid() {
             if (this.remaining === 0) this.finish(true);
           });
           this.physics.add.overlap(this.ship, this.enemies, (_ship, enemy) => { const target = enemy as Phaser.GameObjects.Text; if (target.active && !this.ended) { target.destroy(); this.remaining--; this.loseLife(); } });
-          this.message = this.add.text(w / 2, h * 0.65, "", { fontFamily: "system-ui", fontSize: "18px", color, align: "center" }).setOrigin(0.5);
+          this.message = this.add.text(w / 2, h * 0.65, "", { fontFamily: "system-ui", fontSize: "18px", color, align: "center", resolution }).setOrigin(0.5);
           this.cursor = this.input.keyboard?.createCursorKeys();
-          this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => this.moveShip(pointer.x));
-          this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => { if (this.ended) this.scene.restart(); else { this.moveShip(pointer.x); this.fire(); } });
+          this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => this.moveShip(pointer.worldX));
+          this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => { if (this.ended) this.scene.restart(); else { this.moveShip(pointer.worldX); this.fire(); } });
           this.input.keyboard?.on("keydown-SPACE", () => { if (this.ended) this.scene.restart(); else this.fire(); });
           this.time.addEvent({ delay: 2000, loop: true, callback: () => {
             if (this.ended) return;
@@ -92,7 +94,7 @@ export function WordRaid() {
           } });
           this.updateHud();
         }
-        moveShip(x: number) { if (!this.ended) this.ship.x = P.Math.Clamp(x, 20, this.scale.width - 20); }
+        moveShip(x: number) { if (!this.ended) this.ship.x = P.Math.Clamp(x, 20, this.scale.width / resolution - 20); }
         fire() {
           if (this.ended || this.time.now - this.lastFire < 180) return;
           this.lastFire = this.time.now;
@@ -124,16 +126,16 @@ export function WordRaid() {
               enemy.x = Number(enemy.getData("homeX")) + Math.sin(time / 600 + Number(enemy.getData("homeX"))) * 3;
             } else {
               enemy.rotation += delta * 0.0008;
-              if (enemy.y > this.scale.height + 40) { enemy.destroy(); this.remaining--; this.loseLife(); }
+              if (enemy.y > this.scale.height / resolution + 40) { enemy.destroy(); this.remaining--; this.loseLife(); }
             }
           }
         }
       }
-      game = new P.Game({ type: P.CANVAS, parent, width: parent.clientWidth, height: 380, transparent: true, scene: RaidScene, physics: { default: "arcade", arcade: { gravity: { x: 0, y: 0 } } }, audio: { noAudio: true } });
+      game = new P.Game({ type: P.CANVAS, parent, width: Math.round(parent.clientWidth * resolution), height: Math.round(380 * resolution), transparent: true, scene: RaidScene, physics: { default: "arcade", arcade: { gravity: { x: 0, y: 0 } } }, audio: { noAudio: true } });
       let width = parent.clientWidth;
       observer = new ResizeObserver(() => {
         if (!game || width === parent.clientWidth) return;
-        width = parent.clientWidth; game.scale.resize(width, 380);
+        width = parent.clientWidth; game.scale.resize(Math.round(width * resolution), Math.round(380 * resolution));
         game.scene.scenes.forEach(scene => scene.scene.restart());
       });
       observer.observe(parent);
@@ -143,6 +145,6 @@ export function WordRaid() {
   return <div className="relative">
     <h2 className="sr-only">WORD RAID 飞船文字射击</h2>
     <p role="status" className="sr-only">{status}</p>
-    <div ref={host} role="application" aria-label="飞船文字射击：移动鼠标或滑动控制飞船，自动发射，左右方向键移动，结束后点击重玩" className="h-[380px] w-full touch-none text-foreground [&_canvas]:block" />
+    <div ref={host} role="application" aria-label="飞船文字射击：移动鼠标或滑动控制飞船，自动发射，左右方向键移动，结束后点击重玩" className="h-[380px] w-full touch-none text-foreground [&_canvas]:block [&_canvas]:!h-[380px] [&_canvas]:!w-full" />
   </div>;
 }
