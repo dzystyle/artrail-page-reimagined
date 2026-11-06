@@ -1,10 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   Search, PanelLeft, SquarePen, Monitor, Library, Shapes, Workflow, LayoutGrid,
   MoreHorizontal, FolderPlus, FileText, Gamepad2, MessageCircle, Loader, Cloud,
   Briefcase, Plus, Mic, AudioLines, ArrowUp, ChevronDown, ChevronRight, Sparkles,
   Gift, MonitorSmartphone, Bell, Hammer, Folder, Clapperboard, Film, Smartphone, Presentation, MessageSquarePlus, Box,
+  Check, Eye, EyeOff,
 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import thumbVideo from "@/assets/thumb-video.jpg";
 import thumbApp from "@/assets/thumb-app.jpg";
 import thumbSlides from "@/assets/thumb-slides.jpg";
@@ -119,7 +125,137 @@ function CardsDeco() {
   );
 }
 
-function Index() {
+const models = [
+  { id: "max", name: "Artrail 2.0 Max", badge: "Pro", desc: "为复杂任务设计的高性能代理。" },
+  { id: "std", name: "Artrail 2.0", badge: "Pro", desc: "多功能代理，能够执行大部分任务。" },
+  { id: "lite", name: "Artrail 2.0 Lite", desc: "一个适合日常任务的轻量级代理。" },
+  { id: "flex", name: "Artrail Flex", badge: "Beta", desc: "使用你自己的模型 API 密钥来驱动 Artrail。" },
+];
+const providers = ["OpenAI", "Anthropic", "Google Gemini", "DeepSeek", "自定义端点"];
+
+function RingsIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="9" cy="12" r="5.5" />
+      <circle cx="15" cy="12" r="5.5" className="opacity-40" />
+    </svg>
+  );
+}
+
+function FlexDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  const [provider, setProvider] = useState("");
+  const [key, setKey] = useState("");
+  const [show, setShow] = useState(false);
+  const ready = provider !== "" && key.trim() !== "";
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-[520px] gap-0 rounded-2xl border-border bg-card p-7">
+        <div className="flex flex-col items-center text-center">
+          <span className="grid size-14 place-items-center rounded-2xl bg-secondary text-foreground">
+            <RingsIcon className="size-7" />
+          </span>
+          <DialogTitle className="mt-4 flex items-center gap-2 text-xl font-semibold text-foreground">
+            Artrail Flex
+            <span className="rounded-md bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">Beta</span>
+          </DialogTitle>
+          <DialogDescription className="mt-2 text-[13px] leading-relaxed">
+            使用您自己的 API 密钥和模型运行 Artrail。第三方模型的性能可能有所不同，且不受 Artrail 保证。
+          </DialogDescription>
+        </div>
+
+        <div className="mt-6 space-y-4 text-left">
+          <div>
+            <p className="mb-1.5 text-[14px] text-foreground">提供商</p>
+            <Select value={provider} onValueChange={setProvider}>
+              <SelectTrigger className="h-10 rounded-lg border-border bg-background px-3 text-[14px]">
+                <SelectValue placeholder="选择一个提供商" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg border-border bg-popover">
+                {providers.map((p) => <SelectItem key={p} value={p} className="text-[14px]">{p}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <p className="mb-1.5 text-[14px] text-foreground">API 密钥</p>
+            <div className="relative">
+              <Input
+                type={show ? "text" : "password"}
+                value={key}
+                onChange={(e) => setKey(e.target.value)}
+                placeholder="输入您的 API 密钥"
+                className="h-10 rounded-lg border-border bg-background pr-10 text-[14px]"
+              />
+              <button
+                type="button"
+                onClick={() => setShow((s) => !s)}
+                aria-label={show ? "隐藏 API 密钥" : "显示 API 密钥"}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-7 flex gap-3">
+          <button onClick={() => onOpenChange(false)} className="h-10 flex-1 rounded-lg border border-border text-[15px] text-foreground transition-colors hover:bg-accent">
+            取消
+          </button>
+          <button disabled={!ready} className="h-10 flex-1 rounded-lg bg-primary text-[15px] font-medium text-primary-foreground transition-opacity disabled:opacity-40">
+            连接
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ModelPicker() {
+  const [open, setOpen] = useState(false);
+  const [current, setCurrent] = useState("lite");
+  const [flexOpen, setFlexOpen] = useState(false);
+  const active = models.find((m) => m.id === current) ?? models[2];
+
+  const choose = (m: { id: string }) => {
+    setOpen(false);
+    if (m.id === "flex") {
+      setFlexOpen(true);
+      return;
+    }
+    setCurrent(m.id);
+  };
+
+  return (
+    <>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[15px] font-medium text-foreground transition-colors hover:bg-accent">
+          {active.name}
+          <ChevronDown className={`size-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+        </PopoverTrigger>
+        <PopoverContent align="start" sideOffset={8} className="w-[360px] rounded-xl border-border bg-popover p-1.5">
+          <div className="space-y-0.5">
+            {models.map((m) => (
+              <button key={m.id} onClick={() => choose(m)} className="flex w-full items-start gap-2 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-accent">
+                <span className="flex-1">
+                  <span className="flex items-center gap-2 text-[15px] font-medium text-foreground">
+                    {m.name}
+                    {m.badge && <span className="rounded-md bg-secondary px-1.5 py-0.5 text-[11px] font-medium text-secondary-foreground">{m.badge}</span>}
+                  </span>
+                  <span className="mt-0.5 block text-[13px] text-muted-foreground">{m.desc}</span>
+                </span>
+                {m.id === current && <Check className="mt-1 size-4 shrink-0 text-foreground" />}
+              </button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
+      <FlexDialog open={flexOpen} onOpenChange={setFlexOpen} />
+    </>
+  );
+}
+
+export function Index() {
   const examples = [
     { img: thumbVideo, tag: "视频", Icon: Film, title: "创作一支动漫短片" },
     { img: thumbApp, tag: "应用", Icon: Smartphone, title: "制作个人预算应用" },
@@ -130,7 +266,7 @@ function Index() {
       <Sidebar />
       <main className="relative flex h-screen flex-1 flex-col overflow-y-auto">
         <header className="flex h-[52px] items-center justify-between px-6">
-          <button className="flex items-center gap-1 text-[17px] font-medium">Artrail 2.0 Lite <ChevronDown className="size-4 text-muted-foreground" /></button>
+          <ModelPicker />
           <div className="flex items-center gap-2">
             <div className="flex items-center rounded-lg border border-border text-[15px]">
               <span className="px-3 py-1.5 text-muted-foreground">免费计划</span>
