@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BuildRouteImport } from './routes/build'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
+import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   path: '/projects/$projectId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorksWorkIdRoute = WorksWorkIdRouteImport.update({
+  id: '/works/$workId',
+  path: '/works/$workId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/build': typeof BuildRoute
   '/plugins': typeof PluginsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/works/$workId': typeof WorksWorkIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/build': typeof BuildRoute
   '/plugins': typeof PluginsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/works/$workId': typeof WorksWorkIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,21 @@ export interface FileRoutesById {
   '/build': typeof BuildRoute
   '/plugins': typeof PluginsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/works/$workId': typeof WorksWorkIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/build' | '/plugins' | '/projects/$projectId'
+  fullPaths:
+    '/' | '/build' | '/plugins' | '/projects/$projectId' | '/works/$workId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/build' | '/plugins' | '/projects/$projectId'
-  id: '__root__' | '/' | '/build' | '/plugins' | '/projects/$projectId'
+  to: '/' | '/build' | '/plugins' | '/projects/$projectId' | '/works/$workId'
+  id:
+    | '__root__'
+    | '/'
+    | '/build'
+    | '/plugins'
+    | '/projects/$projectId'
+    | '/works/$workId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +83,7 @@ export interface RootRouteChildren {
   BuildRoute: typeof BuildRoute
   PluginsRoute: typeof PluginsRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
+  WorksWorkIdRoute: typeof WorksWorkIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +116,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/works/$workId': {
+      id: '/works/$workId'
+      path: '/works/$workId'
+      fullPath: '/works/$workId'
+      preLoaderRoute: typeof WorksWorkIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +131,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuildRoute: BuildRoute,
   PluginsRoute: PluginsRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
+  WorksWorkIdRoute: WorksWorkIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

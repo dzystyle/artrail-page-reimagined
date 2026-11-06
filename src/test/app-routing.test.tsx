@@ -18,4 +18,8 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+  it("opens a featured work at /works/$workId", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    expect(router.matchRoutes("/works/jianbao-character-sheet").at(-1)?.routeId).toBe("/works/$workId");
+  });
 });
