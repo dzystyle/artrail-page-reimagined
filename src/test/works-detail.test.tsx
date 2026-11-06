@@ -37,6 +37,14 @@ describe("Featured work detail", () => {
     expect(back).toBe(2);
   });
 
+  it("calls onMake when 制作这款游戏 is clicked", () => {
+    const work = findWork("fps-icon-pack")!;
+    let made = 0;
+    render(<WorkDetail work={work} onBack={() => {}} onMake={() => { made += 1; }} />);
+    fireEvent.click(screen.getByRole("button", { name: "制作这款游戏" }));
+    expect(made).toBe(1);
+  });
+
   it("gives every work a unique id, tags and preview images", () => {
     expect(new Set(works.map((w) => w.id)).size).toBe(works.length);
     for (const w of works) {
