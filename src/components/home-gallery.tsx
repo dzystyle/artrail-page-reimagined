@@ -1,34 +1,17 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ChevronRight, Plus, Workflow, ImageIcon } from "lucide-react";
+import { works } from "@/lib/works";
 import canvas1 from "@/assets/canvas-1.jpg";
 import canvas2 from "@/assets/canvas-2.jpg";
 import canvas3 from "@/assets/canvas-3.jpg";
 import canvas4 from "@/assets/canvas-4.jpg";
-import work1 from "@/assets/work-1.jpg";
-import work2 from "@/assets/work-2.jpg";
-import work3 from "@/assets/work-3.jpg";
-import work4 from "@/assets/work-4.jpg";
-import work5 from "@/assets/work-5.jpg";
-import work6 from "@/assets/work-6.jpg";
-import work7 from "@/assets/work-7.jpg";
-import work8 from "@/assets/work-8.jpg";
 
 const canvases = [
   { img: canvas1, title: "戴安娜-Diana", count: 681, meta: "刚刚编辑 · 宋扬", icon: Workflow },
   { img: canvas2, title: "1105-2", count: 63, meta: "刚刚编辑 · chengpeng", icon: ImageIcon },
   { img: canvas3, title: "节点", count: 6, meta: "1 分钟前编辑 · 郭智妍", icon: Workflow },
   { img: canvas4, title: "机甲炮击", count: 171, meta: "1 分钟前编辑 · 朱玉儿", icon: ImageIcon },
-];
-
-const works = [
-  { img: work1, title: "鉴宝题材模拟经营角色设定", author: "林悦" },
-  { img: work2, title: "【模拟经营】餐厅建筑图标", author: "郭凌" },
-  { img: work3, title: "Q版扁平玩具风角色", author: "宋扬" },
-  { img: work4, title: "西式中世纪冒险RPG游戏图标", author: "杨宇轩" },
-  { img: work5, title: "中世纪奇幻 · 风格化卡通角色设定包", author: "雷嘉玲" },
-  { img: work6, title: "樱花黄昏街道场景", author: "朱玉儿" },
-  { img: work7, title: "半写实3D渲染风格下的现代FPS游戏图标包", author: "杨宇轩" },
-  { img: work8, title: "海盗船长角色设定", author: "chengpeng" },
 ];
 
 function Tabs({ items, active, onChange, dots }: { items: string[]; active: string; onChange: (v: string) => void; dots?: boolean }) {
