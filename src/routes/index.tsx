@@ -144,44 +144,30 @@ export function Index() {
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-[885px] px-4 pt-10 sm:pt-[80px]">
-          <div className="flex flex-wrap items-center justify-between gap-5">
-            <div className="flex items-center gap-4">
-              <Logo className="size-16" />
-              <span className="font-brand text-[50px] font-bold leading-none tracking-tight">ArTrail</span>
+        <section className="mx-auto flex min-h-[calc(100vh-160px)] w-full max-w-[860px] flex-col justify-center px-4 pb-16">
+          <div className="flex flex-col items-center text-center">
+            <div className="flex items-center gap-3">
+              <Logo className="size-12" />
+              <span className="font-brand text-[44px] font-bold leading-none tracking-tight">ArTrail</span>
             </div>
-            <div className="flex h-[62px] w-[280px] items-center gap-3 rounded-xl bg-surface-deep px-4">
-              <img src={thumbVideo} alt="" className="h-8 w-10 rounded object-cover" />
-              <div>
-                <p className="text-sm font-semibold">创建你的视频</p>
-                <p className="text-xs text-muted-foreground">让想法变为现实</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-9 grid grid-cols-1 gap-3.5 sm:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)]">
-            <div className="flex flex-col gap-3.5">
-              {[
-                { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏", D: GridDeco },
-                { Icon: Shapes, c: "text-create", t: "创建", s: "图片和视频", D: CardsDeco },
-              ].map(({ Icon, c, t, s, D }) => (
-                <button key={t} className="relative h-[144px] overflow-hidden rounded-2xl bg-card p-[22px] text-left transition-colors hover:bg-accent">
-                  <Icon className={`size-6 ${c}`} fill="currentColor" />
-                  <p className="mt-4 flex items-center gap-1 text-[17px] font-semibold">{t}<ChevronRight className="size-4" /></p>
-                  <p className="mt-1 text-[15px] text-muted-foreground">{s}</p>
-                  <D />
-                </button>
-              ))}
-            </div>
-            <button className="relative flex min-h-[210px] flex-col items-center justify-center rounded-2xl bg-card text-center transition-colors hover:bg-accent">
-              <Clapperboard className="size-[72px] text-muted-foreground/60" strokeWidth={1.2} />
-              <p className="mt-8 text-[17px] font-semibold">互动故事</p>
-              <p className="mt-1.5 text-[15px] text-muted-foreground">场景、选择和分支</p>
-            </button>
+            <p className="mt-4 text-[17px] text-muted-foreground">把想法变成游戏、故事、图片和视频</p>
           </div>
           <HomeComposer scrollRoot={mainRef} />
-        </div>
-        <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-8">
+          <div className="-mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {[
+              { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏" },
+              { Icon: Shapes, c: "text-create", t: "创建", s: "图片和视频" },
+              { Icon: Clapperboard, c: "text-muted-foreground", t: "互动故事", s: "场景、选择和分支" },
+            ].map(({ Icon, c, t, s }) => (
+              <button key={t} className="group flex items-center gap-3 rounded-xl border border-border bg-card/60 px-4 py-3 text-left transition-colors hover:bg-accent">
+                <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-secondary"><Icon className={`size-[18px] ${c}`} /></span>
+                <span className="min-w-0 flex-1"><span className="block text-[15px] font-semibold">{t}</span><span className="block truncate text-xs text-muted-foreground">{s}</span></span>
+                <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+              </button>
+            ))}
+          </div>
+        </section>
+        <div className="mx-auto w-full max-w-[1280px] border-t border-border px-4 pt-10 sm:px-8">
           <RecentCanvases />
           <FeaturedWorks />
         </div>
