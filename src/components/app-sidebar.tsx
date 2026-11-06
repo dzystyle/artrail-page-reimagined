@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, LayoutGrid, Folder, Box, Puzzle, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell } from "lucide-react";
+import { WorkspaceSearch } from "@/components/workspace-search";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
@@ -45,7 +46,7 @@ function Item({ icon: Icon, label, badge, spin, to }: { icon: typeof Search; lab
 
 function ProjectLink({ id, name, icon: Icon }: { id: string; name: string; icon: typeof Search }) {
   return (
-    <Link to="/projects/$projectId" params={{ projectId: id }} className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent font-semibold" }}>
+    <Link to="/projects/$projectId" params={{ projectId: id }} search={{ q: "" }} className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent font-semibold" }}>
       <Icon className="size-[18px] shrink-0" /><span className="truncate">{name}</span>
     </Link>
   );
@@ -60,10 +61,10 @@ export function Sidebar() {
           <span className="font-brand text-lg font-bold tracking-tight">ArTrail</span>
         </div>
         <div className="flex gap-3 text-muted-foreground">
-          <Search className="size-5" /><PanelLeft className="size-5" />
+          <PanelLeft className="size-5" />
         </div>
       </div>
-      <nav className="mt-2 space-y-[5px]">{nav.map((n) => <Item key={n.label} {...n} />)}
+      <nav className="mt-2 space-y-[5px]"><WorkspaceSearch />{nav.map((n) => <Item key={n.label} {...n} />)}
         <div className="mx-1.5 my-2 h-px bg-sidebar-border" />
         {nav2.map((n) => <Item key={n.label} {...n} />)}</nav>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">项目</p>

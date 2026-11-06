@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sidebar, Logo } from "@/components/app-sidebar";
 import { SubscriptionDialog } from "@/components/subscription-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { WorkspaceSearch } from "@/components/workspace-search";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases, FeaturedWorks } from "@/components/home-gallery";
 import { isGameCreation } from "@/lib/game-workspace";
@@ -75,6 +76,7 @@ export function Index() {
       <main ref={mainRef} className="relative flex h-screen min-w-0 flex-1 flex-col overflow-y-auto">
         <header className="flex min-h-[52px] flex-wrap items-center justify-end gap-2 px-4 py-2 sm:px-6">
           <div className="flex items-center gap-2">
+            <div className="lg:hidden"><WorkspaceSearch compact /></div>
             <div className="flex items-center rounded-lg border border-border text-[15px]">
               <span className="px-3 py-1.5 text-muted-foreground">免费计划</span>
               <span className="h-4 w-px bg-border" />
