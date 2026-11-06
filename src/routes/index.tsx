@@ -177,17 +177,6 @@ function Index() {
             </button>
           </div>
 
-          <div className="mt-8 grid grid-cols-3 gap-3">
-            {examples.map(({ img, tag, Icon, title }) => (
-              <button key={title} className="group text-center">
-                <div className="relative h-[155px] overflow-hidden rounded-xl border border-border">
-                  <img src={img} alt={title} loading="lazy" width={1040} height={640} className="size-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                  <span className="absolute left-2 top-2 flex items-center gap-1 rounded-md bg-surface-deep/80 px-1.5 py-0.5 text-xs font-medium"><Icon className="size-3" />{tag}</span>
-                </div>
-                <p className="mt-3 text-[15px] font-semibold">{title}</p>
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="sticky bottom-0 mx-auto w-full max-w-[853px] pb-9 pt-6">
