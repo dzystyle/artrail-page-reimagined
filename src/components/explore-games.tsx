@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowUpRight, CornerDownLeft, Maximize2, X } from "lucide-react";
+import { useRef } from "react";
+import { ChevronLeft, ChevronRight, ArrowUpRight, CornerDownLeft, Maximize2, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -32,14 +33,30 @@ export function ExploreGames({ onContinue, onUsePrompt }: { onContinue?: (g: Exp
   const [all, setAll] = useState(false);
   const [tab, setTab] = useState("全部");
   const [open, setOpen] = useState<ExploreGame | null>(null);
-  const list = all ? games.filter(g => tab === "全部" || g.tag === tab) : games.slice(0, 4);
+  const [page, setPage] = useState(0);
+  const pages = Math.ceil(games.length / 4);
+  const lock = useRef(0);
+  const go = (d: number) => setPage(p => Math.min(pages - 1, Math.max(0, p + d)));
+  const onWheel = (e: React.WheelEvent) => {
+    if (all) return;
+    const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.shiftKey ? e.deltaY : 0;
+    if (Math.abs(dx) < 20 || Date.now() - lock.current < 500) return;
+    lock.current = Date.now(); go(dx > 0 ? 1 : -1);
+  };
+  const list = all ? games.filter(g => tab === "全部" || g.tag === tab) : games.slice(page * 4, page * 4 + 4);
   return <section aria-labelledby="explore-games" className="mt-6">
     <div className="mb-5 flex items-center justify-between">
       <h2 id="explore-games" className="text-xl font-semibold">探索游戏</h2>
+      <div className="flex items-center gap-2">
+      {!all && <>
+        <button type="button" aria-label="上一页" disabled={page === 0} onClick={() => go(-1)} className="grid size-10 place-items-center rounded-full text-foreground transition-colors hover:bg-secondary disabled:text-muted-foreground/40 disabled:hover:bg-transparent"><ChevronLeft className="size-5" /></button>
+        <button type="button" aria-label="下一页" disabled={page === pages - 1} onClick={() => go(1)} className="grid size-10 place-items-center rounded-full text-foreground transition-colors hover:bg-secondary disabled:text-muted-foreground/40 disabled:hover:bg-transparent"><ChevronRight className="size-5" /></button>
+      </>}
       <button onClick={() => setAll(v => !v)} className="text-base text-muted-foreground transition-colors hover:text-foreground">{all ? "显示更少" : "显示全部"}</button>
+      </div>
     </div>
     {all && <div className="mb-5 flex flex-wrap gap-1">{tabs.map(t => <button key={t} onClick={() => setTab(t)} className={cn("rounded-xl px-4 py-2 text-base transition-colors", tab === t ? "bg-secondary font-semibold text-foreground" : "text-muted-foreground hover:text-foreground")}>{t}</button>)}</div>}
-    <div className={cn("grid gap-5", all ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-2 lg:grid-cols-4")}>
+    <div onWheel={onWheel} key={all ? "all" : page} className={cn("grid gap-5 animate-in fade-in-0 duration-300", all ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-2 lg:grid-cols-4")}>
       {list.map(g => <button type="button" key={g.name} aria-label={`查看 ${g.name} 详情`} onClick={() => setOpen(g)} className="group relative aspect-[16/9] overflow-hidden rounded-2xl bg-card text-left">
         <img src={g.image} alt={g.name} width={640} height={360} loading="lazy" className="size-full object-cover transition-transform duration-300 group-hover:scale-105" />
         <span className="absolute right-0 top-0 rounded-bl-xl bg-background/85 px-2.5 py-1 text-sm font-medium">{g.tag}</span>
