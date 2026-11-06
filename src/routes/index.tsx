@@ -144,34 +144,48 @@ export function Index() {
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-[1120px] px-4 pb-32 pt-6 sm:px-8 sm:pt-10">
-          <section className="flex flex-col items-center text-center">
-            <div className="flex items-center gap-3">
-              <Logo className="size-11" />
-              <span className="font-brand text-[40px] font-bold leading-none tracking-tight">ArTrail</span>
+        <div className="mx-auto w-full max-w-[885px] px-4 pt-10 sm:pt-[80px]">
+          <div className="flex flex-wrap items-center justify-between gap-5">
+            <div className="flex items-center gap-4">
+              <Logo className="size-16" />
+              <span className="font-brand text-[50px] font-bold leading-none tracking-tight">ArTrail</span>
             </div>
-            <p className="mt-3 text-[15px] text-muted-foreground">今天想创作点什么？从一个入口开始，或直接在下方描述你的想法。</p>
-          </section>
-
-          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {[
-              { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏", D: GridDeco },
-              { Icon: Shapes, c: "text-create", t: "创建", s: "图片和视频", D: CardsDeco },
-              { Icon: Clapperboard, c: "text-muted-foreground", t: "互动故事", s: "场景、选择和分支", D: null },
-            ].map(({ Icon, c, t, s, D }) => (
-              <button key={t} className="relative h-[104px] overflow-hidden rounded-2xl bg-card p-5 text-left transition-colors hover:bg-accent">
-                <Icon className={`size-5 ${c}`} fill={D ? "currentColor" : "none"} />
-                <p className="mt-3 flex items-center gap-1 text-[16px] font-semibold">{t}<ChevronRight className="size-4" /></p>
-                <p className="mt-0.5 text-sm text-muted-foreground">{s}</p>
-                {D && <div className="absolute -right-6 -top-4 scale-75 opacity-70"><D /></div>}
-              </button>
-            ))}
+            <div className="flex h-[62px] w-[280px] items-center gap-3 rounded-xl bg-surface-deep px-4">
+              <img src={thumbVideo} alt="" className="h-8 w-10 rounded object-cover" />
+              <div>
+                <p className="text-sm font-semibold">创建你的视频</p>
+                <p className="text-xs text-muted-foreground">让想法变为现实</p>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-12"><RecentCanvases /></div>
-          <div className="mx-auto mt-10 max-w-[860px]"><HomeComposer scrollRoot={mainRef} /></div>
-          <div className="mt-14"><FeaturedWorks /></div>
+          <div className="mt-9 grid grid-cols-1 gap-3.5 sm:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)]">
+            <div className="flex flex-col gap-3.5">
+              {[
+                { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏", D: GridDeco },
+                { Icon: Shapes, c: "text-create", t: "创建", s: "图片和视频", D: CardsDeco },
+              ].map(({ Icon, c, t, s, D }) => (
+                <button key={t} className="relative h-[144px] overflow-hidden rounded-2xl bg-card p-[22px] text-left transition-colors hover:bg-accent">
+                  <Icon className={`size-6 ${c}`} fill="currentColor" />
+                  <p className="mt-4 flex items-center gap-1 text-[17px] font-semibold">{t}<ChevronRight className="size-4" /></p>
+                  <p className="mt-1 text-[15px] text-muted-foreground">{s}</p>
+                  <D />
+                </button>
+              ))}
+            </div>
+            <button className="relative flex min-h-[210px] flex-col items-center justify-center rounded-2xl bg-card text-center transition-colors hover:bg-accent">
+              <Clapperboard className="size-[72px] text-muted-foreground/60" strokeWidth={1.2} />
+              <p className="mt-8 text-[17px] font-semibold">互动故事</p>
+              <p className="mt-1.5 text-[15px] text-muted-foreground">场景、选择和分支</p>
+            </button>
+          </div>
+          <HomeComposer scrollRoot={mainRef} />
         </div>
+        <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-8">
+          <RecentCanvases />
+          <FeaturedWorks />
+        </div>
+
       </main>
     </div>
   );
