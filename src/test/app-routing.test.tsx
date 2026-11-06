@@ -13,12 +13,12 @@ describe("App routing", () => {
     expect(assets?.routeId).toBe("/projects/$projectId");
     expect(assets?.search).toEqual({ view: "assets", q: "戴安娜" });
     const filtered = router.matchRoutes("/projects/f3fx", { view: "assets", q: "戴安娜" }).at(-1);
-    expect(filtered?.params.projectId).toBe("f3fx");
-    expect(filtered?.search.view).toBe("assets");
+    expect(filtered?.params).toMatchObject({ projectId: "f3fx" });
+    expect(filtered?.search).toMatchObject({ view: "assets" });
   });
   it("does not show asset mode for an ordinary project entry", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
-    expect(router.matchRoutes("/projects/artrail", { q: "" }).at(-1)?.search.view).toBe("");
+    expect(router.matchRoutes("/projects/artrail", { q: "" }).at(-1)?.search).toMatchObject({ view: "" });
   });
   it("opens the game workspace at /game", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
