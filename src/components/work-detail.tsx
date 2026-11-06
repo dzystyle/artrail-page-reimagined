@@ -12,8 +12,8 @@ export function WorkDetail({ work, onBack }: { work: Work; onBack: () => void })
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground lg:flex-row">
       <div className="relative flex min-h-[60vh] min-w-0 flex-1 flex-col">
-        <img src={current} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 size-full scale-110 object-cover opacity-25 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 bg-background/55" />
+        <img src={current} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 size-full scale-125 object-cover opacity-45 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 bg-background/40" />
 
         <button
           onClick={onBack}
