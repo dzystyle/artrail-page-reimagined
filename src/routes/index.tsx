@@ -89,8 +89,8 @@ export function Index() {
               { Icon: Shapes, c: "text-create", t: "创建", s: "图片和视频" },
               { Icon: Clapperboard, c: "text-muted-foreground", t: "互动故事", s: "场景、选择和分支" },
             ].map(({ Icon, c, t, s }) => (
-               t === "构建" ? <Button key={t} asChild variant="ghost" className="group h-auto justify-start whitespace-normal rounded-xl border border-border bg-card/60 px-4 py-3 text-left">
-                 <Link to="/build">
+               t === "构建" || t === "互动故事" ? <Button key={t} asChild variant="ghost" className="group h-auto justify-start whitespace-normal rounded-xl border border-border bg-card/60 px-4 py-3 text-left">
+                 <Link to="/build" search={{ mode: t === "互动故事" ? "story" : "build" }}>
                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-secondary"><Icon className={`size-[18px] ${c}`} /></span>
                    <span className="min-w-0 flex-1"><span className="block text-[15px] font-semibold">{t}</span><span className="block truncate text-xs font-normal text-muted-foreground">{s}</span></span>
                    <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />

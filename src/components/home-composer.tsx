@@ -69,7 +69,7 @@ function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpenChange:
 }
 
 /** Keeps the composer in one instance so the draft survives docking/expanding. */
-export function HomeComposer({ scrollRoot }: { scrollRoot?: React.RefObject<HTMLElement | null> } = {}) {
+export function HomeComposer({ scrollRoot, initialType = "Asset Canvas" }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string } = {}) {
   const anchor = useRef<HTMLDivElement>(null);
   const [docked, setDocked] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -94,7 +94,7 @@ export function HomeComposer({ scrollRoot }: { scrollRoot?: React.RefObject<HTML
     return () => window.removeEventListener("keydown", onKey);
   }, [expanded]);
   const [text, setText] = useState("");
-  const [type, setType] = useState(types[2] ?? types[0]);
+  const [type, setType] = useState(types.find(t => t.name === initialType) ?? types[2] ?? types[0]);
   const [typeOpen, setTypeOpen] = useState(false);
   const [project, setProject] = useState("ArTrail");
   const [projectOpen, setProjectOpen] = useState(false);
