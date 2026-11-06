@@ -20,18 +20,20 @@ describe("Header model picker", () => {
     fireEvent.click(screen.getByRole("button", { name: /Artrail 2\.0 Lite/ }));
 
     expect(await screen.findByText("为复杂任务设计的高性能代理。")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Artrail 2\.0 Max/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Artrail 2\.0\b/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Artrail Flex/ })).toBeInTheDocument();
-    expect(screen.getAllByText("Pro")).toHaveLength(2);
+    expect(screen.getByText("Artrail 2.0 Max", { exact: true })).toBeInTheDocument();
+    expect(screen.getByText("Artrail 2.0", { exact: true })).toBeInTheDocument();
+    expect(screen.getByText("Artrail 2.0 Lite", { exact: true })).toBeInTheDocument();
+    expect(screen.getByText("Artrail Flex", { exact: true })).toBeInTheDocument();
+    expect(screen.getByText("多功能代理，能够执行大部分任务。")).toBeInTheDocument();
     expect(screen.getByText("一个适合日常任务的轻量级代理。")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Artrail 2\.0 Lite/ })).toBeInTheDocument();
+    expect(screen.getByText("使用你自己的模型 API 密钥来驱动 Artrail。")).toBeInTheDocument();
+    expect(screen.getAllByText("Pro")).toHaveLength(2);
   });
 
   it("opens the Flex dialog with provider and API key fields, connect disabled until filled", async () => {
     render(<Index />);
     fireEvent.click(screen.getByRole("button", { name: /Artrail 2\.0 Lite/ }));
-    fireEvent.click(await screen.findByRole("button", { name: /Artrail Flex/ }));
+    fireEvent.click(await screen.findByText("Artrail Flex", { exact: true }));
 
     expect(await screen.findByText("提供商")).toBeInTheDocument();
     expect(screen.getByText("API 密钥")).toBeInTheDocument();
