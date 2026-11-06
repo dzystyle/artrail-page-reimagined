@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Search, PanelLeft, Sparkles, MessageSquarePlus, LayoutGrid, Folder, Box, Puzzle, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell } from "lucide-react";
+import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, LayoutGrid, Folder, Box, Puzzle, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell } from "lucide-react";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
@@ -59,7 +59,7 @@ export function Sidebar() {
         <div className="mx-1.5 my-2 h-px bg-sidebar-border" />
         {nav2.map((n) => <Item key={n.label} {...n} />)}</nav>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">项目</p>
-      <Item icon={FolderPlus} label="新项目" />
+      <div className="space-y-[5px]">{[["NEW-HOPE", Rocket], ["F3/FX", Gamepad2], ["ArTrail", MonitorPlay]].map(([n, I]) => <Item key={n as string} icon={I as typeof Search} label={n as string} />)}</div>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">任务</p>
       <div className="space-y-[5px] overflow-y-auto">{tasks.map((t, i) => <Item key={i} {...t} />)}</div>
       <div className="mt-auto pb-2">
