@@ -11,7 +11,7 @@ export function WorkspaceSearch({ compact = false }: { compact?: boolean }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [shortcut, setShortcut] = useState("Ctrl");
+  const [shortcut, setShortcut] = useState("");
   useEffect(() => {
     setShortcut(/Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl");
     const onKey = (event: KeyboardEvent) => {
