@@ -72,37 +72,37 @@ export function Index() {
         </header>
 
         <section className="mx-auto flex w-full max-w-[860px] flex-col px-4 pb-10 pt-6 sm:pt-10">
-          <div className="flex flex-col items-center text-center">
-            <button className="mb-7 flex items-center gap-2 rounded-full border border-border bg-card/60 py-1 pl-1 pr-3 text-[13px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
-              <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-link">新功能</span>
-              互动故事上线：用场景和选择分支讲故事
-              <ChevronRight className="size-3.5" />
-            </button>
-            <div className="flex items-center gap-3">
-              <Logo className="size-12" />
-              <span className="font-brand text-[44px] font-bold leading-none tracking-tight">ArTrail</span>
+          <div className="mb-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <Logo className="size-12 shrink-0" />
+              <span className="truncate font-brand text-[40px] font-bold leading-none tracking-tight">ArTrail</span>
             </div>
-            <p className="mt-4 text-[17px] text-muted-foreground">把想法变成游戏、故事、图片和视频</p>
+            <button className="hidden items-center gap-3 rounded-2xl border border-border bg-surface-deep py-2.5 pl-3 pr-6 text-left transition-colors hover:bg-accent sm:flex">
+              <img src={thumbVideo} alt="" width={56} height={40} className="h-10 w-14 shrink-0 rounded-md object-cover" />
+              <span><span className="block text-[15px] font-semibold">互动故事上线</span><span className="block text-xs text-muted-foreground">用场景和选择分支讲故事</span></span>
+            </button>
           </div>
           <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
-          <div className="-mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {[
-              { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏" },
-              { Icon: Shapes, c: "text-create", t: "创建", s: "图片和视频" },
-              { Icon: Clapperboard, c: "text-muted-foreground", t: "互动故事", s: "场景、选择和分支" },
-            ].map(({ Icon, c, t, s }) => (
-               t === "构建" || t === "互动故事" ? <Button key={t} asChild variant="ghost" className="group h-auto justify-start whitespace-normal rounded-xl border border-border bg-card/60 px-4 py-3 text-left">
-                 <Link to="/build" search={{ mode: t === "互动故事" ? "story" : "build" }}>
-                   <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-secondary"><Icon className={`size-[18px] ${c}`} /></span>
-                   <span className="min-w-0 flex-1"><span className="block text-[15px] font-semibold">{t}</span><span className="block truncate text-xs font-normal text-muted-foreground">{s}</span></span>
-                   <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-                 </Link>
-               </Button> : <button key={t} className="group flex items-center gap-3 rounded-xl border border-border bg-card/60 px-4 py-3 text-left transition-colors hover:bg-accent">
-                <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-secondary"><Icon className={`size-[18px] ${c}`} /></span>
-                <span className="min-w-0 flex-1"><span className="block text-[15px] font-semibold">{t}</span><span className="block truncate text-xs text-muted-foreground">{s}</span></span>
-                <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+          <div className="-mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
+            <div className="grid gap-3">
+              <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[130px] flex-col justify-end overflow-hidden rounded-2xl border border-border bg-card/60 p-5 transition-colors hover:bg-accent">
+                <GridDeco />
+                <Hammer className="mb-auto size-6 text-build" />
+                <span className="relative flex items-center gap-1 text-[17px] font-semibold">构建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+                <span className="relative text-sm text-muted-foreground">网站、应用和游戏</span>
+              </Link>
+              <button className="group relative flex h-[130px] flex-col items-start justify-end overflow-hidden rounded-2xl border border-border bg-card/60 p-5 text-left transition-colors hover:bg-accent">
+                <CardsDeco />
+                <Shapes className="mb-auto size-6 text-create" />
+                <span className="relative flex items-center gap-1 text-[17px] font-semibold">创建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+                <span className="relative text-sm text-muted-foreground">图片和视频</span>
               </button>
-            ))}
+            </div>
+            <Link to="/build" search={{ mode: "story" }} className="group flex min-h-[200px] flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card/60 p-5 text-center transition-colors hover:bg-accent">
+              <span className="grid size-16 place-items-center rounded-2xl bg-secondary"><Clapperboard className="size-8 text-muted-foreground" /></span>
+              <span className="flex items-center gap-1 text-[17px] font-semibold">互动故事<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+              <span className="text-sm text-muted-foreground">场景、选择和分支</span>
+            </Link>
           </div>
         </section>
         <div className="mx-auto w-full max-w-[1280px] border-t border-border px-4 pt-8 sm:px-8">
