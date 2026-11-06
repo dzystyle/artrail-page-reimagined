@@ -77,13 +77,13 @@ export function Index() {
               <Logo className="size-12 shrink-0 sm:size-14" />
               <span className="font-brand text-[36px] font-bold leading-none sm:text-[42px]">ArTrail</span>
             </div>
-            <Button variant="ghost" className="h-auto min-h-[76px] w-full justify-start gap-4 rounded-lg bg-surface-deep px-5 py-4 text-left hover:bg-surface-deep/80 sm:w-[300px] sm:shrink-0" onClick={() => mainRef.current?.querySelector('textarea')?.focus()}>
+            <div className="flex min-h-[76px] w-full items-center gap-4 rounded-lg bg-surface-deep px-5 py-4 text-left sm:w-[300px] sm:shrink-0">
               <span className="relative shrink-0">
                 <img src={thumbVideo} alt="" width={44} height={44} className="size-11 rounded-md border-2 border-foreground/80 object-cover" />
                 <span className="absolute -bottom-1 -left-1 grid size-4 place-items-center rounded-full bg-primary text-primary-foreground"><Play className="size-2.5 fill-current" /></span>
               </span>
               <span className="min-w-0 whitespace-normal"><span className="block text-[16px] font-semibold">创建你的视频</span><span className="mt-1 block text-sm font-normal text-muted-foreground">让想法变为现实</span></span>
-            </Button>
+            </div>
           </div>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
             <div className="grid gap-3">
