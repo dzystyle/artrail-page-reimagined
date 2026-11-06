@@ -82,8 +82,7 @@ export function Index() {
               <span><span className="block text-[15px] font-semibold">互动故事上线</span><span className="block text-xs text-muted-foreground">用场景和选择分支讲故事</span></span>
             </button>
           </div>
-          <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
-          <div className="-mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
             <div className="grid gap-3">
               <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[130px] flex-col justify-end overflow-hidden rounded-2xl border border-border bg-card/60 p-5 transition-colors hover:bg-accent">
                 <GridDeco />
@@ -104,6 +103,7 @@ export function Index() {
               <span className="text-sm text-muted-foreground">场景、选择和分支</span>
             </Link>
           </div>
+          <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
         </section>
         <div className="mx-auto w-full max-w-[1280px] border-t border-border px-4 pt-8 sm:px-8">
           <RecentCanvases />
