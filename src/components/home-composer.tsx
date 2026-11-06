@@ -68,7 +68,31 @@ function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpenChange:
   </Dialog>;
 }
 
-export function HomeComposer() {
+/** Keeps the composer in one instance so the draft survives docking/expanding. */
+export function HomeComposer({ scrollRoot }: { scrollRoot?: React.RefObject<HTMLElement | null> } = {}) {
+  const anchor = useRef<HTMLDivElement>(null);
+  const [docked, setDocked] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [anchorHeight, setAnchorHeight] = useState<number>();
+  useEffect(() => {
+    const el = anchor.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry) return;
+      const out = !entry.isIntersecting && entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0) + 1;
+      if (out && el.firstElementChild) setAnchorHeight(el.offsetHeight);
+      setDocked(out);
+      if (!out) setExpanded(false);
+    }, { root: scrollRoot?.current ?? null, threshold: 0 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [scrollRoot]);
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setExpanded(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [expanded]);
   const [text, setText] = useState("");
   const [type, setType] = useState(types[2] ?? types[0]);
   const [typeOpen, setTypeOpen] = useState(false);
