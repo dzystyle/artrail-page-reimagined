@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Keep the homepage creation composer in a browser-safe component with session-only UI state; service connections and generation require a separately implemented Cloud integration.
+- Build workspace lives on its own content route and reuses the existing sidebar and composer so navigation preserves the workspace presentation.

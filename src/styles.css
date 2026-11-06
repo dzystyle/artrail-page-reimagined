@@ -158,12 +158,16 @@
   --build: oklch(0.6 0.17 250);
   --create: oklch(0.75 0.15 70);
   --surface-deep: oklch(0.14 0 0);
+  --project-lilac: oklch(0.63 0.055 295);
+  --project-mint: oklch(0.61 0.055 165);
 }
 @theme inline {
   --color-link: var(--link);
   --color-build: var(--build);
   --color-create: var(--create);
   --color-surface-deep: var(--surface-deep);
+  --color-project-lilac: var(--project-lilac);
+  --color-project-mint: var(--project-mint);
   --font-sans: "PingFang SC", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
   --font-brand: "Libre Baskerville", Georgia, serif;
 }
