@@ -144,7 +144,7 @@ export function Index() {
           </div>
         </header>
 
-        <section className="mx-auto flex min-h-[calc(100vh-52px)] w-full max-w-[860px] flex-col justify-center px-4 pb-16">
+        <section className="mx-auto flex min-h-[calc(100vh-160px)] w-full max-w-[860px] flex-col justify-center px-4 pb-16">
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center gap-3">
               <Logo className="size-12" />
