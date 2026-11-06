@@ -74,22 +74,22 @@ export function Index() {
             <div className="grid gap-3">
               <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[84px] flex-col justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 transition-colors hover:border-foreground/30">
                 <img src={entryBuild} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />
-                <Hammer className="relative mb-1.5 size-5 text-build" />
-                <span className="relative flex items-center gap-1 text-[15px] font-semibold">构建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-                <span className="relative text-xs text-muted-foreground">网站、应用和游戏</span>
+                <span className="relative flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-build"><Hammer className="size-3.5" />Build</span>
+                <span className="relative mt-1 flex items-center gap-1 text-[17px] font-semibold tracking-tight">构建网站、应用和游戏<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
+                <span className="relative mt-0.5 text-xs text-muted-foreground">一句话描述，生成可运行的作品</span>
               </Link>
               <button type="button" className="group relative flex h-[84px] flex-col items-start justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 text-left transition-colors hover:border-foreground/30">
                 <img src={entryCreate} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />
-                <Shapes className="relative mb-1.5 size-5 text-create" />
-                <span className="relative flex items-center gap-1 text-[15px] font-semibold">创建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-                <span className="relative text-xs text-muted-foreground">图片和视频</span>
+                <span className="relative flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-create"><Shapes className="size-3.5" />Create</span>
+                <span className="relative mt-1 flex items-center gap-1 text-[17px] font-semibold tracking-tight">创建图片和视频<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
+                <span className="relative mt-0.5 text-xs text-muted-foreground">海报、插画、短片，一键成片</span>
               </button>
             </div>
             <Link to="/build" search={{ mode: "story" }} className="group relative flex min-h-[180px] flex-col items-center justify-end gap-1.5 overflow-hidden rounded-xl border border-border bg-card/60 p-4 text-center transition-colors hover:border-foreground/30">
               <img src={entryStory} alt="" aria-hidden width={816} height={816} className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
-              <span className="relative grid size-11 place-items-center rounded-xl bg-secondary/80 backdrop-blur"><Clapperboard className="size-5 text-muted-foreground" /></span>
-              <span className="relative flex items-center gap-1 text-[15px] font-semibold">互动影游<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-              <span className="relative text-xs text-muted-foreground">场景、选择和分支</span>
+              <span className="relative rounded-full border border-foreground/20 bg-background/40 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-[0.14em] backdrop-blur"><Clapperboard className="mr-1 inline size-3.5 align-[-2px]" />Interactive</span>
+              <span className="relative mt-1 flex items-center gap-1 text-[19px] font-semibold tracking-tight">互动影游<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
+              <span className="relative text-xs text-muted-foreground">每个选择，都改写结局</span>
             </Link>
           </div>
           <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
