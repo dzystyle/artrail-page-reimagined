@@ -34,7 +34,7 @@ export function BrickBash() {
         score = 0;
         lives = 3;
         ended = false;
-        cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
+        cursor: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
         trail: { x: number; y: number }[] = [];
         declare trailGraphics: Phaser.GameObjects.Graphics;
         create() {
@@ -112,7 +112,7 @@ export function BrickBash() {
           this.message.setText(`${won ? "全部击碎！" : "游戏结束"}\n点击重新开始`);
           this.updateHud();
         }
-        update(_time: number, delta: number) {
+        override update(_time: number, delta: number) {
           if (this.ended) return;
           if (this.cursor?.left.isDown) this.movePaddle(this.paddle.x - delta * 0.5);
           if (this.cursor?.right.isDown) this.movePaddle(this.paddle.x + delta * 0.5);
