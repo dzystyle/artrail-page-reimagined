@@ -125,12 +125,12 @@ function CardsDeco() {
   );
 }
 
-const models = [
-  { id: "max", name: "Artrail 2.0 Max", badge: "Pro", desc: "为复杂任务设计的高性能代理。" },
-  { id: "std", name: "Artrail 2.0", badge: "Pro", desc: "多功能代理，能够执行大部分任务。" },
-  { id: "lite", name: "Artrail 2.0 Lite", desc: "一个适合日常任务的轻量级代理。" },
-  { id: "flex", name: "Artrail Flex", badge: "Beta", desc: "使用你自己的模型 API 密钥来驱动 Artrail。" },
-];
+type Model = { id: string; name: string; badge?: string; desc: string };
+const maxModel: Model = { id: "max", name: "Artrail 2.0 Max", badge: "Pro", desc: "为复杂任务设计的高性能代理。" };
+const stdModel: Model = { id: "std", name: "Artrail 2.0", badge: "Pro", desc: "多功能代理，能够执行大部分任务。" };
+const liteModel: Model = { id: "lite", name: "Artrail 2.0 Lite", desc: "一个适合日常任务的轻量级代理。" };
+const flexModel: Model = { id: "flex", name: "Artrail Flex", badge: "Beta", desc: "使用你自己的模型 API 密钥来驱动 Artrail。" };
+const models: Model[] = [maxModel, stdModel, liteModel, flexModel];
 const providers = ["OpenAI", "Anthropic", "Google Gemini", "DeepSeek", "自定义端点"];
 
 function RingsIcon({ className = "" }: { className?: string }) {
@@ -215,7 +215,7 @@ function ModelPicker() {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState("lite");
   const [flexOpen, setFlexOpen] = useState(false);
-  const active = models.find((m) => m.id === current) ?? models[2];
+  const active = models.find((m) => m.id === current) ?? liteModel;
 
   const choose = (m: { id: string }) => {
     setOpen(false);
