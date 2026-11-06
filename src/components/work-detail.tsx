@@ -12,8 +12,8 @@ export function WorkDetail({ work, onBack }: { work: Work; onBack: () => void })
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground lg:flex-row">
       <div className="relative flex min-h-[60vh] min-w-0 flex-1 flex-col">
-        <img src={current} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 size-full scale-125 object-cover opacity-45 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 bg-background/40" />
+        <img src={current} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 size-full scale-125 object-cover opacity-70 blur-3xl saturate-150" />
+        <div className="pointer-events-none absolute inset-0 bg-background/25" />
 
         <button
           onClick={onBack}
@@ -108,12 +108,12 @@ export function WorkDetail({ work, onBack }: { work: Work; onBack: () => void })
             </div>
           </div>
 
-          <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-secondary px-4 py-2.5 text-[15px] font-semibold transition-colors hover:bg-accent">
+          <button className="mt-auto flex w-full items-center justify-center gap-2 rounded-full border border-border bg-secondary px-4 py-2.5 text-[15px] font-semibold transition-colors hover:bg-accent">
             <Sparkles className="size-4" />
             制作这款游戏
           </button>
 
-          <p className="mt-auto pt-5 text-xs text-muted-foreground">共 {work.resources} 个资源</p>
+          <p className="pt-4 text-xs text-muted-foreground">共 {work.resources} 个资源</p>
         </div>
       </aside>
     </div>
