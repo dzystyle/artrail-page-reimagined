@@ -32,24 +32,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function GridDeco() {
-  return (
-    <div className="pointer-events-none absolute -right-2 top-5 h-[140px] w-[160px] opacity-50"
-      style={{ backgroundImage: "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)", backgroundSize: "40px 40px" }}>
-      <div className="absolute left-7 top-7 size-[110px] rounded-full border-[26px] border-accent" />
-    </div>
-  );
-}
-function CardsDeco() {
-  return (
-    <div className="pointer-events-none absolute -right-4 top-4 h-[150px] w-[160px]">
-      {[0, 1, 2].map((i) => (
-        <div key={i} className="absolute h-[100px] w-[110px] rounded-lg border border-border bg-accent/40"
-          style={{ left: 10 + i * 18, top: 18 + i * 4, transform: `rotate(${-14 + i * 6}deg)` }} />
-      ))}
-    </div>
-  );
-}
 
 export function Index() {
   const navigate = useNavigate();
