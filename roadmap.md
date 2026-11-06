@@ -3,4 +3,4 @@
 - [x] Verify composer interactions and desktop/mobile layout.- [x] Recent canvases + featured works sections; composer docks to bottom pill when scrolled, expands on click.
 - [x] Center composer in first screen and rework homepage layout for clarity.
 - [x] Add build workspace combining recent projects, exploration and asset templates; keep sidebar unchanged.
-- [ ] Verify homepage build navigation and new workspace on desktop and mobile.
+- [x] Verify homepage build navigation and new workspace on desktop and mobile.
