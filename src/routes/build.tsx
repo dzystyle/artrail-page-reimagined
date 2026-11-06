@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
@@ -55,6 +55,7 @@ const templates = [
 ];
 
 function BuildPage() {
+  const navigate = useNavigate();
   const mainRef = useRef<HTMLElement>(null);
   const { mode } = Route.useSearch();
   const story = mode === "story";
@@ -68,7 +69,7 @@ function BuildPage() {
       <div className="mx-auto max-w-[1240px] px-5 pb-14 sm:px-8">
         <section className="mx-auto max-w-[800px] pt-3">
           <h1 className="text-center text-2xl font-semibold sm:text-[28px]">我们今天要做什么？</h1>
-          <HomeComposer key={mode} scrollRoot={mainRef} initialType={story ? "Interactive Story" : "Asset Canvas"} />
+          <HomeComposer key={mode} scrollRoot={mainRef} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
         </section>
         <section aria-labelledby="explore-works" className="mt-3">
           <h2 id="explore-works" className="mb-4 text-base font-semibold">{story ? "互动故事案例" : "探索"}</h2>

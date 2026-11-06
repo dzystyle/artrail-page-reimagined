@@ -184,3 +184,21 @@
     -webkit-font-smoothing: antialiased;
   }
 }
+
+.workspace-canvas {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.workspace-nodes { position: relative; }
+@media (min-width: 768px) {
+  .workspace-nodes::before {
+    content: "";
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: 50%;
+    height: 1px;
+    background: var(--muted-foreground);
+    z-index: -1;
+  }
+}
