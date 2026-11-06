@@ -21,7 +21,7 @@ import template8 from "@/assets/build-templates-8.jpg";
 export const Route = createFileRoute("/build")({
   head: () => ({ meta: [
     { title: "构建网站、应用和游戏 — ArTrail" },
-    { name: "description", content: "在 ArTrail 开始构建，浏览近期项目、游戏作品和资产模板。" },
+    { name: "description", content: "在 ArTrail 开始构建，浏览游戏作品和资产模板。" },
     { property: "og:title", content: "构建网站、应用和游戏 — ArTrail" },
     { property: "og:description", content: "开始创作，探索游戏作品与人物、地图、场景等资产模板。" },
     { property: "og:type", content: "website" },
