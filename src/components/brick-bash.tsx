@@ -24,17 +24,17 @@ export function BrickBash() {
       ctx.fillStyle = color;
       const fg = P.Display.Color.ValueToColor(ctx.fillStyle).color;
       class BrickScene extends P.Scene {
-        paddle!: Phaser.GameObjects.Rectangle;
-        ball!: Phaser.GameObjects.Rectangle;
+        declare paddle: Phaser.GameObjects.Rectangle;
+        declare ball: Phaser.GameObjects.Rectangle;
         bricks: { text: Phaser.GameObjects.Text; body: Phaser.GameObjects.Zone }[] = [];
-        hud!: Phaser.GameObjects.Text;
-        message!: Phaser.GameObjects.Text;
+        declare hud: Phaser.GameObjects.Text;
+        declare message: Phaser.GameObjects.Text;
         score = 0;
         lives = 3;
         ended = false;
         cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
         trail: { x: number; y: number }[] = [];
-        trailGraphics!: Phaser.GameObjects.Graphics;
+        declare trailGraphics: Phaser.GameObjects.Graphics;
         create() {
           const w = this.scale.width, h = this.scale.height;
           const icons = ["◯", "▢", "♥", "✚", "△", "✕", "▣", "⬆"];
