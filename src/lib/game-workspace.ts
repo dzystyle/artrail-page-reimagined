@@ -1,4 +1,4 @@
-export const workspaceTabs = ["game", "design", "canvas", "assets", "code"] as const;
+export const workspaceTabs = ["game", "design", "canvas", "assets", "code", "multiplayer"] as const;
 export type WorkspaceTab = typeof workspaceTabs[number];
 export const defaultWorkspaceTab: WorkspaceTab = "canvas";
 export function parseWorkspaceTab(value: unknown): WorkspaceTab {
