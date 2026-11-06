@@ -3,6 +3,8 @@ import { useState } from "react";
 import { ChevronsUpDown, Search, User, Sparkles, SlidersHorizontal, Keyboard, LayoutGrid, Unplug, Puzzle, Mail, Monitor, Smartphone, Wallet, Database, Workflow, Code2, Building2, CircleHelp, ArrowUpRight, X, ChevronLeft, ChevronRight, MonitorCog, Cloud, Laptop, MemoryStick, Cpu, HardDrive, Upload, Radio, Globe, MousePointer2, Server } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Gauge } from "lucide-react";
 import automation from "@/assets/cloud-automation.jpg";
 import apple from "@/assets/cloud-apple.jpg";
 import gameServer from "@/assets/cloud-game-server.jpg";
@@ -32,6 +34,12 @@ const nav: [string, [typeof User, string][]][] = [
   ["数据与集成", [[Database, "数据管理"], [Workflow, "集成"], [Code2, "开发者"]]],
 ];
 type Plan = { title: string; desc: string; image: string; tags: string[]; soldOut?: boolean };
+const tiers = [
+  { name: "Standard", price: 30, perf: "1倍性能", mem: "4 GB 内存", cpu: "2个虚拟 CPU", storage: 70, out: "每月 500 GB 出站" },
+  { name: "Advanced", price: 50, perf: "4倍性能", mem: "8 GB 内存", cpu: "2个虚拟 CPU", storage: 120, out: "每月 1000 GB 出站" },
+  { name: "Performance", price: 200, perf: "16倍性能", mem: "32 GB 内存", cpu: "8个虚拟 CPU", storage: 320, out: "每月 2000 GB 出站" },
+];
+const STORAGE_MAX = 320, STORAGE_PRICE = 0.1;
 const plans: Plan[] = [
   { title: "运行自动化", desc: "让报告、网站检查和机器人全天候持续运行。", image: automation, tags: ["Linux", "服务器"] },
   { title: "构建 iOS 和 Mac 应用", desc: "在云端 Mac 上开发、测试和构建你的应用。", image: apple, tags: ["macOS", "Xcode"], soldOut: true },
@@ -54,7 +62,14 @@ function SettingsPage() {
   const [open, setOpen] = useState(false);
   const [detail, setDetail] = useState<Plan | null>(null);
   const [notice, setNotice] = useState("");
-  const close = () => { setOpen(false); setDetail(null); };
+  const [custom, setCustom] = useState(false);
+  const [tierIdx, setTierIdx] = useState(0);
+  const [storage, setStorage] = useState(70);
+  const tier = tiers[tierIdx]!;
+  const extra = Math.max(0, storage - tier.storage) * STORAGE_PRICE;
+  const total = custom ? tier.price + extra : 50;
+  const pickTier = (i: number) => { setTierIdx(i); setStorage(tiers[i]!.storage); };
+  const close = () => { setOpen(false); setDetail(null); setCustom(false); };
   return <div className="flex min-h-screen bg-background text-foreground">
     <aside className="flex w-[290px] shrink-0 flex-col border-r border-border bg-card/40 px-3 py-4 max-md:hidden">
       <div className="flex items-center gap-3 px-2"><span className="grid size-9 place-items-center rounded-full bg-link text-sm font-semibold text-primary-foreground">y</span><span className="flex-1"><span className="block text-sm font-medium">yang yang</span><span className="block text-xs text-muted-foreground">个人版</span></span><ChevronsUpDown className="size-4 text-muted-foreground" /></div>
@@ -84,12 +99,20 @@ function SettingsPage() {
           </button>)}</div>
           <button className="flex items-center gap-4 rounded-xl border border-border p-4 text-left hover:bg-accent"><span className="grid size-10 place-items-center rounded-lg border border-border"><MonitorCog className="size-5" /></span><span className="flex-1"><span className="block text-sm font-semibold">已经有配置想法了吗?</span><span className="block text-sm text-muted-foreground">选择您的操作系统，以及具备所需性能、内存和存储空间的方案。</span></span><span className="flex items-center text-sm font-semibold">自定义<ChevronRight className="size-4" /></span></button>
         </> : <>
-          <div className="flex items-center justify-between"><DialogTitle className="flex items-center gap-2 text-xl font-semibold"><button aria-label="返回" onClick={() => { setDetail(null); setNotice(""); }}><ChevronLeft className="size-5" /></button>计算机详情</DialogTitle><DialogClose aria-label="关闭" className="text-muted-foreground hover:text-foreground"><X className="size-5" /></DialogClose></div>
+          <div className="flex items-center justify-between"><DialogTitle className="flex items-center gap-2 text-xl font-semibold"><button aria-label="返回" onClick={() => { setDetail(null); setNotice(""); setCustom(false); }}><ChevronLeft className="size-5" /></button>计算机详情</DialogTitle><DialogClose aria-label="关闭" className="text-muted-foreground hover:text-foreground"><X className="size-5" /></DialogClose></div>
           <div className="flex flex-col gap-6 border-b border-border pb-6 sm:flex-row"><Screen src={detail.image} className="w-full rounded-xl sm:w-[290px]" /><div><p className="text-xl font-semibold">{detail.title}</p><DialogDescription className="mt-2 text-sm text-muted-foreground">{detail.desc}</DialogDescription><div className="mt-4 flex flex-wrap gap-2">{[...detail.tags, "Computer Use", "浏览器"].map(t => <Tag key={t} t={t} />)}</div></div></div>
-          <div className="border-b border-border pb-5"><div className="flex items-center justify-between"><p className="text-base"><span className="font-semibold">Ubuntu 24.04 LTS</span><span className="text-muted-foreground"> · Advanced</span> <span className="ml-1 rounded bg-link/15 px-1.5 py-0.5 text-sm text-link">推荐</span></p><button className="flex items-center gap-1.5 text-sm font-semibold"><SlidersHorizontal className="size-4" />自定义</button></div>
+          {custom ? <><div className="border-b border-border pb-5"><p className="mb-3 font-semibold">选择您的套餐</p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">{tiers.map((t, i) => <button key={t.name} onClick={() => pickTier(i)} aria-pressed={i === tierIdx} className={`rounded-xl border-2 p-4 text-left transition-colors ${i === tierIdx ? "border-link" : "border-border hover:border-muted-foreground/50"}`}>
+              <p className="font-brand text-lg font-bold">{t.name}</p><p className="mt-3 border-b border-border pb-3"><span className="text-3xl font-semibold">${t.price}</span><span className="text-muted-foreground"> / 月</span></p>
+              <ul className="mt-3 space-y-2.5 text-sm">{[[Gauge, t.perf], [MemoryStick, t.mem], [Cpu, t.cpu], [HardDrive, `${t.storage} GB 存储空间`], [Upload, t.out]].map(([I, l]) => { const C = I as typeof Cpu; return <li key={l as string} className="flex items-center gap-2.5"><C className="size-4 text-muted-foreground" />{l as string}</li>; })}</ul>
+            </button>)}</div>
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm"><span className="text-muted-foreground">所有套餐均包含：</span><span>Ubuntu 24.04 LTS</span><span className="flex items-center gap-1.5"><Globe className="size-4" />公网 IP</span><span className="flex items-center gap-1.5"><Radio className="size-4" />1 Gbps 入站</span></div>
+          </div></> : <><div className="border-b border-border pb-5"><div className="flex items-center justify-between"><p className="text-base"><span className="font-semibold">Ubuntu 24.04 LTS</span><span className="text-muted-foreground"> · Advanced</span> <span className="ml-1 rounded bg-link/15 px-1.5 py-0.5 text-sm text-link">推荐</span></p><button onClick={() => { setCustom(true); pickTier(0); }} className="flex items-center gap-1.5 text-sm font-semibold"><SlidersHorizontal className="size-4" />自定义</button></div>
             <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">{[[MemoryStick, "8 GB 内存"], [Cpu, "2个虚拟 CPU"], [HardDrive, "120 GB 存储"], [Upload, "每月 1000 GB 出站"], [Radio, "1 Gbps 入站"], [Globe, "公网 IP"]].map(([I, t]) => { const C = I as typeof Cpu; return <span key={t as string} className="flex items-center gap-1.5"><C className="size-4" />{t as string}</span>; })}</div></div>
-          <div className="flex items-center justify-between"><span className="flex items-center gap-1.5 font-semibold">地点<CircleHelp className="size-4 text-muted-foreground" /></span><select aria-label="地点" className="h-11 w-64 rounded-xl border border-border bg-transparent px-3 text-sm"><option>东南亚 · 99 ms</option><option>美国西部 · 180 ms</option><option>欧洲 · 230 ms</option></select></div>
-          <div className="flex flex-wrap items-end justify-between gap-4"><div><p><span className="text-2xl font-semibold">$50</span><span className="text-muted-foreground"> / 月</span></p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">按月计费，自动续订直至取消，可能需缴纳税费。<br />超出包含的出站流量将按 $0.15/GB 收费。</p>{notice && <p role="status" className="mt-2 text-xs text-link">{notice}</p>}</div><div className="flex gap-2"><Button variant="outline" className="h-11 px-6" onClick={close}>取消</Button><Button className="h-11 px-6" onClick={() => setNotice("示例页面：尚未接入支付，订阅未生效。")}>订阅</Button></div></div>
+          </>}<div className="flex items-center justify-between"><span className="flex items-center gap-1.5 font-semibold">地点<CircleHelp className="size-4 text-muted-foreground" /></span><select aria-label="地点" className="h-11 w-64 rounded-xl border border-border bg-transparent px-3 text-sm"><option>东南亚 · 99 ms</option><option>美国东部 · 延迟未知</option><option>美国西部 · 180 ms</option><option>欧洲 · 230 ms</option></select></div>
+          {custom && <div><div className="flex items-center justify-between"><span className="font-semibold">存储</span><span className="flex items-center gap-4"><span className="flex h-10 items-center gap-3 rounded-xl border border-border px-3 text-sm"><input aria-label="存储容量" type="number" value={storage} min={tier.storage} max={STORAGE_MAX} onChange={e => setStorage(Math.min(STORAGE_MAX, Math.max(tier.storage, Number(e.target.value) || tier.storage)))} className="w-12 bg-transparent outline-none" /><span className="text-muted-foreground">GB</span></span><span className="text-muted-foreground">=</span><span className="w-20 text-right">${extra.toFixed(0)} / 月</span></span></div>
+            <Slider aria-label="存储滑块" className="mt-5" min={0} max={STORAGE_MAX} step={10} value={[storage]} onValueChange={([v]) => setStorage(Math.max(tier.storage, v ?? tier.storage))} /></div>}
+          <div className="flex flex-wrap items-end justify-between gap-4"><div><p><span className="text-2xl font-semibold">${total.toFixed(0)}</span><span className="text-muted-foreground"> / 月</span></p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">按月计费，自动续订直至取消，可能需缴纳税费。<br />超出包含的出站流量将按 $0.15/GB 收费。</p>{notice && <p role="status" className="mt-2 text-xs text-link">{notice}</p>}</div><div className="flex gap-2"><Button variant="outline" className="h-11 px-6" onClick={close}>取消</Button><Button className="h-11 px-6" onClick={() => setNotice("示例页面：尚未接入支付，订阅未生效。")}>订阅</Button></div></div>
         </>}
       </DialogContent>
     </Dialog>
