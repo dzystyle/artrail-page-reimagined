@@ -4,6 +4,7 @@ import { Search, Plus, ChevronDown, Users, Workflow, Sparkles } from "lucide-rea
 import { Sidebar } from "@/components/app-sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { projects, canvasNames } from "@/lib/project-catalog";
 import c1 from "@/assets/canvas-1.jpg";
 import c2 from "@/assets/canvas-2.jpg";
@@ -23,7 +24,10 @@ const people = ["郭智妍", "杨宇轩", "胡有为", "宋扬", "zhanghua", "�
 const times = ["1 分钟前编辑", "13 分钟前编辑", "25 分钟前编辑", "14 小时前编辑", "1 天前编辑", "2 天前编辑"];
 
 export const Route = createFileRoute("/projects/$projectId")({
-  validateSearch: (search: Record<string, unknown>) => ({ q: typeof search["q"] === "string" ? search["q"] : "" }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    q: typeof search["q"] === "string" ? search["q"] : "",
+    view: typeof search["view"] === "string" ? search["view"] : "",
+  }),
   loader: ({ params }) => {
     const name = projects[params.projectId];
     if (!name) throw notFound();
@@ -48,9 +52,10 @@ function ProjectPage() {
   const { name } = Route.useLoaderData();
   const { projectId } = Route.useParams();
   const [tab, setTab] = useState("全部");
-  const { q } = Route.useSearch();
+  const { q, view } = Route.useSearch();
+  const assetView = view === "assets";
   const navigate = Route.useNavigate();
-  const setQ = (value: string) => void navigate({ search: { q: value }, replace: true });
+  const setQ = (value: string) => void navigate({ search: (prev) => ({ ...prev, q: value }), replace: true });
   const seed = projectId.length;
   const canvases = canvasNames.map((n, i) => ({
     name: n, count: ((i * 37 + seed * 11) % 200) + 1,
@@ -62,6 +67,16 @@ function ProjectPage() {
       <Sidebar />
       <main className="h-screen min-w-0 flex-1 overflow-y-auto">
         <div className="px-6 py-5">
+          {assetView && (
+            <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-border pb-5">
+              <h2 className="mr-auto text-lg font-semibold">项目资产</h2>
+              <span className="text-sm text-muted-foreground">项目筛选</span>
+              <Select value={projectId} onValueChange={(id) => void navigate({ to: "/projects/$projectId", params: { projectId: id }, search: (prev) => ({ ...prev, view: "assets" }) })}>
+                <SelectTrigger aria-label="项目筛选" className="w-44 bg-card"><SelectValue /></SelectTrigger>
+                <SelectContent>{Object.entries(projects).map(([id, projectName]) => <SelectItem key={id} value={id}>{projectName}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-semibold">{name} · 所有画布 <span className="font-normal text-muted-foreground">({canvases.length})</span></h1>
             <div className="flex gap-1">

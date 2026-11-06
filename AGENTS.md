@@ -17,3 +17,4 @@
 - Theme state is shared by a browser-safe root provider and persisted as a local device preference; semantic CSS tokens switch the whole workspace without changing layouts.
 - Build-page minigames make a fresh browser-side random selection on each mount without score-driven transitions; Phaser games dynamically import Arcade after mounting to keep SSR safe and collisions library-driven.
 - Workspace search uses the shared browser-safe demo project catalogue and works catalogue; canvas matches open project pages with a validated URL filter so direct links and refresh retain the selected search.
+- The sidebar asset entry reuses the project page with validated URL asset mode; its project selector preserves that mode and search across project changes and refreshes.
