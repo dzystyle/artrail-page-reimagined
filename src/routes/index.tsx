@@ -3,7 +3,7 @@ import {
   Search, PanelLeft, SquarePen, Monitor, Library, Shapes, Workflow, LayoutGrid,
   MoreHorizontal, FolderPlus, FileText, Gamepad2, MessageCircle, Loader, Cloud,
   Briefcase, Plus, Mic, AudioLines, ArrowUp, ChevronDown, ChevronRight, Sparkles,
-  Gift, MonitorSmartphone, Bell, Hammer, Folder, Film, Smartphone, Presentation, MessageSquarePlus, Box,
+  Gift, MonitorSmartphone, Bell, Hammer, Folder, Clapperboard, Film, Smartphone, Presentation, MessageSquarePlus, Box,
 } from "lucide-react";
 import thumbVideo from "@/assets/thumb-video.jpg";
 import thumbApp from "@/assets/thumb-app.jpg";
