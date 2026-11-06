@@ -71,7 +71,7 @@ export function Index() {
           </div>
         </header>
 
-        <section className="mx-auto flex w-full max-w-[820px] flex-col px-6 pb-0 pt-2 sm:px-8 sm:pt-3 [&>div:last-child]:mb-0 [&>div:last-child]:mt-5">
+        <section className="mx-auto flex w-full max-w-[1040px] flex-col px-6 pb-0 pt-2 sm:px-8 sm:pt-3 [&>div:last-child]:mb-0 [&>div:last-child]:mt-5">
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 py-2 sm:flex-nowrap sm:py-3">
             <div className="flex shrink-0 items-center gap-3 text-foreground/80">
               <Logo className="size-12 shrink-0 sm:size-14" />
@@ -108,7 +108,7 @@ export function Index() {
           </div>
           <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
         </section>
-        <div className="mx-auto w-full max-w-[1200px] px-6 pt-8 sm:px-8">
+        <div className="mx-auto w-full max-w-[1040px] px-6 pt-8 sm:px-8">
           <RecentCanvases />
           <FeaturedWorks />
         </div>
