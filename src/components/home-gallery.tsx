@@ -80,7 +80,7 @@ export function FeaturedWorks() {
   const tabs = ["精选作品", "创作课程"];
   const [tab, setTab] = useState(tabs[0]!);
   return (
-    <section aria-label="精选作品" className="mt-14 pb-32">
+    <section aria-label="精选作品" className="pb-32">
       <div className="flex gap-8 border-b border-border">
         {tabs.map((t) => (
           <button key={t} onClick={() => setTab(t)} className={`-mb-px border-b-2 pb-3 text-[16px] transition-colors ${tab === t ? "border-foreground font-semibold" : "border-transparent text-muted-foreground hover:text-foreground"}`}>{t}</button>

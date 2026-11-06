@@ -179,10 +179,10 @@ export function Index() {
               <p className="mt-1.5 text-[15px] text-muted-foreground">场景、选择和分支</p>
             </button>
           </div>
-          <HomeComposer scrollRoot={mainRef} />
         </div>
-        <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-8">
+        <div className="mx-auto w-full max-w-[1280px] px-4 pt-12 sm:px-8">
           <RecentCanvases />
+          <div className="mx-auto max-w-[885px]"><HomeComposer scrollRoot={mainRef} /></div>
           <FeaturedWorks />
         </div>
 
