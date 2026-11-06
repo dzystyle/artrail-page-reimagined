@@ -71,41 +71,36 @@ export function Index() {
           </div>
         </header>
 
-        <section className="mx-auto flex w-full max-w-[860px] flex-col px-4 pb-10 pt-6 sm:pt-10">
-          <div className="mb-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
-            <div className="flex min-w-0 items-center gap-3">
-              <Logo className="size-12 shrink-0" />
-              <span className="truncate font-brand text-[40px] font-bold leading-none tracking-tight">ArTrail</span>
-            </div>
-            <button className="hidden items-center gap-3 rounded-2xl border border-border bg-surface-deep py-2.5 pl-3 pr-6 text-left transition-colors hover:bg-accent sm:flex">
-              <img src={thumbVideo} alt="" width={56} height={40} className="h-10 w-14 shrink-0 rounded-md object-cover" />
-              <span><span className="block text-[15px] font-semibold">互动故事上线</span><span className="block text-xs text-muted-foreground">用场景和选择分支讲故事</span></span>
-            </button>
+        <section className="mx-auto flex w-full max-w-[820px] flex-col px-6 pb-6 pt-4 sm:px-8 sm:pt-8">
+          <Link to="/build" search={{ mode: "story" }} className="mx-auto flex items-center gap-2 rounded-full border border-border bg-card/60 py-1 pl-1 pr-3 text-sm transition-colors hover:bg-accent">
+            <img src={thumbVideo} alt="" width={28} height={28} className="size-7 rounded-full object-cover" />
+            <span className="text-muted-foreground">新功能</span><span className="h-3 w-px bg-border" /><span>互动故事上线</span><ChevronRight className="size-4 text-muted-foreground" />
+          </Link>
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <Logo className="size-9 shrink-0" />
+            <span className="font-brand text-[30px] font-bold leading-none tracking-tight">ArTrail</span>
           </div>
-          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
-            <div className="grid gap-3">
-              <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[130px] flex-col justify-end overflow-hidden rounded-2xl border border-border bg-card/60 p-5 transition-colors hover:bg-accent">
-                <GridDeco />
-                <Hammer className="mb-auto size-6 text-build" />
-                <span className="relative flex items-center gap-1 text-[17px] font-semibold">构建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-                <span className="relative text-sm text-muted-foreground">网站、应用和游戏</span>
-              </Link>
-              <button className="group relative flex h-[130px] flex-col items-start justify-end overflow-hidden rounded-2xl border border-border bg-card/60 p-5 text-left transition-colors hover:bg-accent">
-                <CardsDeco />
-                <Shapes className="mb-auto size-6 text-create" />
-                <span className="relative flex items-center gap-1 text-[17px] font-semibold">创建<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-                <span className="relative text-sm text-muted-foreground">图片和视频</span>
-              </button>
-            </div>
-            <Link to="/build" search={{ mode: "story" }} className="group flex min-h-[200px] flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card/60 p-5 text-center transition-colors hover:bg-accent">
-              <span className="grid size-16 place-items-center rounded-2xl bg-secondary"><Clapperboard className="size-8 text-muted-foreground" /></span>
-              <span className="flex items-center gap-1 text-[17px] font-semibold">互动影游<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
-              <span className="text-sm text-muted-foreground">场景、选择和分支</span>
+          <p className="mt-3 text-center text-[15px] text-muted-foreground">一句话描述你想创作的内容，剩下的交给 ArTrail</p>
+          <div className="order-last mt-0 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <Link to="/build" search={{ mode: "build" }} className="group flex h-[76px] items-center gap-3 rounded-2xl border border-border bg-card/60 px-4 text-left transition-colors hover:bg-accent">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary"><Hammer className="size-5 text-build" /></span>
+              <span className="min-w-0 flex-1"><span className="block text-[15px] font-semibold">构建</span><span className="block truncate text-xs text-muted-foreground">网站、应用和游戏</span></span>
+              <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <button type="button" className="group flex h-[76px] items-center gap-3 rounded-2xl border border-border bg-card/60 px-4 text-left transition-colors hover:bg-accent">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary"><Shapes className="size-5 text-create" /></span>
+              <span className="min-w-0 flex-1"><span className="block text-[15px] font-semibold">创建</span><span className="block truncate text-xs text-muted-foreground">图片和视频</span></span>
+              <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            </button>
+            <Link to="/build" search={{ mode: "story" }} className="group flex h-[76px] items-center gap-3 rounded-2xl border border-border bg-card/60 px-4 text-left transition-colors hover:bg-accent">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary"><Clapperboard className="size-5 text-muted-foreground" /></span>
+              <span className="min-w-0 flex-1"><span className="block text-[15px] font-semibold">互动影游</span><span className="block truncate text-xs text-muted-foreground">场景、选择和分支</span></span>
+              <ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
           <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
         </section>
-        <div className="mx-auto w-full max-w-[1280px] border-t border-border px-4 pt-8 sm:px-8">
+        <div className="mx-auto w-full max-w-[1200px] px-6 pt-10 sm:px-8">
           <RecentCanvases />
           <FeaturedWorks />
         </div>
