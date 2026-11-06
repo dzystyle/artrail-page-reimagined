@@ -4,7 +4,7 @@ import {
   Search, PanelLeft, SquarePen, Monitor, Library, Shapes, Workflow, LayoutGrid,
   MoreHorizontal, FolderPlus, FileText, Gamepad2, MessageCircle, Loader, Cloud,
   Briefcase, Plus, Mic, AudioLines, ArrowUp, ChevronDown, ChevronRight, Sparkles,
-  Gift, MonitorSmartphone, Bell, Hammer, Folder, Clapperboard, Film, Smartphone, Presentation, MessageSquarePlus, Box,
+  Gift, MonitorSmartphone, Bell, Hammer, Folder, Clapperboard, Film, Smartphone, Presentation, MessageSquarePlus, Box, Play,
 } from "lucide-react";
 import { useRef } from "react";
 import { Sidebar, Logo } from "@/components/app-sidebar";
@@ -72,15 +72,19 @@ export function Index() {
         </header>
 
         <section className="mx-auto flex w-full max-w-[820px] flex-col px-6 pb-0 pt-2 sm:px-8 sm:pt-3 [&>div:last-child]:mb-0 [&>div:last-child]:mt-5">
-          <Link to="/build" search={{ mode: "story" }} className="mx-auto flex items-center gap-2 rounded-full border border-border bg-card/60 py-1 pl-1 pr-3 text-sm transition-colors hover:bg-accent">
-            <img src={thumbVideo} alt="" width={28} height={28} className="size-7 rounded-full object-cover" />
-            <span className="text-muted-foreground">新功能</span><span className="h-3 w-px bg-border" /><span>互动故事上线</span><ChevronRight className="size-4 text-muted-foreground" />
-          </Link>
-          <div className="mt-4 flex items-center justify-center gap-3">
-            <Logo className="size-9 shrink-0" />
-            <span className="font-brand text-[30px] font-bold leading-none tracking-tight">ArTrail</span>
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 py-2 sm:flex-nowrap sm:py-3">
+            <div className="flex shrink-0 items-center gap-3 text-foreground/80">
+              <Logo className="size-12 shrink-0 sm:size-14" />
+              <span className="font-brand text-[36px] font-bold leading-none sm:text-[42px]">ArTrail</span>
+            </div>
+            <div className="flex min-h-[76px] w-full items-center gap-4 rounded-lg bg-surface-deep px-5 py-4 text-left sm:w-[300px] sm:shrink-0">
+              <span className="relative shrink-0">
+                <img src={thumbVideo} alt="" width={44} height={44} className="size-11 rounded-md border-2 border-foreground/80 object-cover" />
+                <span className="absolute -bottom-1 -left-1 grid size-4 place-items-center rounded-full bg-primary text-primary-foreground"><Play className="size-2.5 fill-current" /></span>
+              </span>
+              <span className="min-w-0 whitespace-normal"><span className="block text-[16px] font-semibold">创建你的视频</span><span className="mt-1 block text-sm font-normal text-muted-foreground">让想法变为现实</span></span>
+            </div>
           </div>
-          <p className="mt-2 text-center text-[15px] text-muted-foreground">一句话描述你想创作的内容，剩下的交给 ArTrail</p>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
             <div className="grid gap-3">
               <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[84px] flex-col justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 transition-colors hover:bg-accent">
