@@ -34,8 +34,8 @@ export function SkeetHero() {
     };
     const reset = () => { st.score = 0; st.lives = 3; st.over = false; layout(); };
     layout();
-    const pos = (e: PointerEvent) => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
-    const move = (e: PointerEvent) => { [st.mx, st.my] = pos(e); };
+    const pos = (e: PointerEvent) => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top] as const; };
+    const move = (e: PointerEvent) => { const [x, y] = pos(e); st.mx = x; st.my = y; };
     const down = (e: PointerEvent) => {
       const [x, y] = pos(e); st.mx = x; st.my = y;
       if (st.over) return reset();
@@ -51,7 +51,7 @@ export function SkeetHero() {
       ctx.clearRect(0, 0, w, h);
       // background icons
       ctx.globalAlpha = 0.07; ctx.fillStyle = fg; ctx.font = "18px monospace"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      for (let gx = 30, i = 0; gx < w; gx += 60) for (let gy = 20; gy < h; gy += 60, i++) if ((i * 7) % 5 < 2) ctx.fillText(ICONS[i % ICONS.length], gx, gy);
+      for (let gx = 30, i = 0; gx < w; gx += 60) for (let gy = 20; gy < h; gy += 60, i++) if ((i * 7) % 5 < 2) ctx.fillText(ICONS[i % ICONS.length]!, gx, gy);
       ctx.globalAlpha = 1;
       if (!st.over) {
         st.cx += (st.tx - st.cx) * 0.12;
@@ -81,13 +81,13 @@ export function SkeetHero() {
       // shots
       ctx.fillStyle = fg;
       for (let i = shots.length - 1; i >= 0; i--) {
-        const b = shots[i]; b.x += b.vx; b.y += b.vy; b.life--;
+        const b = shots[i]!; b.x += b.vx; b.y += b.vy; b.life--;
         ctx.fillRect(b.x - 3, b.y - 3, 6, 6);
         const hit = chars.find(c => c.state === "fall" && Math.hypot(c.x - b.x, c.y - b.y) < s * 0.55);
         if (hit) { hit.state = "dead"; st.score += 10; for (let k = 0; k < 14; k++) sparks.push({ x: hit.x, y: hit.y, vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6, life: 30 }); shots.splice(i, 1); continue; }
         if (b.life <= 0 || b.y < 0 || b.x < 0 || b.x > w) shots.splice(i, 1);
       }
-      for (let i = sparks.length - 1; i >= 0; i--) { const p = sparks[i]; p.x += p.vx; p.y += p.vy; p.life--; ctx.globalAlpha = p.life / 30; ctx.fillRect(p.x, p.y, 3, 3); if (p.life <= 0) sparks.splice(i, 1); }
+      for (let i = sparks.length - 1; i >= 0; i--) { const p = sparks[i]!; p.x += p.vx; p.y += p.vy; p.life--; ctx.globalAlpha = p.life / 30; ctx.fillRect(p.x, p.y, 3, 3); if (p.life <= 0) sparks.splice(i, 1); }
       ctx.globalAlpha = 1;
       // aim line + crosshair
       if (st.mx > 0 && st.my < h - 70 && !st.over) {
