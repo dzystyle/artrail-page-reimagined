@@ -58,11 +58,11 @@ export function Index() {
 
         <section className="mx-auto flex w-full max-w-[1040px] flex-col px-6 pb-0 pt-2 sm:px-8 sm:pt-3 [&>div:last-child]:mb-0 [&>div:last-child]:mt-5">
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 py-2 sm:flex-nowrap sm:py-3">
-            <div className="flex shrink-0 items-center gap-3 text-foreground/80">
+            <div className="flex shrink-0 items-center gap-3 text-foreground">
               <Logo className="size-12 shrink-0 sm:size-14" />
               <span className="font-brand text-[36px] font-bold leading-none sm:text-[42px]">ArTrail</span>
             </div>
-            <div className="flex min-h-[76px] w-full items-center gap-4 rounded-lg bg-surface-deep px-5 py-4 text-left sm:w-[300px] sm:shrink-0">
+            <div className="flex min-h-[76px] w-full items-center gap-4 rounded-2xl border border-border/70 bg-surface-deep px-5 py-4 transition-colors hover:border-foreground/30 text-left sm:w-[300px] sm:shrink-0">
               <span className="relative shrink-0">
                 <img src={thumbVideo} alt="" width={44} height={44} className="size-11 rounded-md border-2 border-foreground/80 object-cover" />
                 <span className="absolute -bottom-1 -left-1 grid size-4 place-items-center rounded-full bg-primary text-primary-foreground"><Play className="size-2.5 fill-current" /></span>
@@ -70,22 +70,22 @@ export function Index() {
               <span className="min-w-0 whitespace-normal"><span className="block text-[16px] font-semibold">创建你的视频</span><span className="mt-1 block text-sm font-normal text-muted-foreground">让想法变为现实</span></span>
             </div>
           </div>
-          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1.9fr_1fr]">
             <div className="grid gap-3">
-              <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[84px] flex-col justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 transition-colors hover:border-foreground/30">
+              <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[96px] flex-col justify-center overflow-hidden rounded-2xl border border-border/70 bg-card/60 shadow-[0_8px_24px_-12px_oklch(0_0_0/0.6)] hover:-translate-y-0.5 px-5 transition-all duration-300 hover:border-foreground/30">
                 <img src={entryBuild} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />
                 <span className="relative flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-build"><Hammer className="size-3.5" />Build</span>
                 <span className="relative mt-1 flex items-center gap-1 text-[17px] font-semibold tracking-tight">构建网站、应用和游戏<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
                 <span className="relative mt-0.5 text-xs text-muted-foreground">一句话描述，生成可运行的作品</span>
               </Link>
-              <button type="button" className="group relative flex h-[84px] flex-col items-start justify-center overflow-hidden rounded-xl border border-border bg-card/60 px-4 text-left transition-colors hover:border-foreground/30">
+              <button type="button" className="group relative flex h-[96px] flex-col items-start justify-center overflow-hidden rounded-2xl border border-border/70 bg-card/60 shadow-[0_8px_24px_-12px_oklch(0_0_0/0.6)] hover:-translate-y-0.5 px-4 text-left transition-all duration-300 hover:border-foreground/30">
                 <img src={entryCreate} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />
                 <span className="relative flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-create"><Shapes className="size-3.5" />Create</span>
                 <span className="relative mt-1 flex items-center gap-1 text-[17px] font-semibold tracking-tight">创建图片和视频<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
                 <span className="relative mt-0.5 text-xs text-muted-foreground">海报、插画、短片，一键成片</span>
               </button>
             </div>
-            <Link to="/build" search={{ mode: "story" }} className="group relative flex min-h-[180px] flex-col items-center justify-end gap-1.5 overflow-hidden rounded-xl border border-border bg-card/60 p-4 text-center transition-colors hover:border-foreground/30">
+            <Link to="/build" search={{ mode: "story" }} className="group relative flex min-h-[204px] flex-col items-center justify-end gap-1.5 overflow-hidden rounded-2xl border border-border/70 bg-card/60 shadow-[0_8px_24px_-12px_oklch(0_0_0/0.6)] hover:-translate-y-0.5 p-4 text-center transition-all duration-300 hover:border-foreground/30">
               <img src={entryStory} alt="" aria-hidden width={816} height={816} className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
               <span className="relative rounded-full border border-foreground/20 bg-background/40 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-[0.14em] backdrop-blur"><Clapperboard className="mr-1 inline size-3.5 align-[-2px]" />Interactive</span>
               <span className="relative mt-1 flex items-center gap-1 text-[19px] font-semibold tracking-tight">互动影游<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
