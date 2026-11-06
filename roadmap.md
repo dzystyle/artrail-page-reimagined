@@ -1,0 +1,3 @@
+- [x] Add homepage composer with attachments, project type, searchable model picker and thinking depth.
+- [x] Add provider settings panel matching the reference (session-only settings, no service connection).
+- [x] Verify composer interactions and desktop/mobile layout.

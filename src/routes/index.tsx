@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { HomeComposer } from "@/components/home-composer";
 import thumbVideo from "@/assets/thumb-video.jpg";
 import thumbApp from "@/assets/thumb-app.jpg";
 import thumbSlides from "@/assets/thumb-slides.jpg";
@@ -70,7 +71,7 @@ function Item({ icon: Icon, label, badge, spin, active }: { icon: typeof Search;
 
 function Sidebar() {
   return (
-    <aside className="flex h-screen w-[333px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-2.5">
+    <aside className="hidden h-screen w-[333px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-2.5 lg:flex">
       <div className="flex h-[52px] items-center justify-between px-1.5">
         <div className="flex items-center gap-1.5">
           <Logo className="size-7" />
@@ -264,8 +265,8 @@ export function Index() {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
-      <main className="relative flex h-screen flex-1 flex-col overflow-y-auto">
-        <header className="flex h-[52px] items-center justify-between px-6">
+      <main className="relative flex h-screen min-w-0 flex-1 flex-col overflow-y-auto">
+        <header className="flex min-h-[52px] flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
           <ModelPicker />
           <div className="flex items-center gap-2">
             <div className="flex items-center rounded-lg border border-border text-[15px]">
@@ -277,8 +278,8 @@ export function Index() {
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-[853px] flex-1 pt-[80px]">
-          <div className="flex items-center justify-between">
+        <div className="mx-auto w-full max-w-[885px] flex-1 px-4 pt-10 sm:pt-[80px]">
+          <div className="flex flex-wrap items-center justify-between gap-5">
             <div className="flex items-center gap-4">
               <Logo className="size-16" />
               <span className="font-brand text-[50px] font-bold leading-none tracking-tight">ArTrail</span>
@@ -292,7 +293,7 @@ export function Index() {
             </div>
           </div>
 
-          <div className="mt-9 grid grid-cols-[540px_1fr] gap-3.5">
+          <div className="mt-9 grid grid-cols-1 gap-3.5 sm:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)]">
             <div className="flex flex-col gap-3.5">
               {[
                 { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏", D: GridDeco },
@@ -306,13 +307,13 @@ export function Index() {
                 </button>
               ))}
             </div>
-            <button className="relative flex flex-col items-center justify-center rounded-2xl bg-card text-center transition-colors hover:bg-accent">
+            <button className="relative flex min-h-[210px] flex-col items-center justify-center rounded-2xl bg-card text-center transition-colors hover:bg-accent">
               <Clapperboard className="size-[72px] text-muted-foreground/60" strokeWidth={1.2} />
               <p className="mt-8 text-[17px] font-semibold">互动故事</p>
               <p className="mt-1.5 text-[15px] text-muted-foreground">场景、选择和分支</p>
             </button>
           </div>
-
+          <HomeComposer />
         </div>
 
       </main>
