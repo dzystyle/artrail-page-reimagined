@@ -45,14 +45,16 @@ function Item({ icon: Icon, label, badge, spin, to }: { icon: typeof Search; lab
 }
 
 function ProjectLink({ id, name, icon: Icon }: { id: string; name: string; icon: typeof Search }) {
+  const assetView = useRouterState({ select: (r) => r.location.search["view"] === "assets" });
   return (
-    <Link to="/projects/$projectId" params={{ projectId: id }} search={{ q: "" }} className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent font-semibold" }}>
+    <Link to="/projects/$projectId" params={{ projectId: id }} search={{ q: "", view: "" }} className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent" activeProps={{ className: assetView ? "" : "bg-sidebar-accent font-semibold" }}>
       <Icon className="size-[18px] shrink-0" /><span className="truncate">{name}</span>
     </Link>
   );
 }
 
 export function Sidebar() {
+  const assetView = useRouterState({ select: (r) => r.location.pathname.startsWith("/projects/") && r.location.search["view"] === "assets" });
   return (
     <aside className="hidden h-screen w-[333px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-2.5 lg:flex">
       <div className="flex h-[52px] items-center justify-between px-1.5">
@@ -66,7 +68,11 @@ export function Sidebar() {
       </div>
       <nav className="mt-2 space-y-[5px]"><WorkspaceSearch />{nav.map((n) => <Item key={n.label} {...n} />)}
         <div className="mx-1.5 my-2 h-px bg-sidebar-border" />
-        {nav2.map((n) => <Item key={n.label} {...n} />)}</nav>
+        {nav2.map((n) => n.label === "资产" ? (
+          <Link key={n.label} to="/projects/$projectId" params={{ projectId: "new-hope" }} search={{ q: "", view: "assets" }} className={`flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent ${assetView ? "bg-sidebar-accent font-semibold" : ""}`}>
+            <Folder className="size-[18px] shrink-0" /><span>资产</span>
+          </Link>
+        ) : <Item key={n.label} {...n} />)}</nav>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">项目</p>
       <div className="space-y-[5px]">{([["new-hope", "NEW-HOPE", Rocket], ["f3fx", "F3/FX", Gamepad2], ["artrail", "ArTrail", MonitorPlay]] as const).map(([id, n, I]) => <ProjectLink key={id} id={id} name={n} icon={I} />)}</div>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">任务</p>
