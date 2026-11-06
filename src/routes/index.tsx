@@ -150,7 +150,7 @@ function FlexDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: b
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[520px] gap-0 rounded-2xl border-border bg-card p-7">
+      <DialogContent className="max-w-[520px] gap-0 rounded-2xl border-border bg-card p-7 sm:rounded-2xl">
         <div className="flex flex-col items-center text-center">
           <span className="grid size-14 place-items-center rounded-2xl bg-secondary text-foreground">
             <RingsIcon className="size-7" />
@@ -236,7 +236,7 @@ function ModelPicker() {
         <PopoverContent align="start" sideOffset={8} className="w-[360px] rounded-xl border-border bg-popover p-1.5">
           <div className="space-y-0.5">
             {models.map((m) => (
-              <button key={m.id} onClick={() => choose(m)} className="flex w-full items-start gap-2 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-accent">
+              <button key={m.id} onClick={() => choose(m)} className="flex w-full items-start gap-2 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-accent focus:bg-accent focus:outline-none">
                 <span className="flex-1">
                   <span className="flex items-center gap-2 text-[15px] font-medium text-foreground">
                     {m.name}
