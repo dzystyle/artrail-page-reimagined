@@ -38,12 +38,12 @@ export function RecentCanvases() {
         <button className="flex items-center text-sm text-muted-foreground hover:text-foreground">查看全部<ChevronRight className="size-4" /></button>
       </div>
       <div className="-mx-1 mt-4 flex snap-x gap-3 overflow-x-auto px-1 pb-2">
-        <button className="flex w-[200px] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-2xl bg-card p-3 transition-colors hover:bg-accent">
+        <button className="flex w-[200px] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-2xl bg-card p-3 transition-colors hover:bg-accent xl:w-[calc((100%-48px)/5)]">
           <Plus className="size-6" />
           <span className="text-sm font-semibold">新建画布</span>
         </button>
         {canvases.map((c) => (
-          <button key={c.title} className="w-[200px] shrink-0 snap-start rounded-2xl bg-card p-2.5 text-left transition-colors hover:bg-accent">
+          <button key={c.title} className="w-[200px] shrink-0 snap-start rounded-2xl bg-card p-2.5 text-left transition-colors hover:bg-accent xl:w-[calc((100%-48px)/5)]">
             <img src={c.img} alt={c.title} loading="lazy" width={992} height={672} className="aspect-[16/11] w-full rounded-xl object-cover" />
             <div className="mt-2.5 flex items-center gap-2 px-1">
               <div className="min-w-0 flex-1">
