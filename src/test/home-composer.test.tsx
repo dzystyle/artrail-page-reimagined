@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { HomeComposer } from "@/components/home-composer";
 
@@ -35,5 +35,22 @@ describe("Homepage composer", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "森林冒险" } });
     fireEvent.click(screen.getByRole("button", { name: "空白项目" }));
     expect(screen.getByRole("textbox", { name: "创作描述" })).toHaveValue("");
+  });
+});
+describe("Composer docking", () => {
+  afterEach(cleanup);
+  it("docks to a compact pill when scrolled past, expands on click, collapses on Escape, keeping the draft", () => {
+    let cb: IntersectionObserverCallback = () => {};
+    (globalThis as any).IntersectionObserver = class { constructor(c: IntersectionObserverCallback) { cb = c; } observe() {} disconnect() {} };
+    render(<HomeComposer />);
+    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "森林冒险" } });
+    act(() => cb([{ isIntersecting: false, intersectionRatio: 0, boundingClientRect: { top: -500 }, rootBounds: { top: 0 } } as any], {} as any));
+    const pill = screen.getByRole("button", { name: "展开创作输入框" });
+    expect(pill).toHaveTextContent("森林冒险");
+    fireEvent.click(pill);
+    expect(screen.queryByRole("button", { name: "展开创作输入框" })).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "创作描述" })).toHaveValue("森林冒险");
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(screen.getByRole("button", { name: "展开创作输入框" })).toBeInTheDocument();
   });
 });

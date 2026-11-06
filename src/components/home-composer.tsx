@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUp, ArrowLeft, Box, Check, ChevronDown, ChevronRight, Clapperboard, Gamepad2, Globe, Image, Lightbulb, Plus, Search, Settings, X, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,7 +68,31 @@ function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpenChange:
   </Dialog>;
 }
 
-export function HomeComposer() {
+/** Keeps the composer in one instance so the draft survives docking/expanding. */
+export function HomeComposer({ scrollRoot }: { scrollRoot?: React.RefObject<HTMLElement | null> } = {}) {
+  const anchor = useRef<HTMLDivElement>(null);
+  const [docked, setDocked] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [anchorHeight, setAnchorHeight] = useState<number>();
+  useEffect(() => {
+    const el = anchor.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry) return;
+      const out = entry.intersectionRatio < 0.98 && entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0) + 1;
+      if (out && el.firstElementChild) setAnchorHeight(el.offsetHeight);
+      setDocked(out);
+      if (!out) setExpanded(false);
+    }, { root: scrollRoot?.current ?? null, threshold: [0, 0.98, 1] });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [scrollRoot]);
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setExpanded(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [expanded]);
   const [text, setText] = useState("");
   const [type, setType] = useState(types[2] ?? types[0]);
   const [typeOpen, setTypeOpen] = useState(false);
@@ -84,7 +108,16 @@ export function HomeComposer() {
   const textarea = useRef<HTMLTextAreaElement>(null);
   if (!type) return null;
   const TypeIcon = type.icon;
-  return <section aria-label="创作输入框" className="mb-12 mt-8">
+  const floating = docked && expanded;
+  const hiddenFull = docked && !expanded;
+  return <div ref={anchor} style={docked ? { height: anchorHeight } : undefined} className="mb-12 mt-8">
+    {floating && <div aria-hidden className="fixed inset-0 z-40 bg-background/60 backdrop-blur-[2px] animate-in fade-in-0" onClick={() => setExpanded(false)} />}
+    {hiddenFull && <button type="button" aria-label="展开创作输入框" onClick={() => { setExpanded(true); requestAnimationFrame(() => textarea.current?.focus()); }}
+      className="fixed bottom-6 left-1/2 z-40 flex w-[min(540px,calc(100vw-32px))] -translate-x-1/2 items-center gap-3 rounded-full border border-border bg-card/80 py-2.5 pl-6 pr-2.5 text-left shadow-2xl backdrop-blur-xl animate-in fade-in-0 slide-in-from-bottom-4 lg:ml-[166px]">
+      <span className={`flex-1 truncate text-[15px] ${text ? "text-foreground" : "text-muted-foreground"}`}>{text || "输入你的需求即可生成图片、视频…"}</span>
+      <span className="flex size-9 items-center justify-center rounded-full bg-secondary text-muted-foreground"><ArrowUp className="size-4" /></span>
+    </button>}
+  <section aria-label="创作输入框" className={floating ? "fixed bottom-6 left-1/2 z-50 w-[min(885px,calc(100vw-32px))] -translate-x-1/2 animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 lg:ml-[166px]" : hiddenFull ? "hidden" : ""}>
     <form className="rounded-2xl border border-input bg-card p-4 sm:p-5" onSubmit={e => { e.preventDefault(); setNotice("尚未连接创作服务，你的输入已保留。"); }}>
       <Textarea ref={textarea} aria-label="创作描述" placeholder="描述你想创作的内容…" value={text} onChange={e => { setText(e.target.value); setNotice(""); }} className="h-[112px] resize-none border-0 p-0 text-base shadow-none focus-visible:ring-0 md:text-base" />
       {files.length > 0 && <div className="mb-3 flex flex-wrap gap-2">{files.map((file, i) => <div key={`${file.name}-${i}`} className="flex max-w-full items-center gap-1 rounded-md bg-secondary pl-2 text-xs"><span className="truncate">{file.name}</span><Button type="button" size="icon" variant="ghost" className="size-7" aria-label={`移除 ${file.name}`} onClick={() => setFiles(list => list.filter((_, index) => index !== i))}><X /></Button></div>)}</div>}
@@ -116,6 +149,7 @@ export function HomeComposer() {
     </form>
     <div className="mt-2 flex justify-center gap-3 text-muted-foreground"><Button variant="ghost" onClick={() => { setText(""); setFiles([]); setNotice(""); textarea.current?.focus(); }}><Clapperboard />空白项目</Button><Button variant="ghost" onClick={() => { setText("创作一个在森林中探索的互动故事，每个选择都会改变故事的走向。"); textarea.current?.focus(); }}><Lightbulb />灵感</Button></div>
     {notice && <p role="status" className="mt-2 text-center text-sm text-muted-foreground">{notice}</p>}
+  </section>
     <ProviderSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
-  </section>;
+  </div>;
 }
