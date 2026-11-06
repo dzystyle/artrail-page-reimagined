@@ -27,14 +27,20 @@ describe("Homepage composer", () => {
     expect(screen.getByRole("button", { name: "选择创作模型" })).toHaveTextContent("Low");
   });
 
-  it("removes uploaded attachments and resets the draft", () => {
+  it("switches the project from the project menu", () => {
+    render(<HomeComposer />);
+    expect(screen.getByRole("button", { name: "选择项目" })).toHaveTextContent("项目：ArTrail");
+    fireEvent.click(screen.getByRole("button", { name: "选择项目" }));
+    fireEvent.click(screen.getByRole("button", { name: "F3/FX" }));
+    expect(screen.getByRole("button", { name: "选择项目" })).toHaveTextContent("项目：F3/FX");
+    expect(screen.queryByRole("button", { name: "空白项目" })).not.toBeInTheDocument();
+  });
+
+  it("removes uploaded attachments", () => {
     render(<HomeComposer />);
     fireEvent.change(screen.getByLabelText("添加附件", { selector: "input" }), { target: { files: [new File(["abc"], "story.txt", { type: "text/plain" })] } });
     fireEvent.click(screen.getByRole("button", { name: "移除 story.txt" }));
     expect(screen.queryByRole("button", { name: "移除 story.txt" })).not.toBeInTheDocument();
-    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "森林冒险" } });
-    fireEvent.click(screen.getByRole("button", { name: "空白项目" }));
-    expect(screen.getByRole("textbox", { name: "创作描述" })).toHaveValue("");
   });
 });
 describe("Composer docking", () => {
