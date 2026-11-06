@@ -1,9 +1,17 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { HomeComposer } from "@/components/home-composer";
 
 describe("Homepage composer", () => {
   afterEach(cleanup);
+
+  it("submits the entered game request and selected project", () => {
+    const onCreate = vi.fn();
+    render(<HomeComposer initialType="Web Game" onCreate={onCreate} />);
+    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "制作一个跳跃游戏" } });
+    fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
+    expect(onCreate).toHaveBeenCalledWith({ prompt: "制作一个跳跃游戏", type: "Web Game", project: "ArTrail", model: "deepseek-v4-pro", depth: "High" });
+  });
 
   it("changes creation type and model independently", async () => {
     render(<HomeComposer />);

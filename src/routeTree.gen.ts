@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BuildRouteImport } from './routes/build'
+import { Route as GameRouteImport } from './routes/game'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const BuildRoute = BuildRouteImport.update({
   id: '/build',
   path: '/build',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GameRoute = GameRouteImport.update({
+  id: '/game',
+  path: '/game',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PluginsRoute = PluginsRouteImport.update({
@@ -44,6 +50,7 @@ const WorksWorkIdRoute = WorksWorkIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/build': typeof BuildRoute
+  '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/build': typeof BuildRoute
+  '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/build': typeof BuildRoute
+  '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
@@ -66,13 +75,25 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/build' | '/plugins' | '/projects/$projectId' | '/works/$workId'
+    | '/'
+    | '/build'
+    | '/game'
+    | '/plugins'
+    | '/projects/$projectId'
+    | '/works/$workId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/build' | '/plugins' | '/projects/$projectId' | '/works/$workId'
+  to:
+    | '/'
+    | '/build'
+    | '/game'
+    | '/plugins'
+    | '/projects/$projectId'
+    | '/works/$workId'
   id:
     | '__root__'
     | '/'
     | '/build'
+    | '/game'
     | '/plugins'
     | '/projects/$projectId'
     | '/works/$workId'
@@ -81,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuildRoute: typeof BuildRoute
+  GameRoute: typeof GameRoute
   PluginsRoute: typeof PluginsRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   WorksWorkIdRoute: typeof WorksWorkIdRoute
@@ -100,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/build'
       fullPath: '/build'
       preLoaderRoute: typeof BuildRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/game': {
+      id: '/game'
+      path: '/game'
+      fullPath: '/game'
+      preLoaderRoute: typeof GameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plugins': {
@@ -129,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuildRoute: BuildRoute,
+  GameRoute: GameRoute,
   PluginsRoute: PluginsRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   WorksWorkIdRoute: WorksWorkIdRoute,

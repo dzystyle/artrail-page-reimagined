@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
   Search, PanelLeft, SquarePen, Monitor, Library, Shapes, Workflow, LayoutGrid,
@@ -10,6 +10,7 @@ import { useRef } from "react";
 import { Sidebar, Logo } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases, FeaturedWorks } from "@/components/home-gallery";
+import { isGameCreation } from "@/lib/game-workspace";
 import thumbVideo from "@/assets/thumb-video.jpg";
 import thumbApp from "@/assets/thumb-app.jpg";
 import thumbSlides from "@/assets/thumb-slides.jpg";
@@ -48,6 +49,7 @@ function CardsDeco() {
 }
 
 export function Index() {
+  const navigate = useNavigate();
   const examples = [
     { img: thumbVideo, tag: "视频", Icon: Film, title: "创作一支动漫短片" },
     { img: thumbApp, tag: "应用", Icon: Smartphone, title: "制作个人预算应用" },
@@ -82,7 +84,7 @@ export function Index() {
             </div>
             <p className="mt-4 text-[17px] text-muted-foreground">把想法变成游戏、故事、图片和视频</p>
           </div>
-          <HomeComposer scrollRoot={mainRef} />
+          <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
           <div className="-mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {[
               { Icon: Hammer, c: "text-build", t: "构建", s: "网站、应用和游戏" },

@@ -6,3 +6,6 @@
 - [x] Verify homepage build navigation and new workspace on desktop and mobile.
 - [x] Separate build and story entry content and verify both navigation flows.
 - [x] Add featured work detail page (preview gallery, Skill card, 制作这款游戏 button) and link it from the homepage gallery.
+- [x] Connect homepage/build submissions to the Canvas-first game workspace.
+- [x] Implement Design, Canvas, Assets, Code and Game sample playtest views.
+- [x] Verify entry flows, view switching and sample playtest on desktop/mobile.
