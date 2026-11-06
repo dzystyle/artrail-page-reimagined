@@ -3,7 +3,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Sparkles, X } from "lucide-react"
 import { cn } from "@/lib/utils";
 import type { Work } from "@/lib/works";
 
-export function WorkDetail({ work, onBack }: { work: Work; onBack: () => void }) {
+export function WorkDetail({ work, onBack, onMake }: { work: Work; onBack: () => void; onMake?: () => void }) {
   const [index, setIndex] = useState(0);
   const total = work.images.length;
   const current = work.images[index] ?? work.images[0]!;
@@ -99,7 +99,7 @@ export function WorkDetail({ work, onBack }: { work: Work; onBack: () => void })
           <div className="mt-3 rounded-xl border border-border bg-background/60 p-3">
             <div className="flex items-center gap-3">
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{work.skill.name}</p>
+                <p className="line-clamp-2 text-sm font-medium">{work.skill.name}</p>
                 <span className="mt-1.5 inline-block rounded-full bg-accent px-2 py-0.5 text-[11px] text-accent-foreground">Skill</span>
               </div>
               <button className="shrink-0 rounded-full bg-foreground px-4 py-1.5 text-[13px] font-semibold text-background transition-opacity hover:opacity-90">
@@ -108,7 +108,7 @@ export function WorkDetail({ work, onBack }: { work: Work; onBack: () => void })
             </div>
           </div>
 
-          <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-secondary px-4 py-2.5 text-[15px] font-semibold transition-colors hover:bg-accent">
+          <button onClick={onMake} className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-secondary px-4 py-2.5 text-[15px] font-semibold transition-colors hover:bg-accent">
             <Sparkles className="size-4" />
             制作这款游戏
           </button>

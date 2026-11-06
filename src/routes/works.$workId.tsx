@@ -31,5 +31,5 @@ export const Route = createFileRoute("/works/$workId")({
 function WorkPage() {
   const { work } = Route.useLoaderData();
   const navigate = useNavigate();
-  return <WorkDetail work={work} onBack={() => navigate({ to: "/" })} />;
+  return <WorkDetail work={work} onBack={() => navigate({ to: "/" })} onMake={() => navigate({ to: "/build", search: { mode: "build" } })} />;
 }
