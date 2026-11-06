@@ -1,13 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { SHOT_POINTS, shouldStartBreakout } from "@/lib/hero-game";
+import { HERO_GAMES, SHOT_POINTS, pickHeroGame } from "@/lib/hero-game";
 
-describe("homepage game progression", () => {
-  it("does not advance below the requested 100 points", () => {
-    expect(shouldStartBreakout(90)).toBe(false);
-    expect(shouldStartBreakout(99)).toBe(false);
+describe("random homepage games", () => {
+  it("draws from exactly the three requested games", () => {
+    expect(HERO_GAMES).toEqual(["skeet", "brick", "raid"]);
   });
-  it("automatically advances at exactly 100 points", () => {
-    expect(shouldStartBreakout(100)).toBe(true);
+  it("assigns an equal third of the draw range to each game", () => {
+    expect([0, 0.32, 1 / 3, 0.66, 2 / 3, 0.99].map(n => pickHeroGame(() => n))).toEqual(["skeet", "skeet", "brick", "brick", "raid", "raid"]);
+  });
+  it("makes a fresh draw on every entry instead of storing a fixed game", () => {
+    let i = 0;
+    const values = [0.1, 0.5, 0.9];
+    const random = () => values[i++] ?? 0;
+    expect([pickHeroGame(random), pickHeroGame(random), pickHeroGame(random)]).toEqual(["skeet", "brick", "raid"]);
   });
   it("awards ten points per cannon hit", () => {
     expect(SHOT_POINTS * 10).toBe(100);
