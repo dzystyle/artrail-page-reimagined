@@ -144,7 +144,7 @@ export function Index() {
           </div>
         </header>
 
-        <section className="mx-auto flex min-h-[calc(100vh-160px)] w-full max-w-[860px] flex-col justify-center px-4 pb-16">
+        <section className="mx-auto flex w-full max-w-[860px] flex-col px-4 pb-12 pt-[12vh]">
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center gap-3">
               <Logo className="size-12" />
@@ -167,7 +167,7 @@ export function Index() {
             ))}
           </div>
         </section>
-        <div className="mx-auto w-full max-w-[1280px] border-t border-border px-4 pt-10 sm:px-8">
+        <div className="mx-auto w-full max-w-[1280px] border-t border-border px-4 pt-8 sm:px-8">
           <RecentCanvases />
           <FeaturedWorks />
         </div>
