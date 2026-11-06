@@ -64,8 +64,8 @@ export function WordRaid() {
           (this.ship.body as Phaser.Physics.Arcade.Body).setImmovable(true);
           this.bullets = this.physics.add.group({ allowGravity: false });
           this.physics.add.overlap(this.bullets, this.enemies, (bullet, enemy) => {
-            if (!enemy.active || this.ended) return;
             const target = enemy as Phaser.GameObjects.Text;
+            if (!target.active || this.ended) return;
             const ex = target.x, ey = target.y;
             bullet.destroy(); target.destroy(); this.remaining--; this.score += SHOT_POINTS;
             for (let i = 0; i < 9; i++) {
@@ -75,7 +75,7 @@ export function WordRaid() {
             this.updateHud();
             if (this.remaining === 0) this.finish(true);
           });
-          this.physics.add.overlap(this.ship, this.enemies, (_ship, enemy) => { if (enemy.active && !this.ended) { enemy.destroy(); this.remaining--; this.loseLife(); } });
+          this.physics.add.overlap(this.ship, this.enemies, (_ship, enemy) => { const target = enemy as Phaser.GameObjects.Text; if (target.active && !this.ended) { target.destroy(); this.remaining--; this.loseLife(); } });
           this.message = this.add.text(w / 2, h * 0.65, "", { fontFamily: "system-ui", fontSize: "18px", color, align: "center" }).setOrigin(0.5);
           this.cursor = this.input.keyboard?.createCursorKeys();
           this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => this.moveShip(pointer.x));
