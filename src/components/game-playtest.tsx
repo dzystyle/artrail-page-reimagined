@@ -40,7 +40,7 @@ export function GamePlaytest() {
       const palette = { bg: color("--surface-deep"), ground: color("--project-mint"), player: color("--link"), star: color("--create"), text: color("--foreground") };
       class PlayScene extends Phaser.Scene {
         player?: Phaser.GameObjects.Rectangle;
-        keys?: Phaser.Types.Input.Keyboard.CursorKeys;
+        keys: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
         collected = 0;
         create() {
           const g = this.add.graphics();
@@ -75,7 +75,7 @@ export function GamePlaytest() {
           this.add.text(22, 20, "ARTRAIL / PLAYTEST", { fontFamily: "sans-serif", fontSize: "14px", color: `#${palette.text.toString(16).padStart(6, "0")}` });
           if (!disposed) setReady(true);
         }
-        update() {
+        override update() {
           if (!this.player || hasWon(this.collected)) return;
           const body = this.player.body as Phaser.Physics.Arcade.Body;
           body.setVelocityX((this.keys?.left.isDown || controls.current.left) ? -220 : (this.keys?.right.isDown || controls.current.right) ? 220 : 0);

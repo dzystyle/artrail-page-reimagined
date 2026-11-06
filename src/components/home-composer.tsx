@@ -70,7 +70,7 @@ function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpenChange:
 }
 
 /** Keeps the composer in one instance so the draft survives docking/expanding. */
-export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: (request: CreationRequest) => void } = {}) {
+export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined } = {}) {
   const anchor = useRef<HTMLDivElement>(null);
   const [docked, setDocked] = useState(false);
   const [expanded, setExpanded] = useState(false);
