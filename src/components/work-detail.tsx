@@ -69,7 +69,7 @@ export function WorkDetail({ work, onBack }: { work: Work; onBack: () => void })
       </div>
 
       <aside className="w-full shrink-0 p-4 lg:h-screen lg:w-[380px]">
-        <div className="flex h-full flex-col overflow-y-auto rounded-2xl border border-border bg-card p-5">
+        <div className="flex flex-col rounded-2xl border border-border bg-card p-5">
           <div className="flex items-start justify-between gap-3">
             <h1 className="text-xl font-semibold leading-snug">{work.title}</h1>
             <button
@@ -108,7 +108,7 @@ export function WorkDetail({ work, onBack }: { work: Work; onBack: () => void })
             </div>
           </div>
 
-          <button className="mt-auto flex w-full items-center justify-center gap-2 rounded-full border border-border bg-secondary px-4 py-2.5 text-[15px] font-semibold transition-colors hover:bg-accent">
+          <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-secondary px-4 py-2.5 text-[15px] font-semibold transition-colors hover:bg-accent">
             <Sparkles className="size-4" />
             制作这款游戏
           </button>
