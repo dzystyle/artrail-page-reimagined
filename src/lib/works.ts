@@ -1,7 +1,3 @@
-import canvas1 from "@/assets/canvas-1.jpg";
-import canvas2 from "@/assets/canvas-2.jpg";
-import canvas3 from "@/assets/canvas-3.jpg";
-import canvas4 from "@/assets/canvas-4.jpg";
 import work1 from "@/assets/work-1.jpg";
 import work2 from "@/assets/work-2.jpg";
 import work3 from "@/assets/work-3.jpg";
