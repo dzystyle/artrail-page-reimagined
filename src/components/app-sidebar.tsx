@@ -43,6 +43,14 @@ function Item({ icon: Icon, label, badge, spin, to }: { icon: typeof Search; lab
   return to ? <Link to={to} className={cls}>{inner}</Link> : <button className={cls}>{inner}</button>;
 }
 
+function ProjectLink({ id, name, icon: Icon }: { id: string; name: string; icon: typeof Search }) {
+  return (
+    <Link to="/projects/$projectId" params={{ projectId: id }} className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent font-semibold" }}>
+      <Icon className="size-[18px] shrink-0" /><span className="truncate">{name}</span>
+    </Link>
+  );
+}
+
 export function Sidebar() {
   return (
     <aside className="hidden h-screen w-[333px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-2.5 lg:flex">
@@ -59,7 +67,7 @@ export function Sidebar() {
         <div className="mx-1.5 my-2 h-px bg-sidebar-border" />
         {nav2.map((n) => <Item key={n.label} {...n} />)}</nav>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">项目</p>
-      <div className="space-y-[5px]">{[["NEW-HOPE", Rocket], ["F3/FX", Gamepad2], ["ArTrail", MonitorPlay]].map(([n, I]) => <Item key={n as string} icon={I as typeof Search} label={n as string} />)}</div>
+      <div className="space-y-[5px]">{([["new-hope", "NEW-HOPE", Rocket], ["f3fx", "F3/FX", Gamepad2], ["artrail", "ArTrail", MonitorPlay]] as const).map(([id, n, I]) => <ProjectLink key={id} id={id} name={n} icon={I} />)}</div>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">任务</p>
       <div className="space-y-[5px] overflow-y-auto">{tasks.map((t, i) => <Item key={i} {...t} />)}</div>
       <div className="mt-auto pb-2">
