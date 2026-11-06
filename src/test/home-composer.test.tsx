@@ -23,7 +23,8 @@ describe("Homepage composer", () => {
     fireEvent.click(screen.getByRole("button", { name: "选择创作模型" }));
     fireEvent.click(await screen.findByRole("button", { name: /Thinking depth/ }));
     fireEvent.click(screen.getByRole("button", { name: "Low" }));
-    expect(screen.getByRole("button", { name: "选择创作模型" })).toHaveTextContent("deepseek-v4-pro Low");
+    expect(screen.getByRole("button", { name: "选择创作模型" })).toHaveTextContent("deepseek-v4-pro");
+    expect(screen.getByRole("button", { name: "选择创作模型" })).toHaveTextContent("Low");
   });
 
   it("removes uploaded attachments and resets the draft", () => {
