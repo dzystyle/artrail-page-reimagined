@@ -5,7 +5,9 @@ import {
   Briefcase, Plus, Mic, AudioLines, ArrowUp, ChevronDown, ChevronRight, Sparkles,
   Gift, MonitorSmartphone, Bell, Hammer, Folder, Clapperboard, Film, Smartphone, Presentation, MessageSquarePlus, Box,
 } from "lucide-react";
+import { useRef } from "react";
 import { HomeComposer } from "@/components/home-composer";
+import { RecentCanvases, FeaturedWorks } from "@/components/home-gallery";
 import thumbVideo from "@/assets/thumb-video.jpg";
 import thumbApp from "@/assets/thumb-app.jpg";
 import thumbSlides from "@/assets/thumb-slides.jpg";
@@ -126,10 +128,11 @@ export function Index() {
     { img: thumbApp, tag: "应用", Icon: Smartphone, title: "制作个人预算应用" },
     { img: thumbSlides, tag: "幻灯片", Icon: Presentation, title: "把教案做成幻灯片" },
   ];
+  const mainRef = useRef<HTMLElement>(null);
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
-      <main className="relative flex h-screen min-w-0 flex-1 flex-col overflow-y-auto">
+      <main ref={mainRef} className="relative flex h-screen min-w-0 flex-1 flex-col overflow-y-auto">
         <header className="flex min-h-[52px] flex-wrap items-center justify-end gap-2 px-4 py-2 sm:px-6">
           <div className="flex items-center gap-2">
             <div className="flex items-center rounded-lg border border-border text-[15px]">
@@ -141,7 +144,7 @@ export function Index() {
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-[885px] flex-1 px-4 pt-10 sm:pt-[80px]">
+        <div className="mx-auto w-full max-w-[885px] px-4 pt-10 sm:pt-[80px]">
           <div className="flex flex-wrap items-center justify-between gap-5">
             <div className="flex items-center gap-4">
               <Logo className="size-16" />
@@ -176,7 +179,11 @@ export function Index() {
               <p className="mt-1.5 text-[15px] text-muted-foreground">场景、选择和分支</p>
             </button>
           </div>
-          <HomeComposer />
+          <HomeComposer scrollRoot={mainRef} />
+        </div>
+        <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-8">
+          <RecentCanvases />
+          <FeaturedWorks />
         </div>
 
       </main>
