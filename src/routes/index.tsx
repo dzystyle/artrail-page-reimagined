@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Sidebar, Logo } from "@/components/app-sidebar";
+import { SubscriptionDialog } from "@/components/subscription-dialog";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases, FeaturedWorks } from "@/components/home-gallery";
 import { isGameCreation } from "@/lib/game-workspace";
@@ -60,6 +61,7 @@ function PromoCarousel() {
 
 export function Index() {
   const navigate = useNavigate();
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   const examples = [
     { img: thumbVideo, tag: "视频", Icon: Film, title: "创作一支动漫短片" },
     { img: thumbApp, tag: "应用", Icon: Smartphone, title: "制作个人预算应用" },
@@ -75,7 +77,7 @@ export function Index() {
             <div className="flex items-center rounded-lg border border-border text-[15px]">
               <span className="px-3 py-1.5 text-muted-foreground">免费计划</span>
               <span className="h-4 w-px bg-border" />
-              <span className="px-3 py-1.5 text-link">升级</span>
+              <Button variant="ghost" className="h-auto rounded-l-none px-3 py-1.5 text-[15px] font-normal text-link" onClick={() => setSubscriptionOpen(true)}>升级</Button>
             </div>
             <span className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[15px]"><Sparkles className="size-4" />300</span>
           </div>
@@ -119,6 +121,7 @@ export function Index() {
         </div>
 
       </main>
+      <SubscriptionDialog open={subscriptionOpen} onOpenChange={setSubscriptionOpen} />
     </div>
   );
 }

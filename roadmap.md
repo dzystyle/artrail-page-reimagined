@@ -9,3 +9,4 @@
 - [x] Connect homepage/build submissions to the Canvas-first game workspace.
 - [x] Implement Design, Canvas, Assets, Code and Game sample playtest views.
 - [x] Verify entry flows, view switching and sample playtest on desktop/mobile.
+- [x] Add and verify homepage personal/team subscription dialogs matching the references (presentation only).
