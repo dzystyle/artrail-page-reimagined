@@ -46,7 +46,7 @@ function Item({ icon: Icon, label, badge, spin, to }: { icon: typeof Search; lab
 
 function ProjectLink({ id, name, icon: Icon }: { id: string; name: string; icon: typeof Search }) {
   return (
-    <Link to="/projects/$projectId" params={{ projectId: id }} className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent font-semibold" }}>
+    <Link to="/projects/$projectId" params={{ projectId: id }} search={{ q: "" }} className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent font-semibold" }}>
       <Icon className="size-[18px] shrink-0" /><span className="truncate">{name}</span>
     </Link>
   );

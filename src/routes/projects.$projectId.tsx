@@ -23,7 +23,7 @@ const people = ["郭智妍", "杨宇轩", "胡有为", "宋扬", "zhanghua", "�
 const times = ["1 分钟前编辑", "13 分钟前编辑", "25 分钟前编辑", "14 小时前编辑", "1 天前编辑", "2 天前编辑"];
 
 export const Route = createFileRoute("/projects/$projectId")({
-  validateSearch: (search: Record<string, unknown>) => ({ q: typeof search.q === "string" ? search.q : "" }),
+  validateSearch: (search: Record<string, unknown>) => ({ q: typeof search["q"] === "string" ? search["q"] : "" }),
   loader: ({ params }) => {
     const name = projects[params.projectId];
     if (!name) throw notFound();
