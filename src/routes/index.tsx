@@ -99,7 +99,7 @@ export function Index() {
             </div>
             <Link to="/build" search={{ mode: "story" }} className="group flex min-h-[200px] flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card/60 p-5 text-center transition-colors hover:bg-accent">
               <span className="grid size-16 place-items-center rounded-2xl bg-secondary"><Clapperboard className="size-8 text-muted-foreground" /></span>
-              <span className="flex items-center gap-1 text-[17px] font-semibold">互动故事<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
+              <span className="flex items-center gap-1 text-[17px] font-semibold">互动影游<ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" /></span>
               <span className="text-sm text-muted-foreground">场景、选择和分支</span>
             </Link>
           </div>
