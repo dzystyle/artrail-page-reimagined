@@ -20,7 +20,7 @@ import template7 from "@/assets/build-templates-7.jpg";
 import template8 from "@/assets/build-templates-8.jpg";
 
 export const Route = createFileRoute("/build")({
-  validateSearch: (search: Record<string, unknown>) => ({ mode: parseCreationMode(search.mode) }),
+  validateSearch: (search: Record<string, unknown>) => ({ mode: parseCreationMode(search['mode']) }),
   head: ({ match }) => {
     const story = match.search.mode === "story";
     const title = story ? "互动故事创作 — ArTrail" : "构建网站、应用和游戏 — ArTrail";

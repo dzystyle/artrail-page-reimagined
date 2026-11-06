@@ -4,4 +4,4 @@
 - [x] Center composer in first screen and rework homepage layout for clarity.
 - [x] Add build workspace combining recent projects, exploration and asset templates; keep sidebar unchanged.
 - [x] Verify homepage build navigation and new workspace on desktop and mobile.
-- [ ] Separate build and story entry content and verify both navigation flows.
+- [x] Separate build and story entry content and verify both navigation flows.
