@@ -22,7 +22,8 @@ describe("Header model picker", () => {
     expect(await screen.findByText("为复杂任务设计的高性能代理。")).toBeInTheDocument();
     expect(screen.getByText("Artrail 2.0 Max", { exact: true })).toBeInTheDocument();
     expect(screen.getByText("Artrail 2.0", { exact: true })).toBeInTheDocument();
-    expect(screen.getByText("Artrail 2.0 Lite", { exact: true })).toBeInTheDocument();
+    // Once open, "Artrail 2.0 Lite" appears twice: the header pill and its menu row.
+    expect(screen.getAllByText("Artrail 2.0 Lite", { exact: true })).toHaveLength(2);
     expect(screen.getByText("Artrail Flex", { exact: true })).toBeInTheDocument();
     expect(screen.getByText("多功能代理，能够执行大部分任务。")).toBeInTheDocument();
     expect(screen.getByText("一个适合日常任务的轻量级代理。")).toBeInTheDocument();
