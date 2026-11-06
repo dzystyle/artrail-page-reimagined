@@ -11,3 +11,5 @@
 - [x] Verify entry flows, view switching and sample playtest on desktop/mobile.
 - [x] Add and verify homepage personal/team subscription dialogs matching the references (presentation only).
 - [x] Add homepage light/dark toggle with shared theme tokens; verify switching, refresh persistence, and mobile layout.
+- [ ] Automatically advance cannon at 100 points and implement reference text-breakout game.
+- [ ] Test threshold and verify both stages through actual play on desktop/mobile.
