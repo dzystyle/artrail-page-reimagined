@@ -15,4 +15,4 @@
 - Game workspace uses validated URL tabs and passes submitted text into Canvas; browser-only Phaser is dynamically imported after mounting, and demo playtests never imply AI generation or persistent project storage.
 - Subscription dialogs keep reference pricing in a browser-safe shared module and session-only selections; payment and entitlement actions must not imply a completed purchase without a separately connected payment service.
 - Theme state is shared by a browser-safe root provider and persisted as a local device preference; semantic CSS tokens switch the whole workspace without changing layouts.
-- Build-page minigame progression uses shared browser-safe rules; the breakout stage dynamically loads Phaser Arcade after mounting to keep SSR safe and collisions library-driven.
+- Build-page minigames make a fresh browser-side random selection on each mount without score-driven transitions; Phaser games dynamically import Arcade after mounting to keep SSR safe and collisions library-driven.

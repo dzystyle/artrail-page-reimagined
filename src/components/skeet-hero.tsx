@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BrickBash } from "@/components/brick-bash";
-import { HERO_TITLE, HERO_SUBTITLE, SHOT_POINTS, shouldStartBreakout } from "@/lib/hero-game";
+import { HERO_TITLE, HERO_SUBTITLE, SHOT_POINTS } from "@/lib/hero-game";
 import { useTheme } from "@/components/theme-provider";
 
 const TITLE = HERO_TITLE;
@@ -13,11 +12,9 @@ type Spark = { x: number; y: number; vx: number; vy: number; life: number };
 
 export function SkeetHero() {
   const ref = useRef<HTMLCanvasElement>(null);
-  const [stage, setStage] = useState<"skeet" | "brick">("skeet");
   const [score, setScore] = useState(0);
   const { theme } = useTheme();
   useEffect(() => {
-    if (stage !== "skeet") return;
     const cv = ref.current;
     if (!cv) return;
     const ctx = cv.getContext("2d");
@@ -93,7 +90,7 @@ export function SkeetHero() {
         const b = shots[i]; if (!b) continue; b.x += b.vx; b.y += b.vy; b.life--;
         ctx.fillRect(b.x - 3, b.y - 3, 6, 6);
         const hit = chars.find(c => c.state === "fall" && Math.hypot(c.x - b.x, c.y - b.y) < s * 0.55);
-        if (hit) { hit.state = "dead"; st.score += SHOT_POINTS; setScore(st.score); if (shouldStartBreakout(st.score)) { setStage("brick"); return; } for (let k = 0; k < 14; k++) sparks.push({ x: hit.x, y: hit.y, vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6, life: 30 }); shots.splice(i, 1); continue; }
+        if (hit) { hit.state = "dead"; st.score += SHOT_POINTS; setScore(st.score); for (let k = 0; k < 14; k++) sparks.push({ x: hit.x, y: hit.y, vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6, life: 30 }); shots.splice(i, 1); continue; }
         if (b.life <= 0 || b.y < 0 || b.x < 0 || b.x > w) shots.splice(i, 1);
       }
       for (let i = sparks.length - 1; i >= 0; i--) { const p = sparks[i]; if (!p) continue; p.x += p.vx; p.y += p.vy; p.life--; ctx.globalAlpha = p.life / 30; ctx.fillRect(p.x, p.y, 3, 3); if (p.life <= 0) sparks.splice(i, 1); }
@@ -118,8 +115,7 @@ export function SkeetHero() {
     };
     loop();
     return () => { cancelAnimationFrame(raf); ro.disconnect(); cv.removeEventListener("pointermove", move); cv.removeEventListener("pointerdown", down); cv.removeEventListener("pointerleave", leave); };
-  }, [stage, theme]);
-  if (stage === "brick") return <BrickBash />;
+  }, [theme]);
   return <div className="relative">
     <h2 className="sr-only">把你的想法，一键开玩。</h2>
     <p role="status" className="sr-only">SKEET SHOT 得分 {score}</p>

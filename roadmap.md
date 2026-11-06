@@ -13,3 +13,5 @@
 - [x] Add homepage light/dark toggle with shared theme tokens; verify switching, refresh persistence, and mobile layout.
 - [x] Automatically advance cannon at 100 points and implement reference text-breakout game.
 - [x] Test threshold and verify both stages through actual play on desktop/mobile.
+- [x] Replace fixed progression with a fresh random pick among three games on each entry.
+- [x] Implement reference spaceship word shooter and verify movement, hits, lives and restart.

@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
 import { ExploreGames, type ExploreGame } from "@/components/explore-games";
-import { SkeetHero } from "@/components/skeet-hero";
+import { RandomHeroGame } from "@/components/random-hero-game";
 import { Button } from "@/components/ui/button";
 import { parseCreationMode, worksForMode } from "@/lib/creation-mode";
 import explore1 from "@/assets/build-explore-1.jpg";
@@ -72,7 +72,7 @@ function BuildPage() {
         <Button asChild variant="ghost" size="icon"><Link to="/" aria-label="返回创作" title="返回创作"><ArrowLeft /></Link></Button>
       </header>
       <div className="mx-auto max-w-[1240px] px-5 pb-14 sm:px-8">
-        {!story && <SkeetHero />}
+        {!story && <RandomHeroGame />}
         <section className="mx-auto max-w-[800px] pt-3">
           <h1 className="sr-only">{story ? "互动故事创作" : "探索游戏"}</h1>
           <HomeComposer key={mode} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
