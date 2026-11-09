@@ -70,12 +70,13 @@ function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpenChange:
 }
 
 /** Keeps the composer in one instance so the draft survives docking/expanding. */
-export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null } = {}) {
+export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed, alwaysFloating = false }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null; alwaysFloating?: boolean } = {}) {
   const anchor = useRef<HTMLDivElement>(null);
   const [docked, setDocked] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [anchorHeight, setAnchorHeight] = useState<number>();
   useEffect(() => {
+    if (alwaysFloating) return;
     const el = anchor.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(([entry]) => {
@@ -87,7 +88,7 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
     }, { root: scrollRoot?.current ?? null, threshold: [0, 0.98, 1] });
     io.observe(el);
     return () => io.disconnect();
-  }, [scrollRoot]);
+  }, [scrollRoot, alwaysFloating]);
   useEffect(() => {
     if (!expanded) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setExpanded(false); };
