@@ -141,6 +141,8 @@ function CreatePage() {
   const templateRow = useRef<HTMLDivElement>(null);
   const [tab, setTab] = useState(tabs[0]!);
   const [seed, setSeed] = useState<{ text: string; n: number } | null>(null);
+  const [detail, setDetail] = useState<CreateDetail | null>(null);
+  const [skill, setSkill] = useState<{ name: string; image: string } | null>(null);
   const visibleTemplates = templates.filter(t => tab === "所有模板" || t.tab === tab);
   const useTemplate = (prompt: string) => {
     setSeed(s => ({ text: prompt, n: (s?.n ?? 0) + 1 }));
@@ -165,13 +167,13 @@ function CreatePage() {
         <div className="mx-auto max-w-[1240px] px-5 pb-[300px] sm:px-8">
           <section className="mx-auto max-w-[800px] pt-2">
             <h1 className="sr-only">创建图片和视频</h1>
-            <HomeComposer scrollRoot={mainRef} initialType="Asset Canvas" seed={seed} alwaysFloating />
+            <HomeComposer scrollRoot={mainRef} initialType="Asset Canvas" seed={seed} alwaysFloating baseGame={skill} onRemoveBaseGame={() => setSkill(null)} />
           </section>
 
           {/* 顶部模板大卡 */}
           <section aria-label="推荐模板" className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {heroTemplates.map(t => (
-              <button key={t.name} type="button" onClick={() => useTemplate(t.prompt)} className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border/60 text-left">
+              <button key={t.name} type="button" onClick={() => setDetail({ name: t.name, image: t.image, skill: t.skill, group: heroTemplates.map(x => x.image) })} className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border/60 text-left">
                 <img src={t.image} alt={t.name} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 <span className="absolute bottom-3 left-3 right-3">
@@ -202,7 +204,7 @@ function CreatePage() {
             </div>
             <div ref={templateRow} className="mt-3 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {visibleTemplates.map(t => (
-                <button key={t.name} type="button" onClick={() => useTemplate(`用${t.name}模板创作一段视频`)} className="group w-[200px] shrink-0 text-left">
+                <button key={t.name} type="button" onClick={() => setDetail({ name: t.name, image: t.image, skill: t.skill, group: templates.map(x => x.image) })} className="group w-[200px] shrink-0 text-left">
                   <span className="relative block aspect-video overflow-hidden rounded-xl border border-border/60">
                     <img src={t.image} alt={t.name} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                     <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -226,7 +228,7 @@ function CreatePage() {
             </div>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {alchemyVideos.map(v => (
-                <button key={v.name} type="button" onClick={() => useTemplate(`参考《${v.name}》的风格创作一段视频`)} className="group relative aspect-video overflow-hidden rounded-xl border border-border/60 text-left">
+                <button key={v.name} type="button" onClick={() => setDetail({ name: v.name, image: v.image, skill: v.skill, group: alchemyVideos.map(x => x.image) })} className="group relative aspect-video overflow-hidden rounded-xl border border-border/60 text-left">
                   <img src={v.image} alt={v.name} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                   <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
                   <span className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-[15px] font-medium text-white opacity-0 transition group-hover:opacity-100"><Play className="size-4 fill-current" />{v.name}</span>
@@ -236,6 +238,7 @@ function CreatePage() {
           </section>
         </div>
       </main>
+      {detail && <DetailDialog key={detail.name} detail={detail} onClose={() => setDetail(null)} onUse={() => { setSkill({ name: detail.skill, image: detail.image }); setDetail(null); }} />}
     </div>
   );
 }
