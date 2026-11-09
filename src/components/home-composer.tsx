@@ -145,7 +145,7 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
           <Button type="button" variant="ghost" size="icon" title="添加附件" aria-label="添加附件" onClick={() => fileInput.current?.click()}><Plus className="size-5" /></Button>
           <Popover open={skillOpen} onOpenChange={setSkillOpen}>
             <PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择 Skill" className="text-muted-foreground"><Box />Skill<ChevronDown /></Button></PopoverTrigger>
-            <PopoverContent align="start" side="bottom" className="max-h-[min(560px,70vh)] w-[min(850px,calc(100vw-32px))] overflow-y-auto p-0">
+            <PopoverContent align="start" side="top" className="max-h-[min(560px,70vh)] w-[min(850px,calc(100vw-32px))] overflow-y-auto p-0">
               <div className="flex items-center gap-2 border-b border-border p-3"><Search className="size-4 text-muted-foreground" /><Input aria-label="搜索 Skill" placeholder="搜索 skill" value={skillQuery} onChange={e => { setSkillQuery(e.target.value); setSkillPreview(null); }} className="border-0 shadow-none focus-visible:ring-0" /></div>
               <div className="grid sm:grid-cols-[110px_1fr_1fr]">
                 <div className="flex gap-1 overflow-x-auto border-b border-border bg-secondary/20 p-2 sm:block sm:border-b-0 sm:border-r">{["全部", ...new Set(gameSkills.map(item => item.category))].map(item => <Button type="button" variant="ghost" key={item} className={`shrink-0 justify-start sm:w-full ${skillCategory === item ? "bg-accent" : "text-muted-foreground"}`} onClick={() => { setSkillCategory(item); setSkillPreview(null); }}>{skillCategory === item && <Check className="size-3" />}{item}</Button>)}</div>
