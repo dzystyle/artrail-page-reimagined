@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { type CreationRequest } from "@/lib/game-workspace";
+import { isGameCreation, type CreationRequest } from "@/lib/game-workspace";
 
 const types = [
   { name: "Web Game", desc: "在浏览器中运行，支持 HTML5、Phaser 或 Three.js", icon: Globe },
@@ -70,7 +70,7 @@ function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpenChange:
 }
 
 /** Keeps the composer in one instance so the draft survives docking/expanding. */
-export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed, alwaysFloating = false }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null; alwaysFloating?: boolean } = {}) {
+export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed, alwaysFloating = false, gameOnly = false }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null; alwaysFloating?: boolean; gameOnly?: boolean } = {}) {
   const anchor = useRef<HTMLDivElement>(null);
   const [docked, setDocked] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -96,7 +96,8 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
     return () => window.removeEventListener("keydown", onKey);
   }, [expanded]);
   const [text, setText] = useState("");
-  const [type, setType] = useState(types.find(t => t.name === initialType) ?? types[2] ?? types[0]);
+  const availableTypes = gameOnly ? types.filter(t => isGameCreation(t.name)) : types;
+  const [type, setType] = useState(availableTypes.find(t => t.name === initialType) ?? availableTypes[0]);
   const [typeOpen, setTypeOpen] = useState(false);
   const [project, setProject] = useState("ArTrail");
   const [projectOpen, setProjectOpen] = useState(false);
@@ -121,12 +122,12 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
     {floating && !alwaysFloating && <div aria-hidden className="fixed inset-0 z-40 bg-background/60 backdrop-blur-[2px] animate-in fade-in-0" onClick={() => setExpanded(false)} />}
     {hiddenFull && <button type="button" aria-label="展开创作输入框" onClick={() => { setExpanded(true); requestAnimationFrame(() => textarea.current?.focus()); }}
       className="fixed bottom-6 left-1/2 z-40 flex w-[min(540px,calc(100vw-32px))] -translate-x-1/2 items-center gap-3 rounded-full border border-border bg-card/80 py-2.5 pl-6 pr-2.5 text-left shadow-2xl backdrop-blur-xl animate-in fade-in-0 slide-in-from-bottom-4 lg:ml-[166px]">
-      <span className={`flex-1 truncate text-[15px] ${text ? "text-foreground" : "text-muted-foreground"}`}>{text || "输入你的需求即可生成图片、视频…"}</span>
+      <span className={`flex-1 truncate text-[15px] ${text ? "text-foreground" : "text-muted-foreground"}`}>{text || (gameOnly ? "描述你的游戏玩法…" : "输入你的需求即可生成图片、视频…")}</span>
       <span className="flex size-9 items-center justify-center rounded-full bg-secondary text-muted-foreground"><ArrowUp className="size-4" /></span>
     </button>}
   <section aria-label="创作输入框" className={floating ? "fixed bottom-6 left-1/2 z-50 w-[min(885px,calc(100vw-32px))] -translate-x-1/2 animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 lg:ml-[166px]" : hiddenFull ? "hidden" : ""}>
     <form className="rounded-2xl border border-input bg-card p-4 sm:p-5" onSubmit={e => { e.preventDefault(); if (!text.trim()) return; if (onCreate) onCreate({ prompt: baseGame ? `基于《${baseGame.name}》继续制作：${text.trim()}` : text.trim(), type: type.name, project, model, depth }); else setNotice("尚未连接创作服务，你的输入已保留。"); }}>
-      <Textarea ref={textarea} aria-label="创作描述" placeholder="描述你想创作的内容…" value={text} onChange={e => { setText(e.target.value); setNotice(""); }} className="h-[112px] resize-none border-0 p-0 text-base shadow-none focus-visible:ring-0 md:text-base" />
+      <Textarea ref={textarea} aria-label="创作描述" placeholder={gameOnly ? "我想做一款…游戏，玩家可以…，挑战是…" : "描述你想创作的内容…"} value={text} onChange={e => { setText(e.target.value); setNotice(""); }} className="h-[112px] resize-none border-0 p-0 text-base shadow-none focus-visible:ring-0 md:text-base" />
       {baseGame && <div className="mb-3 flex"><div className="flex items-center gap-2 rounded-xl border border-border py-1.5 pl-1.5 pr-2 text-[15px]"><img src={baseGame.image} alt="" className="size-6 rounded-md object-cover" /><span>{baseGame.name}</span><button type="button" aria-label={`移除 ${baseGame.name}`} onClick={onRemoveBaseGame} className="text-muted-foreground hover:text-foreground"><X className="size-4" /></button></div></div>}
       {files.length > 0 && <div className="mb-3 flex flex-wrap gap-2">{files.map((file, i) => <div key={`${file.name}-${i}`} className="flex max-w-full items-center gap-1 rounded-md bg-secondary pl-2 text-xs"><span className="truncate">{file.name}</span><Button type="button" size="icon" variant="ghost" className="size-7" aria-label={`移除 ${file.name}`} onClick={() => setFiles(list => list.filter((_, index) => index !== i))}><X /></Button></div>)}</div>}
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -135,8 +136,8 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
           <Button type="button" variant="ghost" size="icon" title="添加附件" aria-label="添加附件" onClick={() => fileInput.current?.click()}><Plus className="size-5" /></Button>
           <Popover open={typeOpen} onOpenChange={setTypeOpen}><PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择创作类型" className="text-muted-foreground"><TypeIcon /><span>{type.name}</span><ChevronDown /></Button></PopoverTrigger>
             <PopoverContent align="start" side="bottom" className="w-[min(420px,calc(100vw-32px))] rounded-lg p-1.5">
-              {types.map(t => <Button type="button" key={t.name} variant="ghost" onClick={() => { setType(t); setTypeOpen(false); }} className={`h-auto w-full justify-start whitespace-normal px-3 py-2 text-left ${type.name === t.name ? "bg-accent" : ""}`}><t.icon className="text-muted-foreground" /><span className="flex-1"><span className="block text-[15px] font-normal">{t.name}</span><span className="block text-[13px] font-normal leading-snug text-muted-foreground">{t.desc}</span></span>{t.name === type.name && <Check />}</Button>)}
-              <Button type="button" variant="ghost" className="h-auto w-full justify-start px-3 py-2" onClick={() => { setTypeOpen(false); setSettingsOpen(true); }}><Plus /><span className="text-left"><span className="block">More types…</span><span className="text-xs font-normal text-muted-foreground">提供商设置</span></span></Button>
+              {availableTypes.map(t => <Button type="button" key={t.name} variant="ghost" onClick={() => { setType(t); setTypeOpen(false); }} className={`h-auto w-full justify-start whitespace-normal px-3 py-2 text-left ${type.name === t.name ? "bg-accent" : ""}`}><t.icon className="text-muted-foreground" /><span className="flex-1"><span className="block text-[15px] font-normal">{t.name}</span><span className="block text-[13px] font-normal leading-snug text-muted-foreground">{t.desc}</span></span>{t.name === type.name && <Check />}</Button>)}
+              {!gameOnly && <Button type="button" variant="ghost" className="h-auto w-full justify-start px-3 py-2" onClick={() => { setTypeOpen(false); setSettingsOpen(true); }}><Plus /><span className="text-left"><span className="block">More types…</span><span className="text-xs font-normal text-muted-foreground">提供商设置</span></span></Button>}
             </PopoverContent>
           </Popover>
           <Popover open={projectOpen} onOpenChange={v => { setProjectOpen(v); if (!v) setProjectQuery(""); }}><PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择项目" className="max-w-[180px] text-muted-foreground"><Folder /><span className="truncate">项目：{project}</span><ChevronDown /></Button></PopoverTrigger>

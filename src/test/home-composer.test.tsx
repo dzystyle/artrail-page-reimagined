@@ -13,6 +13,18 @@ describe("Homepage composer", () => {
     expect(onCreate).toHaveBeenCalledWith({ prompt: "制作一个跳跃游戏", type: "Web Game", project: "ArTrail", model: "deepseek-v4-pro", depth: "High" });
   });
 
+  it("limits Build requests to game types even when given a non-game default", async () => {
+    const onCreate = vi.fn();
+    render(<HomeComposer gameOnly initialType="Asset Canvas" onCreate={onCreate} />);
+    fireEvent.click(screen.getByRole("button", { name: "选择创作类型" }));
+    expect(screen.queryByRole("button", { name: /Interactive Story/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Asset Canvas/ })).not.toBeInTheDocument();
+    fireEvent.click(await screen.findByRole("button", { name: /Godot/ }));
+    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "制作一个跳跃游戏" } });
+    fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
+    expect(onCreate).toHaveBeenCalledWith(expect.objectContaining({ type: "Godot", prompt: "制作一个跳跃游戏" }));
+  });
+
   it("changes creation type and model independently", async () => {
     render(<HomeComposer />);
     fireEvent.click(screen.getByRole("button", { name: "选择创作类型" }));

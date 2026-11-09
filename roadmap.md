@@ -20,3 +20,5 @@
 - [x] Add /create image & video creation page (model picker, template tabs, alchemy gallery) reusing the home composer; link the homepage Create card; verify desktop/mobile.
 - [x] Match /create composer references with media modes, Skill/model/project menus and internal canvas/credit controls; verify desktop/mobile.
 - [x] Replace homepage featured works/course tabs with reference image tools and template gallery; verify filters, preview and desktop/mobile layout.
+
+- [ ] Focus Build on game creation, align entry points and verify game-only creation flow on desktop/mobile.

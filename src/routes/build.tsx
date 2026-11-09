@@ -25,8 +25,8 @@ export const Route = createFileRoute("/build")({
   validateSearch: (search: Record<string, unknown>) => ({ mode: parseCreationMode(search['mode']) }),
   head: ({ match }) => {
     const story = match.search.mode === "story";
-    const title = story ? "互动故事创作 — ArTrail" : "构建网站、应用和游戏 — ArTrail";
-    const description = story ? "在 ArTrail 创作互动故事，探索场景、选择和分支故事案例。" : "在 ArTrail 开始构建，浏览游戏作品和资产模板。";
+    const title = story ? "互动故事创作 — ArTrail" : "构建游戏 — ArTrail";
+    const description = story ? "在 ArTrail 创作互动故事，探索场景、选择和分支故事案例。" : "在 ArTrail 从玩法开始构建游戏，探索动作、街机、策略与模拟游戏案例和游戏资产模板。";
     return { meta: [
     { title },
     { name: "description", content: description },
@@ -74,8 +74,9 @@ function BuildPage() {
       <div className="mx-auto max-w-[1240px] px-5 pb-14 sm:px-8">
         {!story && <RandomHeroGame />}
         <section className="mx-auto max-w-[800px] pt-3">
-          <h1 className="sr-only">{story ? "互动故事创作" : "探索游戏"}</h1>
-          <HomeComposer key={mode} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
+          <h1 className={story ? "sr-only" : "text-3xl font-semibold"}>{story ? "互动故事创作" : "构建游戏"}</h1>
+          {!story && <p className="mt-2 text-sm text-muted-foreground">从一个玩法开始，打造你的游戏世界</p>}
+          <HomeComposer key={mode} gameOnly={!story} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
         </section>
         {story ? <section aria-labelledby="explore-works" className="mt-3">
           <h2 id="explore-works" className="mb-4 text-base font-semibold">{story ? "互动故事案例" : "探索"}</h2>
