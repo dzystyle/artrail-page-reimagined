@@ -171,8 +171,8 @@ function CreatePage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1240px] px-5 pb-[420px] sm:px-8 sm:pb-[340px]">
-          <section className="mx-auto max-w-[800px] pt-2">
+        <div className="mx-auto max-w-[1240px] px-5 pb-8 sm:px-8">
+          <section className="mx-auto max-w-[1040px] pb-6 pt-2">
             <h1 className="sr-only">创建图片和视频</h1>
             <MediaComposer skills={composerSkills} skill={skill} onSkillChange={setSkill} seed={seed} />
           </section>
