@@ -56,6 +56,25 @@ describe("Homepage composer", () => {
     expect(screen.queryByRole("button", { name: "空白项目" })).not.toBeInTheDocument();
   });
 
+  it("selects a Skill from the menu and prefixes it into the submitted prompt", async () => {
+    const onCreate = vi.fn();
+    render(<HomeComposer initialType="Web Game" onCreate={onCreate} />);
+    fireEvent.click(screen.getByRole("button", { name: "选择 Skill" }));
+    fireEvent.click(await screen.findByRole("button", { name: /【G001】平台跳跃模板/ }));
+    expect(screen.getByRole("button", { name: "移除 【G001】平台跳跃模板" })).toBeInTheDocument();
+    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "森林主题" } });
+    fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
+    expect(onCreate).toHaveBeenCalledWith(expect.objectContaining({ prompt: "使用 【G001】平台跳跃模板：森林主题" }));
+  });
+
+  it("removes the selected Skill chip", async () => {
+    render(<HomeComposer initialType="Web Game" />);
+    fireEvent.click(screen.getByRole("button", { name: "选择 Skill" }));
+    fireEvent.click(await screen.findByRole("button", { name: /【G002】俯视角射击模板/ }));
+    fireEvent.click(screen.getByRole("button", { name: "移除 【G002】俯视角射击模板" }));
+    expect(screen.queryByRole("button", { name: "移除 【G002】俯视角射击模板" })).not.toBeInTheDocument();
+  });
+
   it("removes uploaded attachments", () => {
     render(<HomeComposer />);
     fireEvent.change(screen.getByLabelText("添加附件", { selector: "input" }), { target: { files: [new File(["abc"], "story.txt", { type: "text/plain" })] } });
