@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { isGameCreation, type CreationRequest } from "@/lib/game-workspace";
+import { gameSkills, type GameSkill } from "@/lib/game-skills";
 
 const types = [
   { name: "Web Game", desc: "在浏览器中运行，支持 HTML5、Phaser 或 Three.js", icon: Globe },
@@ -108,6 +109,11 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
   const [depthView, setDepthView] = useState(false);
   const [depth, setDepth] = useState("High");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [skill, setSkill] = useState<GameSkill | null>(null);
+  const [skillOpen, setSkillOpen] = useState(false);
+  const [skillQuery, setSkillQuery] = useState("");
+  const [skillCategory, setSkillCategory] = useState("全部");
+  const [skillPreview, setSkillPreview] = useState<GameSkill | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [notice, setNotice] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
