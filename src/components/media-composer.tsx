@@ -40,17 +40,9 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
   const filtered = skills.filter(item => item.name.toLowerCase().includes(query.toLowerCase()) && (category === "全部" || item.category === category));
   const currentPreview = preview ?? filtered[0];
   const pill = "h-9 max-w-full rounded-full border border-border bg-secondary/40 px-3 text-foreground shadow-none sm:h-10";
-  return <section aria-label="媒体创作输入框" className="fixed bottom-4 left-1/2 z-40 w-[min(1040px,calc(100vw-32px))] -translate-x-1/2 lg:ml-[166px] lg:w-[min(1040px,calc(100vw-380px))]">
+  return <section aria-label="媒体创作输入框" className="w-full">
     <form className="rounded-[24px] border border-input bg-card p-4 shadow-xl sm:p-5" onSubmit={event => { event.preventDefault(); if (text.trim()) setNotice("尚未连接创作服务，你的描述、Skill 和设置已保留。"); }}>
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <Popover open={modeOpen} onOpenChange={setModeOpen}>
-          <PopoverTrigger asChild><Button type="button" variant="secondary" aria-label="选择生成模式" className="h-8 rounded-full px-3 font-medium">{activeMode?.label}<ChevronDown /></Button></PopoverTrigger>
-          <PopoverContent side="top" align="start" className="w-[min(360px,calc(100vw-32px))] p-2">
-            {mediaModes.map(item => <Button type="button" variant="ghost" key={item.id} aria-pressed={mode === item.id} className="h-auto min-h-14 w-full justify-start px-3 py-3 text-left" onClick={() => { setMode(item.id); setModel(mediaModels[item.id][0] ?? ""); setModeOpen(false); }}>
-              <span className="flex-1"><span className="flex items-center gap-2 text-base">{item.label}{item.badge && <span className="rounded bg-secondary px-1.5 py-0.5 text-xs font-normal">{item.badge}</span>}</span>{item.id === "audio" && <span className="mt-1 block text-xs font-normal text-muted-foreground">选择音频模型，直接生成音频</span>}</span>{mode === item.id && <Check />}
-            </Button>)}
-          </PopoverContent>
-        </Popover>
+      <div className="mb-3 flex flex-wrap items-center justify-end gap-2">
         <div className="flex items-center gap-3 text-sm">
           <label className="flex cursor-pointer items-center gap-2"><Switch aria-label="画布" checked={canvas} onCheckedChange={setCanvas} />画布</label>
           <span className="h-4 border-l border-border" />
@@ -74,6 +66,14 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
               <div className="max-h-[340px] overflow-y-auto p-2">{filtered.map(item => <Button type="button" variant="ghost" key={item.name} className={`h-auto min-h-12 w-full justify-between text-left ${currentPreview?.name === item.name ? "bg-accent" : ""}`} onMouseEnter={() => setPreview(item)} onFocus={() => setPreview(item)} onClick={() => { onSkillChange(item); setSkillOpen(false); }}><span className="min-w-0 truncate">{item.name}</span><Plus /></Button>)}{filtered.length === 0 && <p className="p-4 text-sm text-muted-foreground">未找到 Skill</p>}</div>
               {currentPreview && <div className="hidden border-l border-border p-4 sm:block"><img src={currentPreview.image} alt={currentPreview.name} className="aspect-video w-full rounded-lg object-cover" /><p className="mt-3 text-sm font-semibold">{currentPreview.name}</p><p className="mt-2 text-xs text-muted-foreground">{currentPreview.category}</p><Button type="button" variant="secondary" className="mt-4" onClick={() => { onSkillChange(currentPreview); setSkillOpen(false); }}><Plus />使用这个 Skill</Button></div>}
             </div>
+          </PopoverContent>
+        </Popover>
+        <Popover open={modeOpen} onOpenChange={setModeOpen}>
+          <PopoverTrigger asChild><Button type="button" variant="secondary" aria-label="选择生成模式" className={pill}>{activeMode?.label}<ChevronDown /></Button></PopoverTrigger>
+          <PopoverContent side="top" align="start" className="w-[min(360px,calc(100vw-32px))] p-2">
+            {mediaModes.map(item => <Button type="button" variant="ghost" key={item.id} aria-pressed={mode === item.id} className="h-auto min-h-14 w-full justify-start px-3 py-3 text-left" onClick={() => { setMode(item.id); setModel(mediaModels[item.id][0] ?? ""); setModeOpen(false); }}>
+              <span className="flex-1"><span className="flex items-center gap-2 text-base">{item.label}{item.badge && <span className="rounded bg-secondary px-1.5 py-0.5 text-xs font-normal">{item.badge}</span>}</span>{item.id === "audio" && <span className="mt-1 block text-xs font-normal text-muted-foreground">选择音频模型，直接生成音频</span>}</span>{mode === item.id && <Check />}
+            </Button>)}
           </PopoverContent>
         </Popover>
         <Popover open={modelOpen} onOpenChange={setModelOpen}>
