@@ -1,3 +1,4 @@
+import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, Box, Check, ChevronDown, Folder, Grid2X2, Mic, Plus, Search, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,13 +9,15 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { mediaModes, mediaModels, referenceMediaRate, type MediaMode, type MediaSkill } from "@/lib/media-composer";
 
-export function MediaComposer({ skills, skill, onSkillChange, seed }: {
+export function MediaComposer({ skills, skill, onSkillChange, seed, onSubmit, placeholder, defaultMode = "video", attachment, label = "媒体创作输入框" }: {
   skills: MediaSkill[]; skill: MediaSkill | null; onSkillChange: (skill: MediaSkill | null) => void;
   seed?: { text: string; n: number } | null;
+  onSubmit?: (request: { prompt: string; project: string; canvas: boolean; mode: MediaMode }) => void;
+  placeholder?: string; defaultMode?: MediaMode; attachment?: React.ReactNode; label?: string;
 }) {
   const [text, setText] = useState("");
-  const [mode, setMode] = useState<MediaMode>("video");
-  const [model, setModel] = useState("Seedance 2.5");
+  const [mode, setMode] = useState<MediaMode>(defaultMode);
+  const [model, setModel] = useState(defaultMode === "video" ? "Seedance 2.5" : mediaModels[defaultMode][0] ?? "");
   const [modeOpen, setModeOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
   const [skillOpen, setSkillOpen] = useState(false);
@@ -40,10 +43,11 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
   const filtered = skills.filter(item => item.name.toLowerCase().includes(query.toLowerCase()) && (category === "全部" || item.category === category));
   const currentPreview = preview ?? filtered[0];
   const pill = "h-9 max-w-full rounded-full border border-border bg-secondary/40 px-3 text-foreground shadow-none sm:h-10";
-  return <section aria-label="媒体创作输入框" className="w-full">
-    <form className="rounded-[24px] border border-input bg-card p-4 shadow-xl sm:p-5" onSubmit={event => { event.preventDefault(); if (text.trim()) setNotice("尚未连接创作服务，你的描述、Skill 和设置已保留。"); }}>
-      <Textarea ref={textarea} aria-label="创作描述" placeholder="输入你的需求即可生成图片、视频；上传素材后可使用 @引用素材，例如：@Image 1 作首帧、@Video 1 生成宣发视频。" value={text} onChange={event => { setText(event.target.value); setNotice(""); }} className="h-[108px] min-h-[108px] resize-none border-0 bg-transparent p-0 text-[15px] leading-7 shadow-none focus-visible:ring-0 md:text-[15px]" />
-      {(skill || files.length > 0) && <div className="mb-3 flex flex-wrap gap-2">
+  return <section aria-label={label} className="w-full">
+    <form className="rounded-[24px] border border-input bg-card p-4 shadow-xl sm:p-5" onSubmit={event => { event.preventDefault(); if (!text.trim()) return; if (onSubmit) { onSubmit({ prompt: text.trim(), project, canvas, mode }); return; } setNotice("尚未连接创作服务，你的描述、Skill 和设置已保留。"); }}>
+      <Textarea ref={textarea} aria-label="创作描述" placeholder={placeholder ?? "输入你的需求即可生成图片、视频；上传素材后可使用 @引用素材，例如：@Image 1 作首帧、@Video 1 生成宣发视频。"} value={text} onChange={event => { setText(event.target.value); setNotice(""); }} className="h-[108px] min-h-[108px] resize-none border-0 bg-transparent p-0 text-[15px] leading-7 shadow-none focus-visible:ring-0 md:text-[15px]" />
+      {(skill || files.length > 0 || attachment) && <div className="mb-3 flex flex-wrap gap-2">
+        {attachment}
         {skill && <div className="flex max-w-full items-center gap-2 rounded-lg border border-border py-1 pl-1 pr-2 text-sm"><img src={skill.image} alt="" className="size-6 rounded object-cover" /><span className="truncate">{skill.name}</span><Button variant="ghost" type="button" size="icon" className="size-6" aria-label={`移除 ${skill.name}`} onClick={() => onSkillChange(null)}><X /></Button></div>}
         {files.map((file, index) => <div key={`${file.name}-${index}`} className="flex max-w-full items-center gap-1 rounded-md bg-secondary pl-2 text-xs"><span className="truncate">{file.name}</span><Button variant="ghost" type="button" size="icon" className="size-7" aria-label={`移除 ${file.name}`} onClick={() => setFiles(list => list.filter((_, i) => i !== index))}><X /></Button></div>)}
       </div>}
