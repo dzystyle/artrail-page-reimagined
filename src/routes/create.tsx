@@ -113,10 +113,10 @@ function CreatePage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1240px] px-5 pb-16 sm:px-8">
+        <div className="mx-auto max-w-[1240px] px-5 pb-[300px] sm:px-8">
           <section className="mx-auto max-w-[800px] pt-2">
             <h1 className="sr-only">创建图片和视频</h1>
-            <HomeComposer scrollRoot={mainRef} initialType="Asset Canvas" seed={seed} />
+            <HomeComposer scrollRoot={mainRef} initialType="Asset Canvas" seed={seed} alwaysFloating />
           </section>
 
           {/* 顶部模板大卡 */}

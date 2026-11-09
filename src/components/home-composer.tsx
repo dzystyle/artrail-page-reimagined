@@ -115,10 +115,10 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
   useEffect(() => { if (baseGame) textarea.current?.focus(); }, [baseGame]);
   if (!type) return null;
   const TypeIcon = type.icon;
-  const floating = docked && expanded;
-  const hiddenFull = docked && !expanded;
-  return <div ref={anchor} style={docked ? { height: anchorHeight } : undefined} className="mb-10 mt-10">
-    {floating && <div aria-hidden className="fixed inset-0 z-40 bg-background/60 backdrop-blur-[2px] animate-in fade-in-0" onClick={() => setExpanded(false)} />}
+  const floating = alwaysFloating || (docked && expanded);
+  const hiddenFull = !alwaysFloating && docked && !expanded;
+  return <div ref={anchor} style={docked && !alwaysFloating ? { height: anchorHeight } : undefined} className={alwaysFloating ? "" : "mb-10 mt-10"}>
+    {floating && !alwaysFloating && <div aria-hidden className="fixed inset-0 z-40 bg-background/60 backdrop-blur-[2px] animate-in fade-in-0" onClick={() => setExpanded(false)} />}
     {hiddenFull && <button type="button" aria-label="展开创作输入框" onClick={() => { setExpanded(true); requestAnimationFrame(() => textarea.current?.focus()); }}
       className="fixed bottom-6 left-1/2 z-40 flex w-[min(540px,calc(100vw-32px))] -translate-x-1/2 items-center gap-3 rounded-full border border-border bg-card/80 py-2.5 pl-6 pr-2.5 text-left shadow-2xl backdrop-blur-xl animate-in fade-in-0 slide-in-from-bottom-4 lg:ml-[166px]">
       <span className={`flex-1 truncate text-[15px] ${text ? "text-foreground" : "text-muted-foreground"}`}>{text || "输入你的需求即可生成图片、视频…"}</span>
