@@ -22,4 +22,4 @@
 - [x] Replace homepage featured works/course tabs with reference image tools and template gallery; verify filters, preview and desktop/mobile layout.
 
 - [x] Focus Build on game creation, align entry points and verify game-only creation flow on desktop/mobile.
-- [ ] Connect sidebar tasks to saved games and verify reopening and refresh.
+- [x] Connect sidebar tasks to saved games and verify reopening and refresh.
