@@ -14,7 +14,109 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      game_assets: {
+        Row: {
+          created_at: string
+          game_id: string
+          id: string
+          kind: string
+          name: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: string
+          id?: string
+          kind: string
+          name: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string
+          id?: string
+          kind?: string
+          name?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_assets_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      game_messages: {
+        Row: {
+          content: string
+          created_at: string
+          game_id: string
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          game_id: string
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          game_id?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_messages_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      games: {
+        Row: {
+          code: string | null
+          created_at: string
+          design: Json | null
+          error: string | null
+          id: string
+          prompt: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          design?: Json | null
+          error?: string | null
+          id?: string
+          prompt: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          design?: Json | null
+          error?: string | null
+          id?: string
+          prompt?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
