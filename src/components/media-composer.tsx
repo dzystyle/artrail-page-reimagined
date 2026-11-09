@@ -42,13 +42,6 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
   const pill = "h-9 max-w-full rounded-full border border-border bg-secondary/40 px-3 text-foreground shadow-none sm:h-10";
   return <section aria-label="媒体创作输入框" className="w-full">
     <form className="rounded-[24px] border border-input bg-card p-4 shadow-xl sm:p-5" onSubmit={event => { event.preventDefault(); if (text.trim()) setNotice("尚未连接创作服务，你的描述、Skill 和设置已保留。"); }}>
-      <div className="mb-3 flex flex-wrap items-center justify-end gap-2">
-        <div className="flex items-center gap-3 text-sm">
-          <label className="flex cursor-pointer items-center gap-2"><Switch aria-label="画布" checked={canvas} onCheckedChange={setCanvas} />画布</label>
-          <span className="h-4 border-l border-border" />
-          <span aria-label={`${referenceMediaRate.current} 积分/秒，原价 ${referenceMediaRate.previous} 积分/秒`} title="参考积分，尚未接入计费" className="flex items-center gap-1"><Sparkles className="size-4 text-create" /><span className="font-semibold">{referenceMediaRate.current}</span><span className="text-xs text-muted-foreground">积分/s</span><s className="ml-1 text-muted-foreground">{referenceMediaRate.previous}</s></span>
-        </div>
-      </div>
       <Textarea ref={textarea} aria-label="创作描述" placeholder="输入你的需求即可生成图片、视频；上传素材后可使用 @引用素材，例如：@Image 1 作首帧、@Video 1 生成宣发视频。" value={text} onChange={event => { setText(event.target.value); setNotice(""); }} className="h-[108px] min-h-[108px] resize-none border-0 bg-transparent p-0 text-[15px] leading-7 shadow-none focus-visible:ring-0 md:text-[15px]" />
       {(skill || files.length > 0) && <div className="mb-3 flex flex-wrap gap-2">
         {skill && <div className="flex max-w-full items-center gap-2 rounded-lg border border-border py-1 pl-1 pr-2 text-sm"><img src={skill.image} alt="" className="size-6 rounded object-cover" /><span className="truncate">{skill.name}</span><Button variant="ghost" type="button" size="icon" className="size-6" aria-label={`移除 ${skill.name}`} onClick={() => onSkillChange(null)}><X /></Button></div>}
@@ -94,8 +87,13 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
           <PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择项目" className={`${pill} max-w-[180px] border-link/30 bg-link/10 text-link`}><Folder /><span className="truncate">项目：{project}</span><ChevronDown /></Button></PopoverTrigger>
           <PopoverContent side="top" align="start" className="w-[min(280px,calc(100vw-32px))] p-2"><Input aria-label="搜索项目" placeholder="搜索项目…" value={projectQuery} onChange={event => setProjectQuery(event.target.value)} className="mb-2" />{["NEW-HOPE", "F3/FX", "ArTrail"].filter(item => item.toLowerCase().includes(projectQuery.toLowerCase())).map(item => <Button type="button" variant="ghost" className="w-full justify-start" key={item} onClick={() => { setProject(item); setProjectOpen(false); }}><Folder /><span className="flex-1 text-left">{item}</span>{project === item && <Check />}</Button>)}</PopoverContent>
         </Popover>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex max-w-full items-center gap-2">
           <Button type="button" variant="outline" size="icon" className="size-9 rounded-full sm:size-10" title="语音输入" aria-label="语音输入" onClick={() => setNotice("语音输入尚未接入，请输入文字或添加素材。")}><Mic /></Button>
+        <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-3">
+          <label className="flex cursor-pointer items-center gap-2"><Switch aria-label="画布" checked={canvas} onCheckedChange={setCanvas} />画布</label>
+          <span className="h-4 border-l border-border" />
+          <span aria-label={`${referenceMediaRate.current} 积分/秒，原价 ${referenceMediaRate.previous} 积分/秒`} title="参考积分，尚未接入计费" className="flex items-center gap-1"><Sparkles className="size-4 text-create" /><span className="font-semibold">{referenceMediaRate.current}</span><span className="text-xs text-muted-foreground">积分/s</span><s className="ml-1 text-muted-foreground">{referenceMediaRate.previous}</s></span>
+        </div>
           <Button type="submit" size="icon" aria-label="发送创作内容" title="发送" className="size-10 rounded-full" disabled={!text.trim()}><ArrowUp /></Button>
         </div>
       </div>
