@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, LayoutGrid, Folder, Box, Puzzle, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell } from "lucide-react";
 import { WorkspaceSearch } from "@/components/workspace-search";
+import { SidebarTasks } from "@/components/sidebar-tasks";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
@@ -21,15 +22,6 @@ const nav2 = [
   { icon: Folder, label: "资产" },
   { icon: Box, label: "Skill" },
   { icon: Puzzle, label: "插件", to: "/plugins" as const },
-];
-const tasks = [
-  { icon: FileText, label: "新建任务" },
-  { icon: Cloud, label: "测试并演示 Canva 连接器功能" },
-  { icon: MessageCircle, label: "开发基于照片互动的AI虚拟伴侣游戏" },
-  { icon: Gamepad2, label: "根据文档开发游戏" },
-  { icon: Gamepad2, label: "开发多人对战派对小游戏" },
-  { icon: Gamepad2, label: "分析小游戏创意方向" },
-  { icon: Loader, label: "开发机甲美女题材游戏", spin: true },
 ];
 
 function Item({ icon: Icon, label, badge, spin, to }: { icon: typeof Search; label: string; badge?: string; spin?: boolean; to?: "/" | "/plugins" }) {
@@ -76,7 +68,7 @@ export function Sidebar() {
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">项目</p>
       <div className="space-y-[5px]">{([["new-hope", "NEW-HOPE", Rocket], ["f3fx", "F3/FX", Gamepad2], ["artrail", "ArTrail", MonitorPlay]] as const).map(([id, n, I]) => <ProjectLink key={id} id={id} name={n} icon={I} />)}</div>
       <p className="mt-5 px-2.5 py-2 text-sm text-muted-foreground">任务</p>
-      <div className="space-y-[5px] overflow-y-auto">{tasks.map((t, i) => <Item key={i} {...t} />)}</div>
+      <SidebarTasks />
       <div className="mt-auto pb-2">
         <button className="flex w-full items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 text-left">
           <Gift className="size-5" />

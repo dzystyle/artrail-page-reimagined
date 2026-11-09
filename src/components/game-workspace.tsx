@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { type WorkspaceTab } from "@/lib/game-workspace";
 import { nextStep, statusLabel } from "@/lib/game-pipeline";
 import { generateAsset, generateCode, generateDesign, getGame, listGames, retryGame, reviseGame } from "@/lib/games.functions";
+import { gameListKey, gameListOptions } from "@/lib/game-list";
 
 const tabs = [{ id: "game", label: "Game", icon: Gamepad2 }, { id: "design", label: "Design", icon: FileText }, { id: "canvas", label: "Canvas", icon: Layers }, { id: "assets", label: "Assets", icon: Image }, { id: "code", label: "Code", icon: Code2 }, { id: "multiplayer", label: "多人游戏", icon: Swords }] as const;
 
@@ -28,7 +29,12 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
 
   const design = useServerFn(generateDesign), asset = useServerFn(generateAsset), code = useServerFn(generateCode), revise = useServerFn(reviseGame), retry = useServerFn(retryGame);
   const running = useRef<string | null>(null);
-  const refresh = () => qc.invalidateQueries({ queryKey: ["game", id] });
+  const refresh = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: ["game", id] }),
+      qc.invalidateQueries({ queryKey: gameListKey }),
+    ]);
+  };
 
   // Drive the generation pipeline one step at a time from the browser.
   useEffect(() => {
@@ -105,8 +111,7 @@ function StatusBadge({ status, done, planned }: { status: string; done: number; 
 }
 
 function RecentGames() {
-  const list = useServerFn(listGames);
-  const { data, isLoading } = useQuery({ queryKey: ["games"], queryFn: () => list() });
+  const { data, isLoading } = useQuery(gameListOptions());
   return <div className="min-h-dvh bg-surface-deep p-6 text-foreground"><div className="mx-auto max-w-3xl"><div className="mb-6 flex items-center justify-between"><h1 className="text-xl font-semibold">我的游戏</h1><Button asChild><Link to="/build" search={{ mode: "build" }}>创建新游戏</Link></Button></div>
     {isLoading ? <Loader2 className="animate-spin" /> : !data?.length ? <p className="text-sm text-muted-foreground">还没有游戏，去构建页描述你的想法吧。</p> : <ul className="space-y-2">{data.map(g => <li key={g.id}><Link to="/game" search={{ id: g.id, tab: "game", prompt: "", project: "ArTrail" }} className="flex items-center justify-between rounded-lg bg-card p-4 hover:bg-secondary"><span>{g.title}</span><span className="text-xs text-muted-foreground">{statusLabel[g.status]}</span></Link></li>)}</ul>}
   </div></div>;
