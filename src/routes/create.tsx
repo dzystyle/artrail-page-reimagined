@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, FlaskConical, Play, Sparkles } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
-import { HomeComposer } from "@/components/home-composer";
+import { MediaComposer } from "@/components/media-composer";
+import { type MediaSkill } from "@/lib/media-composer";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -66,6 +67,12 @@ const alchemyVideos = [
 ];
 
 type CreateDetail = { name: string; image: string; skill: string; group: string[] };
+
+const composerSkills: MediaSkill[] = [...new Map([
+  ...heroTemplates.map(item => ({ name: item.skill, image: item.image, category: "视频制作" })),
+  ...templates.map(item => ({ name: item.skill, image: item.image, category: "视频制作" })),
+  ...alchemyVideos.map(item => ({ name: item.skill, image: item.image, category: "炼金模式" })),
+].map(item => [item.name, item])).values()];
 
 function DetailDialog({ detail, onClose, onUse }: { detail: CreateDetail; onClose: () => void; onUse: () => void }) {
   const [index, setIndex] = useState(0);
@@ -142,7 +149,7 @@ function CreatePage() {
   const [tab, setTab] = useState(tabs[0]!);
   const [seed, setSeed] = useState<{ text: string; n: number } | null>(null);
   const [detail, setDetail] = useState<CreateDetail | null>(null);
-  const [skill, setSkill] = useState<{ name: string; image: string } | null>(null);
+  const [skill, setSkill] = useState<MediaSkill | null>(null);
   const visibleTemplates = templates.filter(t => tab === "所有模板" || t.tab === tab);
   const useTemplate = (prompt: string) => {
     setSeed(s => ({ text: prompt, n: (s?.n ?? 0) + 1 }));
@@ -164,10 +171,10 @@ function CreatePage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1240px] px-5 pb-[300px] sm:px-8">
+        <div className="mx-auto max-w-[1240px] px-5 pb-[420px] sm:px-8 sm:pb-[340px]">
           <section className="mx-auto max-w-[800px] pt-2">
             <h1 className="sr-only">创建图片和视频</h1>
-            <HomeComposer scrollRoot={mainRef} initialType="Asset Canvas" seed={seed} alwaysFloating baseGame={skill} onRemoveBaseGame={() => setSkill(null)} />
+            <MediaComposer skills={composerSkills} skill={skill} onSkillChange={setSkill} seed={seed} />
           </section>
 
           {/* 顶部模板大卡 */}
@@ -238,7 +245,7 @@ function CreatePage() {
           </section>
         </div>
       </main>
-      {detail && <DetailDialog key={detail.name} detail={detail} onClose={() => setDetail(null)} onUse={() => { setSkill({ name: detail.skill, image: detail.image }); setDetail(null); }} />}
+      {detail && <DetailDialog key={detail.name} detail={detail} onClose={() => setDetail(null)} onUse={() => { setSkill(composerSkills.find(item => item.name === detail.skill) ?? { name: detail.skill, image: detail.image, category: "视频制作" }); setDetail(null); }} />}
     </div>
   );
 }
