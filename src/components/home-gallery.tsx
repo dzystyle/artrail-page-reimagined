@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { ChevronRight, Plus, Workflow, ImageIcon } from "lucide-react";
-import { works } from "@/lib/works";
 import canvas1 from "@/assets/canvas-1.jpg";
 import canvas2 from "@/assets/canvas-2.jpg";
 import canvas3 from "@/assets/canvas-3.jpg";
@@ -59,30 +57,3 @@ export function RecentCanvases() {
   );
 }
 
-export function FeaturedWorks() {
-  const tabs = ["精选作品", "创作课程"];
-  const [tab, setTab] = useState(tabs[0]!);
-  return (
-    <section aria-label="精选作品" className="mt-8 pb-20">
-      <div className="flex gap-8 border-b border-border">
-        {tabs.map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={`-mb-px border-b-2 pb-3 text-[16px] transition-colors ${tab === t ? "border-foreground font-semibold" : "border-transparent text-muted-foreground hover:text-foreground"}`}>{t}</button>
-        ))}
-      </div>
-      <div className="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {works.map((w) => (
-          <Link key={w.id} to="/works/$workId" params={{ workId: w.id }} className="group text-left">
-            <div className="relative overflow-hidden rounded-xl border border-border bg-card">
-              <img src={w.images[0]} alt={w.title} loading="lazy" width={992} height={672} className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
-              <div className="absolute inset-0 flex items-center justify-center bg-background/50 opacity-0 transition-opacity group-hover:opacity-100">
-                <span className="rounded-full bg-foreground px-5 py-1.5 text-sm font-semibold text-background">查看</span>
-              </div>
-              <span className="absolute bottom-2 left-3 text-xs text-foreground/90 opacity-0 transition-opacity group-hover:opacity-100">@ {w.author}</span>
-            </div>
-            <p className="mt-2.5 truncate text-[15px]">{w.title}</p>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}

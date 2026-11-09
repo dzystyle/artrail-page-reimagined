@@ -19,3 +19,4 @@
 - Workspace search uses the shared browser-safe demo project catalogue and works catalogue; canvas matches open project pages with a validated URL filter so direct links and refresh retain the selected search.
 - The sidebar asset entry reuses the project page with validated URL asset mode; its project selector preserves that mode and search across project changes and refreshes.
 - Keep the create-page media composer separate from the homepage/game composer; reuse create-page Skill data and keep media modes, settings, canvas toggle and reference rates session-only until generation and billing services are connected.
+- Keep homepage image-template catalogue browser-safe and separate from featured-work data; category filters and preview dialogs are session-only, while creation links reuse /create without implying generation.
