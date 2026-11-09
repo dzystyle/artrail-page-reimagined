@@ -21,4 +21,4 @@
 - [x] Match /create composer references with media modes, Skill/model/project menus and internal canvas/credit controls; verify desktop/mobile.
 - [x] Replace homepage featured works/course tabs with reference image tools and template gallery; verify filters, preview and desktop/mobile layout.
 
-- [ ] Focus Build on game creation, align entry points and verify game-only creation flow on desktop/mobile.
+- [x] Focus Build on game creation, align entry points and verify game-only creation flow on desktop/mobile.
