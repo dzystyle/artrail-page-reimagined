@@ -18,3 +18,4 @@
 - [x] Add sidebar search dialog with project, canvas, work and navigation results; verify search and selection on desktop/mobile.
 - [x] Reuse the project page for the asset menu with an entry-specific project selector; verify switching and refresh.
 - [x] Add /create image & video creation page (model picker, template tabs, alchemy gallery) reusing the home composer; link the homepage Create card; verify desktop/mobile.
+- [ ] Match /create composer references with media modes, Skill/model/project menus and internal canvas/credit controls; verify desktop/mobile.
