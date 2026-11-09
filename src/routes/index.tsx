@@ -12,7 +12,8 @@ import { SubscriptionDialog } from "@/components/subscription-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { WorkspaceSearch } from "@/components/workspace-search";
 import { HomeComposer } from "@/components/home-composer";
-import { RecentCanvases, FeaturedWorks } from "@/components/home-gallery";
+import { RecentCanvases } from "@/components/home-gallery";
+import { HomeImageGallery } from "@/components/home-image-gallery";
 import { isGameCreation } from "@/lib/game-workspace";
 import entryBuild from "@/assets/entry-build.jpg";
 import entryCreate from "@/assets/entry-create.jpg";
@@ -121,7 +122,7 @@ export function Index() {
         </section>
         <div className="mx-auto w-full max-w-[1040px] px-6 pt-8 sm:px-8">
           <RecentCanvases />
-          <FeaturedWorks />
+          <HomeImageGallery />
         </div>
 
       </main>

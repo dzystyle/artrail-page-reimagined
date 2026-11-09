@@ -161,6 +161,11 @@
   --surface-deep: oklch(0.14 0 0);
   --project-lilac: oklch(0.63 0.055 295);
   --project-mint: oklch(0.61 0.055 165);
+  --image-style-glow: oklch(0.43 0.08 310);
+  --image-outfit-glow: oklch(0.4 0.075 155);
+  --image-hot: oklch(0.61 0.23 355);
+  --image-new: oklch(0.62 0.14 165);
+  --image-badge-foreground: oklch(1 0 0);
 }
 
 /* Neutral daylight surfaces preserve the workspace hierarchy and imagery. */
@@ -224,6 +229,10 @@
   background-image: radial-gradient(var(--border) 1px, transparent 1px);
   background-size: 22px 22px;
 }
+.image-tool-style { background-image: linear-gradient(to top, var(--image-style-glow), transparent 80%); }
+.image-tool-outfit { background-image: linear-gradient(to top, var(--image-outfit-glow), transparent 80%); }
+.image-tool-badge { background: var(--image-hot); color: var(--image-badge-foreground); border-radius: 4px; padding: 1px 5px; font-size: 8px; font-style: italic; }
+.image-tool-new { background: var(--image-new); }
 .workspace-nodes { position: relative; }
 @media (min-width: 768px) {
   .workspace-nodes::before {
