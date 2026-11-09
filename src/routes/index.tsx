@@ -15,7 +15,7 @@ import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases } from "@/components/home-gallery";
 import { HomeImageGallery } from "@/components/home-image-gallery";
 import { isGameCreation } from "@/lib/game-workspace";
-import entryBuild from "@/assets/entry-build.jpg";
+import entryBuild from "@/assets/game-3.jpg";
 import entryCreate from "@/assets/entry-create.jpg";
 import entryStory from "@/assets/entry-story.jpg";
 import thumbVideo from "@/assets/thumb-video.jpg";
@@ -26,9 +26,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "ArTrail — 你的 AI 智能体工作台" },
-      { name: "description", content: "ArTrail：构建网站、应用和游戏，创建幻灯片、图片和视频。" },
+      { name: "description", content: "ArTrail：构建游戏，创作互动影游、图片和视频。" },
       { property: "og:title", content: "ArTrail — AI 智能体工作台" },
-      { property: "og:description", content: "构建网站、应用和游戏，创建幻灯片、图片和视频。" },
+      { property: "og:description", content: "构建游戏，创作互动影游、图片和视频。" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -100,9 +100,9 @@ export function Index() {
             <div className="grid gap-3">
               <Link to="/build" search={{ mode: "build" }} className="group relative flex h-[96px] flex-col justify-center overflow-hidden rounded-2xl border border-border/70 bg-card/60 shadow-[0_8px_24px_-12px_oklch(0_0_0/0.6)] hover:-translate-y-0.5 px-5 transition-all duration-300 hover:border-foreground/30">
                 <img src={entryBuild} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />
-                <span className="relative flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-build"><Hammer className="size-3.5" />Build</span>
-                <span className="relative mt-1 flex items-center gap-1 text-[17px] font-semibold tracking-tight">构建网站、应用和游戏<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
-                <span className="relative mt-0.5 text-xs text-muted-foreground">一句话描述，生成可运行的作品</span>
+                <span className="relative flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-build"><Gamepad2 className="size-3.5" />Build</span>
+                <span className="relative mt-1 flex items-center gap-1 text-[22px] font-semibold">构建游戏<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
+                <span className="relative mt-0.5 text-xs text-muted-foreground">从一个玩法开始，打造你的游戏世界</span>
               </Link>
               <Link to="/create" className="group relative flex h-[96px] flex-col items-start justify-center overflow-hidden rounded-2xl border border-border/70 bg-card/60 shadow-[0_8px_24px_-12px_oklch(0_0_0/0.6)] hover:-translate-y-0.5 px-4 text-left transition-all duration-300 hover:border-foreground/30">
                 <img src={entryCreate} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />

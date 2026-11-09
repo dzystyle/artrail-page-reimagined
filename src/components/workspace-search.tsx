@@ -27,7 +27,7 @@ export function WorkspaceSearch({ compact = false }: { compact?: boolean }) {
   const select = (action: () => void) => { changeOpen(false); action(); };
   const links = [
     { title: "首页", icon: Home, keywords: ["home", "创作"], action: () => void navigate({ to: "/" }) },
-    { title: "构建网站、应用和游戏", icon: Plus, keywords: ["build", "新建项目"], action: () => void navigate({ to: "/build", search: { mode: "build" } }) },
+    { title: "构建游戏", icon: Gamepad2, keywords: ["build", "新建项目", "游戏创作"], action: () => void navigate({ to: "/build", search: { mode: "build" } }) },
     { title: "互动影游", icon: Clapperboard, keywords: ["story", "故事"], action: () => void navigate({ to: "/build", search: { mode: "story" } }) },
     { title: "游戏工作区", icon: Gamepad2, keywords: ["game", "设计", "代码", "试玩"], action: () => void navigate({ to: "/game", search: { tab: "canvas", prompt: "", project: "" } }) },
     { title: "插件", icon: Puzzle, keywords: ["plugins", "连接器"], action: () => void navigate({ to: "/plugins" }) },
