@@ -23,3 +23,5 @@
 
 - [x] Focus Build on game creation, align entry points and verify game-only creation flow on desktop/mobile.
 - [x] Connect sidebar tasks to saved games and verify reopening and refresh.
+
+- [x] Reuse homepage model menu in game Chat and verify search, selection and thinking depth.

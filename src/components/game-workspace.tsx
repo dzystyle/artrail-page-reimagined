@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowUp, Code2, Download, FileText, Gamepad2, Image, Layers, Loader2, MessageSquare, PanelLeftClose, PanelLeftOpen, Play, RotateCcw, Sparkles, Swords, Settings, AlertCircle, Check } from "lucide-react";
+import { CreationModelPicker } from "@/components/creation-model-picker";
 import { GameSettings } from "@/components/game-settings";
 import { MultiplayerPanel } from "@/components/multiplayer-panel";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,8 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
 
   const [chatOpen, setChatOpen] = useState(true);
   const [draft, setDraft] = useState("");
+  const [model, setModel] = useState("deepseek-v4-pro");
+  const [depth, setDepth] = useState("High");
   const [assetKind, setAssetKind] = useState("全部");
   const reviseM = useMutation({ mutationFn: (message: string) => revise({ data: { id: id!, message } }), onSettled: () => refresh() });
   const retryM = useMutation({ mutationFn: () => { running.current = null; return retry({ data: { id: id! } }); }, onSettled: () => refresh() });
@@ -82,7 +85,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
         </div>
         <form className="m-3 rounded-lg bg-card p-3" onSubmit={e => { e.preventDefault(); const m = draft.trim(); if (!m) return; reviseM.mutate(m); setDraft(""); }}>
           <Textarea aria-label="游戏修改需求" placeholder={game.code ? "描述你想修改的内容…" : "游戏生成完成后可继续修改"} value={draft} onChange={e => setDraft(e.target.value)} className="h-20 resize-none border-0 p-0 shadow-none focus-visible:ring-0" />
-          <div className="flex items-center justify-between"><span className="text-[10px] text-muted-foreground">{status}</span><Button type="submit" size="icon" aria-label="发送修改需求" disabled={!draft.trim() || game.status !== "ready"} className="size-7 rounded-full"><ArrowUp /></Button></div>
+          <div className="flex min-w-0 items-center justify-between gap-1"><CreationModelPicker compact model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} /><Button type="submit" size="icon" aria-label="发送修改需求" disabled={!draft.trim() || game.status !== "ready"} className="size-7 rounded-full"><ArrowUp /></Button></div>
         </form>
       </aside>}
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-background">
