@@ -5,6 +5,8 @@ import { Loader2 } from "lucide-react";
 import { GameWorkspace } from "@/components/game-workspace";
 import { parseWorkspaceTab, type WorkspaceTab } from "@/lib/game-workspace";
 import { createGame } from "@/lib/games.functions";
+import { useQueryClient } from "@tanstack/react-query";
+import { gameListKey } from "@/lib/game-list";
 
 type GameSearch = { tab: WorkspaceTab; prompt: string; project: string; id?: string };
 
@@ -21,6 +23,7 @@ function GamePage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/game" });
   const create = useServerFn(createGame);
+  const queryClient = useQueryClient();
   const started = useRef(false);
   const [error, setError] = useState("");
   const creating = !search.id && !!search.prompt.trim();
@@ -29,7 +32,10 @@ function GamePage() {
     if (!creating || started.current) return;
     started.current = true;
     create({ data: { prompt: search.prompt } })
-      .then(({ id }) => navigate({ search: { tab: "canvas", prompt: "", project: search.project, id }, replace: true }))
+      .then(({ id }) => {
+        void queryClient.invalidateQueries({ queryKey: gameListKey });
+        return navigate({ search: { tab: "canvas", prompt: "", project: search.project, id }, replace: true });
+      })
       .catch(() => setError("创建游戏失败，请返回重试。"));
   }, [creating]);
 
