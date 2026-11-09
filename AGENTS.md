@@ -12,7 +12,7 @@
 - Keep the homepage creation composer in a browser-safe component with session-only UI state; service connections and generation require a separately implemented Cloud integration.
 - Creation workspace uses a validated URL mode to select entry-specific examples and composer defaults while reusing the sidebar and layout; this keeps refresh and direct links consistent.
 - Featured-work detail content is browser-safe demo data in src/lib/works.ts; the detail route resolves it by id and 404s unknown ids instead of rendering an empty panel.
-- Game workspace uses validated URL tabs and passes submitted text into Canvas; browser-only Phaser is dynamically imported after mounting, and demo playtests never imply AI generation or persistent project storage.
+
 - Subscription dialogs keep reference pricing in a browser-safe shared module and session-only selections; payment and entitlement actions must not imply a completed purchase without a separately connected payment service.
 - Theme state is shared by a browser-safe root provider and persisted as a local device preference; semantic CSS tokens switch the whole workspace without changing layouts.
 - Build-page minigames make a fresh browser-side random selection on each mount without score-driven transitions; Phaser games dynamically import Arcade after mounting to keep SSR safe and collisions library-driven.
@@ -22,3 +22,4 @@
 - Keep homepage image-template catalogue browser-safe and separate from featured-work data; category filters and preview dialogs are session-only, while creation links reuse /create without implying generation.
 
 - Build reuses the shared composer in game-only mode while story and homepage keep their own choices; this prevents non-game requests entering the game workspace.
+- Game workspace (/game?id=) is AI-generated and persisted in Cloud: browser drives design → assets → code steps via server functions in src/lib/games.functions.ts; generated HTML runs only in a sandboxed iframe. Why: each step stays short, resumable after refresh, and isolated from the app.
