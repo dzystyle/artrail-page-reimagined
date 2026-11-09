@@ -19,7 +19,7 @@ export function HomeImageGallery() {
   const [category, setCategory] = useState("全部");
   const [selected, setSelected] = useState<ImageTemplate | null>(null);
   const filtered = filterImageTemplates(category);
-  return <section aria-label="图片工具与模板" className="mt-8 pb-12">
+  return <section aria-label="图片工具与模板" className="mt-8 pb-28">
     <div className="grid gap-3 md:grid-cols-[1fr_2fr]">
       <Button asChild variant="ghost" className="group relative h-auto overflow-hidden rounded-lg border border-border p-0">
         <Link to="/create" aria-label="NANO BANANA 2.1 图片创作"><img src={cover} alt="ArTrail NANO BANANA 2.1" width={1536} height={816} loading="lazy" className="aspect-[1.9/1] h-full w-full object-cover" /><span className="absolute bottom-3 left-1/2 h-1 w-3 -translate-x-1/2 rounded-full bg-primary" /></Link>

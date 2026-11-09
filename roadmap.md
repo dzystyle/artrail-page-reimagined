@@ -19,4 +19,4 @@
 - [x] Reuse the project page for the asset menu with an entry-specific project selector; verify switching and refresh.
 - [x] Add /create image & video creation page (model picker, template tabs, alchemy gallery) reusing the home composer; link the homepage Create card; verify desktop/mobile.
 - [x] Match /create composer references with media modes, Skill/model/project menus and internal canvas/credit controls; verify desktop/mobile.
-- [ ] Replace homepage featured works/course tabs with reference image tools and template gallery; verify filters, preview and desktop/mobile layout.
+- [x] Replace homepage featured works/course tabs with reference image tools and template gallery; verify filters, preview and desktop/mobile layout.
