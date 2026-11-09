@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BuildRouteImport } from './routes/build'
+import { Route as CreateRouteImport } from './routes/create'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -25,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const BuildRoute = BuildRouteImport.update({
   id: '/build',
   path: '/build',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateRoute = CreateRouteImport.update({
+  id: '/create',
+  path: '/create',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GameRoute = GameRouteImport.update({
@@ -56,6 +62,7 @@ const WorksWorkIdRoute = WorksWorkIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/build': typeof BuildRoute
+  '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/build': typeof BuildRoute
+  '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/build': typeof BuildRoute
+  '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/build'
+    | '/create'
     | '/game'
     | '/plugins'
     | '/settings'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/build'
+    | '/create'
     | '/game'
     | '/plugins'
     | '/settings'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/build'
+    | '/create'
     | '/game'
     | '/plugins'
     | '/settings'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuildRoute: typeof BuildRoute
+  CreateRoute: typeof CreateRoute
   GameRoute: typeof GameRoute
   PluginsRoute: typeof PluginsRoute
   SettingsRoute: typeof SettingsRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/build'
       fullPath: '/build'
       preLoaderRoute: typeof BuildRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/game': {
@@ -178,6 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuildRoute: BuildRoute,
+  CreateRoute: CreateRoute,
   GameRoute: GameRoute,
   PluginsRoute: PluginsRoute,
   SettingsRoute: SettingsRoute,
