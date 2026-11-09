@@ -7,9 +7,9 @@ import { gameListKey, gameListOptions } from "@/lib/game-list";
 import { statusLabel } from "@/lib/game-pipeline";
 
 class TaskErrorBoundary extends Component<{ children: ReactNode; onRetry: () => Promise<void> }, { failed: boolean }> {
-  state = { failed: false };
+  override state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
-  render() {
+  override render() {
     if (!this.state.failed) return this.props.children;
     return <div className="px-2.5 text-xs text-muted-foreground"><p>任务加载失败</p><Button variant="ghost" size="sm" onClick={() => { void this.props.onRetry().then(() => this.setState({ failed: false })); }}>重试</Button></div>;
   }
