@@ -17,6 +17,7 @@ import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
+import { Route as ApiPublicCanvasImageRouteImport } from './routes/api/public/canvas-image'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const WorksWorkIdRoute = WorksWorkIdRouteImport.update({
   path: '/works/$workId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCanvasImageRoute = ApiPublicCanvasImageRouteImport.update({
+  id: '/api/public/canvas-image',
+  path: '/api/public/canvas-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
+  '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
+  '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
+  '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
+    | '/api/public/canvas-image'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
+    | '/api/public/canvas-image'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
+    | '/api/public/canvas-image'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   WorksWorkIdRoute: typeof WorksWorkIdRoute
+  ApiPublicCanvasImageRoute: typeof ApiPublicCanvasImageRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorksWorkIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/canvas-image': {
+      id: '/api/public/canvas-image'
+      path: '/api/public/canvas-image'
+      fullPath: '/api/public/canvas-image'
+      preLoaderRoute: typeof ApiPublicCanvasImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   WorksWorkIdRoute: WorksWorkIdRoute,
+  ApiPublicCanvasImageRoute: ApiPublicCanvasImageRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
