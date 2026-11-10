@@ -6,6 +6,8 @@ import { ArrowLeft, ArrowUp, Code2, Download, FileText, Gamepad2, Image, Layers,
 import { GameChatComposer } from "@/components/game-chat-composer";
 import { GameAssetCanvas } from "@/components/game-asset-canvas";
 import { GameDesignEditor } from "@/components/game-design-editor";
+import { GameLevelTable } from "@/components/game-level-table";
+import { levelsMarkdown } from "@/lib/game-levels";
 import { get, set } from "idb-keyval";
 import type { GameDesign } from "@/lib/game-pipeline";
 import { GameSettings } from "@/components/game-settings";
@@ -67,7 +69,7 @@ export function GameWorkspace({ id, tab, onTab, project = "ArTrail", onProjectCh
   const retryM = useMutation({ mutationFn: () => { running.current = null; return retry({ data: { id: id! } }); }, onSettled: () => refresh() });
 
   const download = (text: string, name: string) => { const url = URL.createObjectURL(new Blob([text], { type: "text/plain" })); const a = document.createElement("a"); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url); };
-  const designMd = useMemo(() => shownDesign ? `# ${shownDesign.title}\n\n${shownDesign.summary}\n\n${shownDesign.sections.map(s => `## ${s.heading}\n${s.body}`).join("\n\n")}` : "", [shownDesign]);
+  const designMd = useMemo(() => shownDesign ? `# ${shownDesign.title}\n\n${shownDesign.summary}\n\n${shownDesign.sections.map(s => `## ${s.heading}\n${s.body}`).join("\n\n")}${levelsMarkdown(shownDesign.levels ?? [])}` : "", [shownDesign]);
 
   if (!id) return <RecentGames />;
   if (isLoading) return <div className="flex h-dvh items-center justify-center bg-surface-deep text-muted-foreground"><Loader2 className="animate-spin" /></div>;

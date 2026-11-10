@@ -33,3 +33,4 @@
 - [x] Enable game design document editing from Canvas and Design; verify save, cancel, refresh and mobile layout.
 - [x] Make game asset templates selectable by pixel style, open a reference canvas, and verify image replacement and real generation.
 - [x] Add Skill and project selection/management to the workspace Chat composer and verify the interactions.
+- [ ] Add editable level configuration to game design documents; verify save, refresh and mobile layout.
