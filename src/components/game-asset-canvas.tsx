@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { CanvasAddMenu } from "@/components/canvas-add-menu";
 import { mergeCanvasAssets, storedCanvasNodes, type CanvasNode } from "@/lib/canvas-nodes";
 import { streamImage } from "@/lib/stream-image";
+import { AssetLibraryDialog } from "@/components/asset-library-dialog";
+import type { LibraryAsset } from "@/lib/asset-library";
 
 type CanvasAsset = { id: string; name: string; kind: string; url: string };
 const tools = [{ name: "放大", icon: Expand }, { name: "去背景", icon: ScanFace }, { name: "扩图", icon: SquareUserRound }, { name: "消除笔", icon: Eraser }, { name: "编辑元素", icon: Layers }, { name: "编辑文字", icon: Type }, { name: "裁剪", icon: Crop }, { name: "调效果", icon: WandSparkles }, { name: "多角度", icon: Box }, { name: "快速切分", icon: Grid2X2 }];
@@ -49,6 +51,7 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
   const [error, setError] = useState("");
   const [working, setWorking] = useState(false);
   const [storageError, setStorageError] = useState("");
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const host = useRef<HTMLDivElement>(null);
   const latest = useRef(nodes);
   latest.current = nodes;
@@ -108,6 +111,12 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
     } finally { setWorking(false); }
   };
   const selected = nodes.find(node => node.selected && node.type === "image");
+  const localAssets: LibraryAsset[] = nodes.filter(node => node.type === "image" && node.data.url && !node.data.partial && !assets.some(asset => asset.id === node.id)).map(node => ({ id: node.id, name: node.data.name, kind: node.data.kind, url: node.data.url ?? "", gameId, project: "当前画布", createdAt: new Date().toISOString(), source: "device" }));
+  const addLibraryAssets = (chosen: LibraryAsset[]) => {
+    const start = position();
+    setNodes(current => [...current.map(node => ({ ...node, selected: false })), ...chosen.map((asset, index): CanvasNode => ({ id: crypto.randomUUID(), type: "image", position: { x: start.x + index % 3 * 320, y: start.y + Math.floor(index / 3) * 350 }, data: { name: asset.name, kind: asset.kind, url: asset.url }, selected: true }))]);
+    setHand(false);
+  };
   const displayNodes = nodes.map(node => ({ ...node, hidden: (node.type === "design" && !children) || (visibleKind !== "全部" && node.data.kind !== visibleKind), data: { ...node.data, onEdit: () => openEditor("document", node.id), onDimensions: (value: string) => { if (latest.current.find(n => n.id === node.id)?.data.dimensions !== value) setNodes(current => current.map(n => n.id === node.id ? { ...n, data: { ...n.data, dimensions: value } } : n)); } } }));
 
   return <div ref={host} className="game-flow relative flex min-h-0 flex-1 flex-col overflow-hidden bg-surface-deep" aria-label="游戏资产画布">
@@ -117,7 +126,8 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
       {tools.map(tool => <Button key={tool.name} variant="ghost" size="sm" aria-disabled="true" title={`${tool.name}（仅展示）`} className="h-10 shrink-0 gap-2 px-3"><tool.icon />{tool.name}</Button>)}<span className="mx-1 h-7 shrink-0 border-l border-border" /><Button variant="ghost" size="icon" aria-label="下载图片" aria-disabled="true" title="下载图片（仅展示）" className="shrink-0"><Download /></Button><Button variant="ghost" size="icon" aria-label="删除图片" aria-disabled="true" title="删除图片（仅展示）" className="shrink-0 text-destructive"><Trash2 /></Button>
     </div>}
     <div className="min-h-0 flex-1">{ready && <ReactFlow nodes={displayNodes} edges={[]} nodeTypes={nodeTypes} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} selectionOnDrag={!hand} deleteKeyCode={null} fitView fitViewOptions={{ padding: 0.25, maxZoom: 1 }} minZoom={0.15} maxZoom={2.5} proOptions={{ hideAttribution: true }}><Background variant={BackgroundVariant.Dots} gap={22} size={1} /></ReactFlow>}</div>
-    <CanvasAddMenu onCreate={kind => openEditor(kind)} hand={hand} onHand={setHand} onFit={() => void fitView({ padding: 0.25, maxZoom: 1 })} />
+    <CanvasAddMenu onCreate={kind => { if (kind === "library") setLibraryOpen(true); else openEditor(kind); }} hand={hand} onHand={setHand} onFit={() => void fitView({ padding: 0.25, maxZoom: 1 })} />
+    <AssetLibraryDialog open={libraryOpen} onOpenChange={setLibraryOpen} localAssets={localAssets} onAdd={addLibraryAssets} />
     <Dialog open={editor !== null} onOpenChange={value => { if (!value && !working) setEditor(null); }}><DialogContent className="max-w-[calc(100vw-24px)] sm:max-w-lg">
       <DialogTitle>{editor === "image" ? "创建图片" : editingId ? "编辑文档" : "创建文档"}</DialogTitle><DialogDescription className="sr-only">{editor === "image" ? "输入图片描述" : "编辑 Markdown 文档"}</DialogDescription>
       <form onSubmit={event => { event.preventDefault(); void submit(); }} className="space-y-4">
