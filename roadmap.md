@@ -29,4 +29,4 @@
 - [x] Add Laya IdeaAPI first in the shared model menu with a distinct game-generation group; verify selection, search and unchanged language-model settings.
 - [x] Show game assets on a shared canvas with selection outlines and reference display-only tools; verify desktop/mobile selection.
 - [x] Add bottom canvas menu, editable documents, real image generation, free node dragging and pan/fit controls; verify creation, movement and refresh.
-- [ ] Add From Library asset picker with real images, search/filter, multi-select and insertion; verify desktop/mobile and persistence.
+- [x] Add From Library asset picker with real images, search/filter, multi-select and insertion; verify desktop/mobile and persistence.
