@@ -6,7 +6,7 @@ export function parseWorkspaceTab(value: unknown): WorkspaceTab {
 }
 export type CreationRequest = { prompt: string; type: string; project: string; model: string; depth: string };
 export function isGameCreation(type: string) {
-  return ["Web Game", "Godot", "General Game", "TapTap Maker game"].includes(type);
+  return ["Laya IdeaAPI", "Web Game", "Godot", "General Game", "TapTap Maker game"].includes(type);
 }
 export const starPositions = [
   { x: 190, y: 330 }, { x: 285, y: 260 }, { x: 390, y: 330 },
