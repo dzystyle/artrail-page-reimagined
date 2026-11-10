@@ -118,7 +118,7 @@ export function Index() {
               <span className="relative text-xs text-muted-foreground">每个选择，都改写结局</span>
             </Link>
           </div>
-          <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
+          <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else if (isMediaCreation(request.type)) void navigate({ to: "/create" }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
         </section>
         <div className="mx-auto w-full max-w-[1600px] px-6 pt-8 sm:px-8">
           <RecentCanvases />

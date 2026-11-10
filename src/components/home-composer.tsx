@@ -1,22 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Box, Check, ChevronDown, Clapperboard, Folder, Gamepad2, Globe, Image, Lightbulb, Plus, Search, X } from "lucide-react";
+import { ArrowUp, Box, Check, ChevronDown, Folder, Gamepad2, Lightbulb, Plus, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CreationModelPicker, ProviderSettings } from "@/components/creation-model-picker";
-import { isGameCreation, type CreationRequest } from "@/lib/game-workspace";
+import { type CreationRequest } from "@/lib/game-workspace";
+import { gameCreationTypes, homeCreationTypes } from "@/lib/creation-types";
 import { gameSkills, type GameSkill } from "@/lib/game-skills";
 
-const types = [
-  { name: "Laya IdeaAPI", desc: "专业游戏生成 API · 从玩法创意到游戏创作", icon: Gamepad2 },
-  { name: "Web Game", desc: "在浏览器中运行，支持 HTML5、Phaser 或 Three.js", icon: Globe },
-  { name: "Interactive Story", desc: "场景、选择和分支", icon: Clapperboard },
-  { name: "Asset Canvas", desc: "在画布上创作图片、视频和 3D 资产", icon: Image },
-  { name: "Godot", desc: "需要在此电脑上安装 Godot 4", icon: Gamepad2 },
-  { name: "General Game", desc: "任意引擎，由智能体推荐", icon: Gamepad2 },
-  { name: "TapTap Maker game", desc: "使用 UrhoX/Lua 创建 TapTap Maker 项目", icon: Box },
-];
 /** Keeps the composer in one instance so the draft survives docking/expanding. */
 export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed, alwaysFloating = false, gameOnly = false }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null; alwaysFloating?: boolean; gameOnly?: boolean } = {}) {
   const anchor = useRef<HTMLDivElement>(null);
@@ -44,7 +36,7 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
     return () => window.removeEventListener("keydown", onKey);
   }, [expanded]);
   const [text, setText] = useState("");
-  const availableTypes = gameOnly ? types.filter(t => isGameCreation(t.name)) : types;
+  const availableTypes = gameOnly ? gameCreationTypes : homeCreationTypes;
   const [type, setType] = useState(availableTypes.find(t => t.name === initialType) ?? availableTypes[0]);
   const [typeOpen, setTypeOpen] = useState(false);
   const [project, setProject] = useState("ArTrail");
