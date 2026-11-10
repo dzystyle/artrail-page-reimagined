@@ -35,4 +35,4 @@
 - [x] Add Skill and project selection/management to the workspace Chat composer and verify the interactions.
 - [x] Add editable level configuration to game design documents; verify save, refresh and mobile layout.
 
-- [ ] Remove the game project menu and rebalance Agent/canvas layout; verify desktop and mobile.
+- [x] Remove the game project menu and rebalance Agent/canvas layout; verify desktop and mobile.

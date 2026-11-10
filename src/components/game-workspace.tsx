@@ -97,7 +97,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
         </div>
         <GameChatComposer key={id} ready={game.status === "ready" && !reviseM.isPending} onSubmit={message => reviseM.mutate(message)} />
       </aside>}
-      <main aria-label="游戏创作区域" className="flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
+      <main aria-label="游戏创作区域" className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
         <div className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border px-3">{!chatOpen && <Button variant="ghost" size="icon" className="size-7 shrink-0" aria-label="展开会话" title="展开会话" onClick={() => setChatOpen(true)}><PanelLeftOpen /></Button>}<nav aria-label="游戏工作区视图" className="flex min-w-0 overflow-x-auto">{tabs.map(t => <Button key={t.id} variant={tab === t.id ? "secondary" : "ghost"} size="sm" className="h-7 shrink-0 gap-1.5 px-2 text-xs" aria-current={tab === t.id ? "page" : undefined} onClick={() => onTab(t.id)}><t.icon className="size-3.5" />{t.label}</Button>)}</nav><Button variant={tab === "settings" ? "secondary" : "outline"} size="icon" className="size-8 shrink-0" aria-label="游戏设置" title="设置" onClick={() => onTab("settings")}><Settings className="size-4" /></Button></div>
         {tab === "game" && (game.code ? <iframe key={game.updated_at} title={`${game.title} 试玩`} sandbox="allow-scripts allow-pointer-lock" srcDoc={game.code} className="min-h-0 w-full flex-1 border-0 bg-black" /> : pending(statusLabel[game.status] ?? ""))}
         {tab === "canvas" && <GameAssetCanvas key={`${id}-canvas`} gameId={id} assets={assets} editingDesign={designEditOpen}>
