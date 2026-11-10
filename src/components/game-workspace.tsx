@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowUp, Code2, Download, FileText, Gamepad2, Image, Layers, Loader2, MessageSquare, PanelLeftClose, PanelLeftOpen, Play, RotateCcw, Sparkles, Swords, Settings, AlertCircle, Check } from "lucide-react";
-import { CreationModelPicker } from "@/components/creation-model-picker";
+import { GameChatComposer } from "@/components/game-chat-composer";
 import { GameAssetCanvas } from "@/components/game-asset-canvas";
 import { GameDesignEditor } from "@/components/game-design-editor";
 import { get, set } from "idb-keyval";
@@ -11,7 +11,6 @@ import type { GameDesign } from "@/lib/game-pipeline";
 import { GameSettings } from "@/components/game-settings";
 import { MultiplayerPanel } from "@/components/multiplayer-panel";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { type WorkspaceTab } from "@/lib/game-workspace";
 import { nextStep, statusLabel } from "@/lib/game-pipeline";
 import { generateAsset, generateCode, generateDesign, getGame, listGames, retryGame, reviseGame } from "@/lib/games.functions";
@@ -21,7 +20,7 @@ const tabs = [{ id: "game", label: "Game", icon: Gamepad2 }, { id: "design", lab
 
 const busy = (s?: string) => s === "designing" || s === "assets" || s === "coding" || s === "revising";
 
-export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab: WorkspaceTab; onTab: (tab: WorkspaceTab) => void }) {
+export function GameWorkspace({ id, tab, onTab, project = "ArTrail", onProjectChange = () => {} }: { id?: string | undefined; tab: WorkspaceTab; onTab: (tab: WorkspaceTab) => void; project?: string; onProjectChange?: (project: string) => void }) {
   const fetchGame = useServerFn(getGame);
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({
@@ -54,9 +53,6 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
   }, [game?.status, assets.length, planned, id]);
 
   const [chatOpen, setChatOpen] = useState(true);
-  const [draft, setDraft] = useState("");
-  const [model, setModel] = useState("deepseek-v4-pro");
-  const [depth, setDepth] = useState("High");
   const [assetKind, setAssetKind] = useState("全部");
   const [designEditOpen, setDesignEditOpen] = useState(false);
   const [localDesign, setLocalDesign] = useState<{ id: string; design: GameDesign } | null>(null);
@@ -96,10 +92,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
             {game.status === "error" && <p className="text-destructive">{game.error}</p>}
           </div>}
         </div>
-        <form className="m-3 rounded-lg bg-card p-3" onSubmit={e => { e.preventDefault(); const m = draft.trim(); if (!m) return; reviseM.mutate(m); setDraft(""); }}>
-          <Textarea aria-label="游戏修改需求" placeholder={game.code ? "描述你想修改的内容…" : "游戏生成完成后可继续修改"} value={draft} onChange={e => setDraft(e.target.value)} className="h-20 resize-none border-0 p-0 shadow-none focus-visible:ring-0" />
-          <div className="flex min-w-0 items-center justify-between gap-1"><CreationModelPicker compact model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} /><Button type="submit" size="icon" aria-label="发送修改需求" disabled={!draft.trim() || game.status !== "ready"} className="size-7 rounded-full"><ArrowUp /></Button></div>
-        </form>
+        <GameChatComposer key={id} ready={game.status === "ready" && !reviseM.isPending} project={project} onProjectChange={onProjectChange} onSubmit={message => reviseM.mutate(message)} />
       </aside>}
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-background">
         <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-border px-2">{!chatOpen && <Button variant="ghost" size="icon" className="hidden size-7 lg:flex" aria-label="展开会话" title="展开会话" onClick={() => setChatOpen(true)}><PanelLeftOpen /></Button>}<nav aria-label="游戏工作区视图" className="flex min-w-0 overflow-x-auto">{tabs.map(t => <Button key={t.id} variant={tab === t.id ? "secondary" : "ghost"} size="sm" className="h-7 shrink-0 gap-1.5 px-2 text-xs" aria-current={tab === t.id ? "page" : undefined} onClick={() => onTab(t.id)}><t.icon className="size-3.5" />{t.label}</Button>)}</nav><Button variant={tab === "settings" ? "secondary" : "outline"} size="icon" className="size-8 shrink-0" aria-label="游戏设置" title="设置" onClick={() => onTab("settings")}><Settings className="size-4" /></Button></div>

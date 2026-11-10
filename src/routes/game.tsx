@@ -40,5 +40,5 @@ function GamePage() {
   }, [creating]);
 
   if (creating) return <div className="flex h-dvh items-center justify-center gap-2 bg-surface-deep text-sm text-muted-foreground">{error || <><Loader2 className="animate-spin" />正在创建游戏…</>}</div>;
-  return <GameWorkspace id={search.id} tab={search.tab} onTab={tab => { void navigate({ search: prev => ({ ...prev, tab }), replace: true }); }} />;
+  return <GameWorkspace id={search.id} tab={search.tab} project={search.project} onProjectChange={project => { void navigate({ search: prev => ({ ...prev, project }), replace: true }); }} onTab={tab => { void navigate({ search: prev => ({ ...prev, tab }), replace: true }); }} />;
 }
