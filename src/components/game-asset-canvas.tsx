@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { Background, BackgroundVariant, ReactFlow, ReactFlowProvider, useNodesState, useReactFlow, type NodeProps } from "@xyflow/react";
 import { get, set } from "idb-keyval";
 import { Box, Crop, Download, Eraser, Expand, FileText, Grid2X2, Layers, Loader2, ScanFace, SquareUserRound, Trash2, Type, WandSparkles } from "lucide-react";
@@ -30,13 +30,12 @@ function DocumentNode({ data, selected }: NodeProps<CanvasNode>) {
     <p className="line-clamp-10 min-h-20 whitespace-pre-wrap text-xs leading-6 text-muted-foreground">{data.content || ""}</p>
   </div>;
 }
-function DesignNode({ data }: NodeProps<CanvasNode>) { return <div className="w-[300px]">{designContent.get(data.name)}</div>; }
-// Render-only children stay outside serializable canvas data.
-const designContent = new Map<string, ReactNode>();
+const DesignContext = createContext<ReactNode>(null);
+function DesignNode() { return <div className="w-[300px]">{useContext(DesignContext)}</div>; }
 const nodeTypes = { image: ImageNode, document: DocumentNode, design: DesignNode };
 
 export function GameAssetCanvas(props: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode }) {
-  return <ReactFlowProvider><CanvasWorkspace {...props} /></ReactFlowProvider>;
+  return <DesignContext.Provider value={props.children}><ReactFlowProvider><CanvasWorkspace {...props} /></ReactFlowProvider></DesignContext.Provider>;
 }
 function CanvasWorkspace({ gameId, assets, children, filters }: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>([]);
@@ -54,7 +53,6 @@ function CanvasWorkspace({ gameId, assets, children, filters }: { gameId: string
   const latest = useRef(nodes);
   latest.current = nodes;
   const storageKey = `artrail-canvas:${gameId}`;
-  designContent.set(gameId, children);
 
   useEffect(() => {
     let active = true;

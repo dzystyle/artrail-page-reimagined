@@ -31,7 +31,8 @@ export async function streamImage(
   };
   const res = await send(true);
   if (!res.ok || !res.body) {
-    throw new Error(`Image generation failed: ${res.status} ${await res.text().catch(() => "")}`);
+    const payload = await res.json().catch(() => ({})) as { message?: string; error?: { message?: string } };
+    throw new Error(payload.message ?? payload.error?.message ?? `图片生成失败（${res.status}）。`);
   }
 
   let sawCompleted = false;
@@ -91,7 +92,8 @@ export async function streamImage(
   if (!sawAnyEvent) {
     const replay = await send(false);
     if (!replay.ok) {
-      throw new Error(`Image generation failed: ${replay.status} ${await replay.text().catch(() => "")}`);
+      const payload = await replay.json().catch(() => ({})) as { message?: string; error?: { message?: string } };
+      throw new Error(payload.message ?? payload.error?.message ?? `图片生成失败（${replay.status}）。`);
     }
     const json = (await replay.json()) as { data?: { b64_json?: string }[] };
     const b64 = json.data?.[0]?.b64_json;

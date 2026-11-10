@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@xyflow/react/dist/style.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -231,6 +232,14 @@
   background-image: radial-gradient(var(--border) 1px, transparent 1px);
   background-size: 22px 22px;
 }
+.game-flow .react-flow {
+  --xy-background-color: var(--surface-deep);
+  --xy-background-pattern-dots-color: var(--border);
+  --xy-selection-background-color: color-mix(in oklch, var(--build) 10%, transparent);
+  --xy-selection-border: 1px solid var(--build);
+  --xy-node-boxshadow-selected: none;
+}
+.game-flow .react-flow__node { border: 0; background: transparent; }
 .image-tool-style { background-image: linear-gradient(to top, var(--image-style-glow), transparent 80%); }
 .image-tool-outfit { background-image: linear-gradient(to top, var(--image-outfit-glow), transparent 80%); }
 .image-tool-badge { background: var(--image-hot); color: var(--image-badge-foreground); border-radius: 4px; padding: 1px 5px; font-size: 8px; font-style: italic; }
