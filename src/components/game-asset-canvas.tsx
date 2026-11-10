@@ -23,7 +23,7 @@ export function GameAssetCanvas({ assets, children, filters }: { assets: CanvasA
 
   return <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-surface-deep" aria-label="游戏资产画布">
     {filters && <div className="flex shrink-0 flex-wrap gap-1 border-b border-border bg-background px-4 py-2">{filters}</div>}
-    {selected && <div role="toolbar" aria-label="图片工具" className="absolute inset-x-3 top-3 z-20 flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg" style={undefined}>
+    {selected && <div role="toolbar" aria-label="图片工具" className={`absolute inset-x-3 z-20 flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg ${filters ? "top-16" : "top-3"}`}>
       {tools.map(tool => <Button key={tool.name} variant="ghost" size="sm" aria-disabled="true" title={`${tool.name}（仅展示）`} className="h-10 shrink-0 gap-2 px-3"><tool.icon className="size-5" />{tool.name}</Button>)}
       <span className="mx-1 h-7 shrink-0 border-l border-border" />
       <Button variant="ghost" size="icon" aria-label="下载图片" aria-disabled="true" title="下载图片（仅展示）" className="shrink-0"><Download /></Button>
