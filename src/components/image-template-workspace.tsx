@@ -11,6 +11,7 @@ import type { ImageTemplate } from "@/lib/image-templates";
 export function ImageTemplateWorkspace({ initialTemplate, onClose }: { initialTemplate: ImageTemplate; onClose: () => void }) {
   const [template, setTemplate] = useState(initialTemplate);
   const [mode, setMode] = useState<"workspace" | "canvas">("workspace");
+  const [canvasOpened, setCanvasOpened] = useState(false);
   const others = imageTemplates.filter(t => t.id !== template.id);
   const sample = others.slice(0, 2);
   const [recent, setRecent] = useState<RecentImage | null>(null);
@@ -22,18 +23,18 @@ export function ImageTemplateWorkspace({ initialTemplate, onClose }: { initialTe
   return <div className="flex h-full min-h-0 flex-col bg-background text-foreground">
     <header className="flex items-center justify-between px-4 py-3">
       <div className="flex rounded-full border border-border bg-card p-1 text-xs">
-        {([ ["workspace", "工作台"], ["canvas", "画布"] ] as const).map(([value, label]) => <Button key={value} variant={mode === value ? "default" : "ghost"} aria-pressed={mode === value} onClick={() => setMode(value)} className="h-8 rounded-full px-4 text-xs">{label}</Button>)}
+        {([ ["workspace", "工作台"], ["canvas", "画布"] ] as const).map(([value, label]) => <Button key={value} variant={mode === value ? "default" : "ghost"} aria-pressed={mode === value} onClick={() => { if (value === "canvas") setCanvasOpened(true); setMode(value); }} className="h-8 rounded-full px-4 text-xs">{label}</Button>)}
       </div>
       <div className="flex items-center gap-2">
-        <Button size="icon" variant="outline" className="relative rounded-full" aria-label="通知"><Bell className="size-4" /><span className="absolute -right-0.5 -top-0.5 size-3 rounded-full bg-destructive text-[8px] leading-3 text-destructive-foreground">1</span></Button>
-        <div className="flex items-center overflow-hidden rounded-full border border-border bg-card text-xs"><span className="flex items-center gap-1 px-3"><Gem className="size-3" />6</span><span className="bg-secondary px-3 py-2 font-medium">开通会员</span></div>
+        <Button size="icon" variant="outline" className="relative hidden rounded-full sm:flex" aria-label="通知"><Bell className="size-4" /><span className="absolute -right-0.5 -top-0.5 size-3 rounded-full bg-destructive text-[8px] leading-3 text-destructive-foreground">1</span></Button>
+        <div className="flex items-center overflow-hidden rounded-full border border-border bg-card text-xs"><span className="flex items-center gap-1 px-3 py-2"><Gem className="size-3" />6</span><span className="hidden bg-secondary px-3 py-2 font-medium sm:block">开通会员</span></div>
         <span className="hidden size-9 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground sm:flex">幻</span>
         <Button size="icon" variant="ghost" aria-label="关闭模板工作台" title="关闭" onClick={onClose}><X className="size-4" /></Button>
       </div>
     </header>
 
     <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-4 lg:flex-row lg:overflow-hidden">
-      <aside className="flex w-full shrink-0 flex-col gap-3 border-border bg-card p-3 lg:h-full lg:w-[340px] lg:overflow-y-auto xl:w-[380px]">
+      <aside className={`${mode === "canvas" ? "hidden lg:flex" : "flex"} w-full shrink-0 flex-col gap-3 border-border bg-card p-3 lg:h-full lg:w-[340px] lg:overflow-y-auto xl:w-[380px]`}>
         <div className="relative overflow-hidden rounded-xl">
           <img src={template.image} alt={template.title} className="aspect-[2.1/1] w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
@@ -69,7 +70,7 @@ export function ImageTemplateWorkspace({ initialTemplate, onClose }: { initialTe
       </aside>
 
       <main className="relative min-h-[480px] min-w-0 flex-1 lg:min-h-0">
-        <div hidden={mode !== "canvas"} className="h-[560px] lg:h-full"><ImageTemplateCanvas key={template.id} template={template} samples={sample} /></div>
+        <div hidden={mode !== "canvas"} className="h-full min-h-[480px]">{canvasOpened && <ImageTemplateCanvas key={template.id} template={template} samples={sample} />}</div>
         <div hidden={mode !== "workspace"} className="h-full overflow-y-auto"><div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
           {wall.map((t, i) => <Button variant="ghost" key={`${t.id}-${i}`} aria-label={`使用${t.title}`} onClick={() => setTemplate(t)} className={`group relative block h-auto whitespace-normal overflow-hidden rounded-lg border border-border bg-card p-0 text-left ${i % 3 === 1 ? "aspect-[1.4/1]" : "aspect-[1.6/1]"}`}>
             <img src={t.image} alt={t.title} loading="lazy" className="h-full w-full object-cover transition-transform group-hover:scale-105" />
