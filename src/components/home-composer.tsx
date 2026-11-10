@@ -86,9 +86,9 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
       <div className="flex flex-nowrap items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none]">
           <input ref={fileInput} type="file" multiple className="hidden" aria-label="添加附件" onChange={e => { setFiles(list => [...list, ...Array.from(e.target.files ?? [])]); e.target.value = ""; }} />
-          <Button type="button" variant="ghost" size="icon" title="添加附件" aria-label="添加附件" onClick={() => fileInput.current?.click()}><Plus className="size-5" /></Button>
+          <Button type="button" variant="ghost" size="icon" title="添加附件" aria-label="添加附件" className="shrink-0" onClick={() => fileInput.current?.click()}><Plus className="size-5" /></Button>
           <Popover open={skillOpen} onOpenChange={setSkillOpen}>
-            <PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择 Skill" className="text-muted-foreground"><Box />Skill<ChevronDown /></Button></PopoverTrigger>
+            <PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择 Skill" className="shrink-0 text-muted-foreground"><Box />Skill<ChevronDown /></Button></PopoverTrigger>
             <PopoverContent align="start" side="bottom" className="max-h-[min(560px,70vh)] w-[min(850px,calc(100vw-32px))] overflow-y-auto p-0">
               <div className="flex items-center gap-2 border-b border-border p-3"><Search className="size-4 text-muted-foreground" /><Input aria-label="搜索 Skill" placeholder="搜索 skill" value={skillQuery} onChange={e => { setSkillQuery(e.target.value); setSkillPreview(null); }} className="border-0 shadow-none focus-visible:ring-0" /></div>
               <div className="grid sm:grid-cols-[110px_1fr_1fr]">
@@ -98,20 +98,20 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
               </div>
             </PopoverContent>
           </Popover>
-          <Popover open={typeOpen} onOpenChange={setTypeOpen}><PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择创作类型" className="text-muted-foreground"><TypeIcon className={type.name === "Laya IdeaAPI" ? "text-build" : ""} /><span>{type.name}</span><ChevronDown /></Button></PopoverTrigger>
+          <Popover open={typeOpen} onOpenChange={setTypeOpen}><PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择创作类型" className="shrink-0 text-muted-foreground"><TypeIcon className={type.name === "Laya IdeaAPI" ? "text-build" : ""} /><span>{type.name}</span><ChevronDown /></Button></PopoverTrigger>
             <PopoverContent align="start" side="bottom" className="w-[min(420px,calc(100vw-32px))] rounded-lg p-1.5">
               {availableTypes.map(t => t.name === "Laya IdeaAPI" ? <div key={t.name} className="mb-1.5 border-b border-border pb-1.5"><Button type="button" variant="ghost" aria-label="Laya IdeaAPI 创作类型" onClick={() => { setType(t); setTypeOpen(false); }} className="h-auto min-h-24 w-full justify-start gap-3 whitespace-normal rounded-lg border border-build/25 bg-build/10 px-3 py-3 text-left hover:bg-build/15"><span className="grid size-10 shrink-0 place-items-center rounded-lg bg-build/15 text-build"><Gamepad2 className="size-5" /></span><span className="min-w-0 flex-1"><span className="flex flex-wrap items-center gap-2"><span className="text-[15px] font-semibold text-foreground">{t.name}</span><span className="rounded border border-build/25 bg-build/15 px-1.5 py-0.5 text-[10px] font-medium text-build">推荐</span></span><span className="mt-1 block text-xs font-normal leading-5 text-muted-foreground">{t.desc}</span></span>{type.name === t.name && <Check className="shrink-0 text-build" />}</Button></div> : <Button type="button" key={t.name} variant="ghost" onClick={() => { setType(t); setTypeOpen(false); }} className={`h-auto w-full justify-start whitespace-normal px-3 py-2 text-left ${type.name === t.name ? "bg-accent" : ""}`}><t.icon className="text-muted-foreground" /><span className="flex-1"><span className="block text-[15px] font-normal">{t.name}</span><span className="block text-[13px] font-normal leading-snug text-muted-foreground">{t.desc}</span></span>{t.name === type.name && <Check />}</Button>)}
               {!gameOnly && <Button type="button" variant="ghost" className="h-auto w-full justify-start px-3 py-2" onClick={() => { setTypeOpen(false); setSettingsOpen(true); }}><Plus /><span className="text-left"><span className="block">More types…</span><span className="text-xs font-normal text-muted-foreground">提供商设置</span></span></Button>}
             </PopoverContent>
           </Popover>
-          <Popover open={projectOpen} onOpenChange={v => { setProjectOpen(v); if (!v) setProjectQuery(""); }}><PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择项目" className="max-w-[180px] text-muted-foreground"><Folder /><span className="truncate">项目：{project}</span><ChevronDown /></Button></PopoverTrigger>
+          <Popover open={projectOpen} onOpenChange={v => { setProjectOpen(v); if (!v) setProjectQuery(""); }}><PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择项目" className="max-w-[180px] shrink-0 text-muted-foreground"><Folder /><span className="truncate">项目：{project}</span><ChevronDown /></Button></PopoverTrigger>
             <PopoverContent align="start" side="bottom" className="w-[min(300px,calc(100vw-32px))] rounded-xl p-0">
               <div className="border-b border-border p-2"><div className="relative"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input value={projectQuery} onChange={e => setProjectQuery(e.target.value)} placeholder="搜索项目..." className="rounded-full pl-9" /></div></div>
               <div className="p-1.5">{["NEW-HOPE", "F3/FX", "ArTrail"].filter(n => n.toLowerCase().includes(projectQuery.toLowerCase())).map(n => <Button type="button" key={n} variant="ghost" onClick={() => { setProject(n); setProjectOpen(false); }} className={`h-11 w-full justify-start gap-3 px-2 font-normal ${n === project ? "bg-accent text-link" : ""}`}><span className="grid size-8 place-items-center rounded-full bg-secondary"><Folder className="size-4 text-link" /></span>{n}</Button>)}</div>
             </PopoverContent>
           </Popover>
         </div>
-        <div className="ml-auto flex min-w-0 items-center gap-2">
+        <div className="ml-auto flex shrink-0 items-center gap-2">
           <CreationModelPicker model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} />
           <Button type="submit" size="icon" aria-label="发送创作内容" title="发送" disabled={!text.trim()} className="size-10 shrink-0 rounded-full"><ArrowUp /></Button>
         </div>
