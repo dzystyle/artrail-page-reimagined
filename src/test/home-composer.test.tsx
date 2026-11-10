@@ -7,7 +7,7 @@ describe("Homepage composer", () => {
 
   it("submits Laya IdeaAPI as a game creation type without changing the model", async () => {
     const onCreate = vi.fn();
-    render(<HomeComposer onCreate={onCreate} />);
+    render(<HomeComposer gameOnly onCreate={onCreate} />);
     fireEvent.click(screen.getByRole("button", { name: "选择创作类型" }));
     fireEvent.click(await screen.findByRole("button", { name: "Laya IdeaAPI 创作类型" }));
     fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "制作一个打地鼠游戏" } });
@@ -21,6 +21,37 @@ describe("Homepage composer", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "制作一个跳跃游戏" } });
     fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
     expect(onCreate).toHaveBeenCalledWith({ prompt: "制作一个跳跃游戏", type: "Web Game", project: "ArTrail", model: "deepseek-v4-pro", depth: "High" });
+  });
+
+  it("offers media generation types on the homepage menu instead of engine types", async () => {
+    render(<HomeComposer />);
+    fireEvent.click(screen.getByRole("button", { name: "选择创作类型" }));
+    expect(await screen.findByRole("button", { name: /图片生成/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /视频生成/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /音频生成/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Laya IdeaAPI 创作类型" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Godot/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /General Game/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /TapTap Maker game/ })).not.toBeInTheDocument();
+  });
+
+  it("submits the selected media generation type", async () => {
+    const onCreate = vi.fn();
+    render(<HomeComposer onCreate={onCreate} />);
+    fireEvent.click(screen.getByRole("button", { name: "选择创作类型" }));
+    fireEvent.click(await screen.findByRole("button", { name: /图片生成/ }));
+    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "一张雨天城市的宣传图" } });
+    fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
+    expect(onCreate).toHaveBeenCalledWith(expect.objectContaining({ type: "图片生成", prompt: "一张雨天城市的宣传图" }));
+  });
+
+  it("keeps engine types and hides media types in the game-only menu", async () => {
+    render(<HomeComposer gameOnly initialType="Web Game" />);
+    fireEvent.click(screen.getByRole("button", { name: "选择创作类型" }));
+    expect(await screen.findByRole("button", { name: "Laya IdeaAPI 创作类型" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Godot/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /图片生成/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /音频生成/ })).not.toBeInTheDocument();
   });
 
   it("limits Build requests to game types even when given a non-game default", async () => {

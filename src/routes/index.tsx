@@ -15,6 +15,7 @@ import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases } from "@/components/home-gallery";
 import { HomeImageGallery } from "@/components/home-image-gallery";
 import { isGameCreation } from "@/lib/game-workspace";
+import { isMediaCreation } from "@/lib/creation-types";
 import entryBuild from "@/assets/game-3.jpg";
 import entryCreate from "@/assets/entry-create.jpg";
 import entryStory from "@/assets/entry-story.jpg";
