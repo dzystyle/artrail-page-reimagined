@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { imageTemplates } from "@/lib/image-templates";
+import { RecentImageViewer, type RecentImage } from "@/components/recent-image-viewer";
 
 type Search = { id: string };
 
@@ -31,6 +32,7 @@ function ImageTemplatePage() {
   const template = imageTemplates.find(t => t.id === id) ?? imageTemplates[0]!;
   const others = imageTemplates.filter(t => t.id !== template.id);
   const sample = others.slice(0, 2);
+  const [recent, setRecent] = useState<RecentImage | null>(null);
   const [assist, setAssist] = useState(false);
   const [expand, setExpand] = useState(false);
   const [desc, setDesc] = useState(`保留 [图1] 的内容与构图，使用 [图2] 的画风重新绘制。`);
@@ -96,7 +98,8 @@ function ImageTemplatePage() {
 
       <aside className="hidden w-16 shrink-0 flex-col items-center gap-3 xl:flex">
         <p className="text-xs text-muted-foreground">最近</p>
-        {imageTemplates.slice(0, 2).map(t => <button key={t.id} onClick={() => navigate({ search: { id: t.id } })} className="overflow-hidden rounded-lg border border-border"><img src={t.image} alt={t.title} className="size-14 object-cover" /></button>)}
+        <RecentImageViewer item={recent} onClose={() => setRecent(null)} />
+        {imageTemplates.slice(0, 2).map(t => <button key={t.id} onClick={() => setRecent(t)} aria-label={`查看 ${t.title}`} className="overflow-hidden rounded-lg border border-border"><img src={t.image} alt={t.title} className="size-14 object-cover" /></button>)}
         <span className="mt-auto text-xs text-muted-foreground">全部 →</span>
       </aside>
     </div>
