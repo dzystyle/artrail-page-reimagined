@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
+import { AddProviderDialog, type ProviderDraft } from "@/components/add-provider-dialog";
 
 const modelNames = ["deepseek-flash", "deepseek-v4-flash", "deepseek-v4-pro", "gemini-3.5-flash", "gemini-3.8-flash", "gemini-4-argon", "gpt-5.5", "gpt-5.6-luna", "gpt-5.6-sol"];
 const depths = ["Off", "Low", "Medium", "High"];
-const initialProviders = [
+const initialProviders: ({ name: string; detail: string; enabled: boolean } & Partial<ProviderDraft>)[] = [
   { name: "ArTrail-deepseed", detail: "自定义端点 · 语言 · 图像", enabled: true },
   { name: "火山引擎方舟", detail: "API 密钥 · 图像 · 视频", enabled: true },
   { name: "Hyper3D", detail: "API 密钥 · 3D", enabled: true },
@@ -20,9 +21,8 @@ export function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpen
   const [tab, setTab] = useState("全部");
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
-  const [endpoint, setEndpoint] = useState("");
   const [notice, setNotice] = useState("");
-  return <Dialog open={open} onOpenChange={onOpenChange}>
+  return <><Dialog open={open && !editing} onOpenChange={onOpenChange}>
     <DialogContent className="max-h-[85vh] max-w-[850px] overflow-y-auto bg-background p-0">
       <div className="flex min-h-[560px]">
         <aside className="hidden w-44 shrink-0 border-r border-border p-4 sm:block">
@@ -34,7 +34,7 @@ export function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpen
           <DialogDescription className="sr-only">模型提供商与默认模型设置</DialogDescription>
           <div className="mt-6 flex gap-3">
             <Input aria-label="搜索提供商" placeholder="搜索提供商" value={search} onChange={e => setSearch(e.target.value)} />
-            <Button variant="secondary" onClick={() => { setName(""); setEndpoint(""); setEditing(true); }}><Plus />添加提供商</Button>
+            <Button variant="secondary" onClick={() => { setName(""); setEditing(true); }}><Plus />添加提供商</Button>
           </div>
           <div className="mt-4 flex flex-wrap gap-1">{["全部", "语言", "图像", "视频", "3D", "声音"].map(t => <Button key={t} variant={tab === t ? "secondary" : "ghost"} size="sm" onClick={() => setTab(t)}>{t}</Button>)}</div>
           <h3 className="mb-2 mt-6 text-sm font-medium">默认模型</h3>
@@ -44,19 +44,22 @@ export function ProviderSettings({ open, onOpenChange }: { open: boolean; onOpen
             <div className="flex justify-between p-3"><span>3D</span><span className="text-muted-foreground">Hyper3D</span></div>
           </div>
           <h3 className="mb-2 mt-6 text-sm font-medium">提供商</h3>
-          <div className="divide-y divide-border rounded-lg bg-card">{providers.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) && (tab === "全部" || p.detail.includes(tab))).map(p => <div key={p.name} className="flex items-center gap-3 p-3"><Box className="size-5 shrink-0 text-muted-foreground" /><div className="min-w-0 flex-1"><p className="break-words text-sm">{p.name}</p><p className="text-xs text-muted-foreground">{p.detail}</p></div><Switch aria-label={`启用 ${p.name}`} checked={p.enabled} onCheckedChange={enabled => setProviders(list => list.map(item => item.name === p.name ? { ...item, enabled } : item))} className="data-[state=checked]:bg-build" /><Button variant="ghost" size="icon" aria-label={`配置 ${p.name}`} title="配置提供商" onClick={() => { setName(p.name); setEndpoint(""); setEditing(true); }}><Settings /></Button></div>)}</div>
+          <div className="divide-y divide-border rounded-lg bg-card">{providers.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) && (tab === "全部" || p.detail.includes(tab))).map(p => <div key={p.name} className="flex items-center gap-3 p-3"><Box className="size-5 shrink-0 text-muted-foreground" /><div className="min-w-0 flex-1"><p className="break-words text-sm">{p.name}</p><p className="text-xs text-muted-foreground">{p.detail}</p></div><Switch aria-label={`启用 ${p.name}`} checked={p.enabled} onCheckedChange={enabled => setProviders(list => list.map(item => item.name === p.name ? { ...item, enabled } : item))} className="data-[state=checked]:bg-build" /><Button variant="ghost" size="icon" aria-label={`配置 ${p.name}`} title="配置提供商" onClick={() => { setName(p.name); setEditing(true); }}><Settings /></Button></div>)}</div>
           <h3 className="mb-2 mt-6 text-sm font-medium">热门提供商</h3>
-          {["OpenAI", "Anthropic", "OpenRouter"].filter(p => p.toLowerCase().includes(search.toLowerCase())).map(p => <div key={p} className="flex items-center justify-between border-b border-border py-3 text-sm"><span>{p}</span><Button variant="secondary" size="sm" onClick={() => { setName(p); setEndpoint(""); setEditing(true); }}>配置</Button></div>)}
-          {editing && <form className="mt-4 space-y-3 border-t border-border pt-4" onSubmit={e => { e.preventDefault(); if (!providers.some(p => p.name === name.trim())) setProviders(list => [...list, { name: name.trim(), detail: "自定义端点 · 语言", enabled: false }]); setEditing(false); setNotice("设置已暂存于本次页面；尚未连接模型服务。"); }}>
-            <Input aria-label="提供商名称" placeholder="提供商名称" value={name} onChange={e => setName(e.target.value)} required />
-            <Input aria-label="服务地址" placeholder="https://…" type="url" value={endpoint} onChange={e => setEndpoint(e.target.value)} required />
-            <div className="flex justify-end gap-2"><Button type="button" variant="ghost" onClick={() => setEditing(false)}>取消</Button><Button type="submit">保存</Button></div>
-          </form>}
+          {["OpenAI", "Anthropic", "OpenRouter"].filter(p => p.toLowerCase().includes(search.toLowerCase())).map(p => <div key={p} className="flex items-center justify-between border-b border-border py-3 text-sm"><span>{p}</span><Button variant="secondary" size="sm" onClick={() => { setName(p); setEditing(true); }}>配置</Button></div>)}
           {notice && <p role="status" className="mt-4 text-sm text-muted-foreground">{notice}</p>}
         </div>
       </div>
     </DialogContent>
-  </Dialog>;
+  </Dialog>{open && editing && <AddProviderDialog initial={providers.find(provider => provider.name === name) ?? { name }} onClose={() => setEditing(false)} onSave={draft => {
+    setProviders(list => {
+      const existing = list.find(provider => provider.name === name || provider.name === draft.name);
+      const updated = { ...draft, detail: `${draft.protocol} · 语言 · ${draft.models.filter(model => model.enabled).length} 个模型`, enabled: existing?.enabled ?? false };
+      return existing ? list.map(provider => provider === existing ? updated : provider) : [...list, updated];
+    });
+    setEditing(false);
+    setNotice("设置已暂存于本次页面；尚未连接模型服务，密钥未保存。");
+  }} />}</>;
 }
 
 export function CreationModelPicker({ model, depth, onModelChange, onDepthChange, compact = false }: {
