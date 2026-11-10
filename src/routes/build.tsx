@@ -52,7 +52,7 @@ function BuildPage() {
   const mainRef = useRef<HTMLElement>(null);
   const { mode } = Route.useSearch();
   const story = mode === "story";
-  const visibleWorks = worksForMode(works, mode);
+  const visibleWorks = worksForMode(buildWorks, mode);
   const [baseGame, setBaseGame] = useState<ExploreGame | null>(null);
   const [assetTemplate, setAssetTemplate] = useState<string | null>(null);
   const [seed, setSeed] = useState<{ text: string; n: number } | null>(null);
@@ -73,7 +73,12 @@ function BuildPage() {
         {story ? <section aria-labelledby="explore-works" className="mt-3">
           <h2 id="explore-works" className="mb-4 text-base font-semibold">{story ? "互动故事案例" : "探索"}</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-6 xl:grid-cols-4">
-            {visibleWorks.map(w => <div key={w.name}><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover" /><h3 className="mt-2 text-sm font-medium">{w.name}</h3><p className="mt-0.5 text-xs text-muted-foreground">{w.type}</p></div>)}
+            {visibleWorks.map(w => {
+              const card = <><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover transition-opacity group-hover:opacity-90" /><h3 className="mt-2 text-sm font-medium">{w.name}</h3><p className="mt-0.5 text-xs text-muted-foreground">{w.type}</p></>;
+              return w.url
+                ? <a key={w.name} href={w.url} target="_blank" rel="noopener noreferrer" className="group block cursor-pointer">{card}</a>
+                : <div key={w.name} className="group">{card}</div>;
+            })}
           </div>
         </section> : <ExploreGames onContinue={g => { setBaseGame(g); toComposer(); }} onUsePrompt={g => { setSeed({ text: g.prompt, n: Date.now() }); toComposer(); }} />}
         {!story && <section aria-labelledby="asset-templates" className="mt-10 border-t border-border pt-8">
