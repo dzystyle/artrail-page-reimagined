@@ -38,8 +38,8 @@ export function HomeImageGallery() {
       <Button variant="ghost" className="hidden h-6 shrink-0 gap-0 px-0 text-[10px] text-muted-foreground sm:flex" onClick={() => setCategory("全部")}>查看全部<ChevronRight className="size-3" /></Button>
     </div>
     <div aria-label="图片模板列表" className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
-      {filtered.map(item => <Button variant="ghost" key={item.id} onClick={() => setSelected(item)} aria-label={`查看${item.title}`} className="group relative aspect-square h-auto w-full overflow-hidden rounded-lg bg-card p-0">
-        <img src={item.image} alt={item.title} width={384} height={726} loading="lazy" className="h-full w-full object-fill transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.02]" />
+      {filtered.map(item => <Button asChild variant="ghost" key={item.id} className="group relative aspect-square h-auto w-full overflow-hidden rounded-lg bg-card p-0">
+        <Link to="/image-template" search={{ id: item.id }} aria-label={`查看${item.title}`}><img src={item.image} alt={item.title} width={384} height={726} loading="lazy" className="h-full w-full object-fill transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.02]" /></Link>
       </Button>)}
     </div>
     <div className="mt-5 flex justify-center"><Button variant="default" className="rounded-full px-5 text-xs" onClick={() => setCategory("全部")}>查看全部模板<ArrowUpRight className="size-3" /></Button></div>

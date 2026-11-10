@@ -14,6 +14,7 @@ import { Route as AssetTemplateRouteImport } from './routes/asset-template'
 import { Route as BuildRouteImport } from './routes/build'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as GameRouteImport } from './routes/game'
+import { Route as ImageTemplateRouteImport } from './routes/image-template'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
@@ -44,6 +45,11 @@ const CreateRoute = CreateRouteImport.update({
 const GameRoute = GameRouteImport.update({
   id: '/game',
   path: '/game',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImageTemplateRoute = ImageTemplateRouteImport.update({
+  id: '/image-template',
+  path: '/image-template',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PluginsRoute = PluginsRouteImport.update({
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
+  '/image-template': typeof ImageTemplateRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
+  '/image-template': typeof ImageTemplateRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
+  '/image-template': typeof ImageTemplateRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/build'
     | '/create'
     | '/game'
+    | '/image-template'
     | '/plugins'
     | '/settings'
     | '/projects/$projectId'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/build'
     | '/create'
     | '/game'
+    | '/image-template'
     | '/plugins'
     | '/settings'
     | '/projects/$projectId'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/build'
     | '/create'
     | '/game'
+    | '/image-template'
     | '/plugins'
     | '/settings'
     | '/projects/$projectId'
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   BuildRoute: typeof BuildRoute
   CreateRoute: typeof CreateRoute
   GameRoute: typeof GameRoute
+  ImageTemplateRoute: typeof ImageTemplateRoute
   PluginsRoute: typeof PluginsRoute
   SettingsRoute: typeof SettingsRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       path: '/game'
       fullPath: '/game'
       preLoaderRoute: typeof GameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/image-template': {
+      id: '/image-template'
+      path: '/image-template'
+      fullPath: '/image-template'
+      preLoaderRoute: typeof ImageTemplateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plugins': {
@@ -262,6 +282,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuildRoute: BuildRoute,
   CreateRoute: CreateRoute,
   GameRoute: GameRoute,
+  ImageTemplateRoute: ImageTemplateRoute,
   PluginsRoute: PluginsRoute,
   SettingsRoute: SettingsRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
