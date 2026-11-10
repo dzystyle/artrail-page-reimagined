@@ -2,12 +2,13 @@ import { useState } from "react";
 import { ArrowLeftRight, ChevronDown, ChevronUp, Columns2, Copy, Download, Expand, Frame, Image as ImageIcon, Info, Minus, Plus, RotateCw, Scissors, Sparkles, Star, SwatchBook, Wand2, X, ZoomIn, Hash, ListFilter, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export type RecentImage = { id: string; image: string; title: string };
 
 const soon = () => toast("该功能暂未接入");
 
-export function RecentImageViewer({ item, onClose }: { item: RecentImage | null; onClose: () => void }) {
+export function RecentImageViewer({ item, onClose, onEditCanvas }: { item: RecentImage | null; onClose: () => void; onEditCanvas: (item: RecentImage) => void }) {
   const [zoom, setZoom] = useState(100);
   const [open, setOpen] = useState(true);
   const prompt = `保持原图${item?.title ?? ""}的主体与构图，为其设计 5 套风格不同的游戏素材。`;
@@ -58,7 +59,7 @@ export function RecentImageViewer({ item, onClose }: { item: RecentImage | null;
             <img src={item.image} alt="参考图像" className="mt-2 size-14 rounded-md border border-border object-cover" />
           </div>
           <div className="mt-auto flex flex-col gap-2 pt-4">
-            <button onClick={soon} className="flex h-11 items-center justify-center gap-2 rounded-lg bg-foreground text-sm font-medium text-background"><Hash className="size-4" />去画布编辑</button>
+            <Button onClick={() => onEditCanvas(item)} className="flex h-11 items-center justify-center gap-2 rounded-lg bg-foreground text-sm font-medium text-background"><Hash className="size-4" />去画布编辑</Button>
             <div className="grid grid-cols-2 gap-2">
               <button onClick={soon} className={btn}><RotateCw className="size-4" />再次生成</button>
               <button onClick={soon} className={btn}><ArrowLeftRight className="size-4" />复用参数</button>
