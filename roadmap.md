@@ -37,4 +37,4 @@
 
 - [x] Remove the game project menu and rebalance Agent/canvas layout; verify desktop and mobile.
 - [x] Open homepage image templates in a shared workspace dialog and implement canvas switching; verify desktop/mobile and retained edits.
-- [ ] Match image-template canvas reference with a full-width spatial surface, right image panel and bottom tools; verify switching, dragging and mobile.
+- [x] Match image-template canvas reference with a full-width spatial surface, right image panel and bottom tools; verify switching, dragging and mobile.
