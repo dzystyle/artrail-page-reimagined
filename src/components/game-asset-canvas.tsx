@@ -34,10 +34,10 @@ const DesignContext = createContext<ReactNode>(null);
 function DesignNode() { return <div className="w-[300px]">{useContext(DesignContext)}</div>; }
 const nodeTypes = { image: ImageNode, document: DocumentNode, design: DesignNode };
 
-export function GameAssetCanvas(props: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode }) {
+export function GameAssetCanvas(props: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string }) {
   return <DesignContext.Provider value={props.children}><ReactFlowProvider><CanvasWorkspace {...props} /></ReactFlowProvider></DesignContext.Provider>;
 }
-function CanvasWorkspace({ gameId, assets, children, filters }: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode }) {
+function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全部" }: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>([]);
   const { fitView, screenToFlowPosition } = useReactFlow<CanvasNode>();
   const [hand, setHand] = useState(false);
@@ -78,7 +78,13 @@ function CanvasWorkspace({ gameId, assets, children, filters }: { gameId: string
   };
   const position = () => {
     const bounds = host.current?.getBoundingClientRect();
-    return bounds ? screenToFlowPosition({ x: bounds.x + bounds.width / 2 - 100, y: bounds.y + bounds.height / 2 - 100 }) : { x: 100, y: 100 };
+    const center = bounds ? screenToFlowPosition({ x: bounds.x + bounds.width / 2 - 100, y: bounds.y + bounds.height / 2 - 100 }) : { x: 100, y: 100 };
+    let candidate = center;
+    for (let i = 0; i < 100; i++) {
+      if (!nodes.some(n => Math.abs(n.position.x - candidate.x) < 310 && Math.abs(n.position.y - candidate.y) < 340)) return candidate;
+      candidate = { x: center.x + (i % 3) * 340, y: center.y + (Math.floor(i / 3) + 1) * 370 };
+    }
+    return candidate;
   };
   const submit = async () => {
     if (!content.trim() || working) return;
@@ -95,13 +101,14 @@ function CanvasWorkspace({ gameId, assets, children, filters }: { gameId: string
     try {
       await streamImage("/api/public/canvas-image", { gameId, prompt: content }, (url, final) => setNodes(current => current.map(n => n.id === id ? { ...n, data: { ...n.data, url, partial: !final } } : n)));
       setEditor(null);
+      void fitView({ padding: 0.25, maxZoom: 1 });
     } catch (e) {
       setError(e instanceof Error ? e.message : "图片生成失败。");
       setNodes(current => current.filter(n => n.id !== id));
     } finally { setWorking(false); }
   };
   const selected = nodes.find(node => node.selected && node.type === "image");
-  const displayNodes = nodes.map(node => ({ ...node, data: { ...node.data, onEdit: () => openEditor("document", node.id), onDimensions: (value: string) => { if (latest.current.find(n => n.id === node.id)?.data.dimensions !== value) setNodes(current => current.map(n => n.id === node.id ? { ...n, data: { ...n.data, dimensions: value } } : n)); } } }));
+  const displayNodes = nodes.map(node => ({ ...node, hidden: (node.type === "design" && !children) || (visibleKind !== "全部" && node.data.kind !== visibleKind), data: { ...node.data, onEdit: () => openEditor("document", node.id), onDimensions: (value: string) => { if (latest.current.find(n => n.id === node.id)?.data.dimensions !== value) setNodes(current => current.map(n => n.id === node.id ? { ...n, data: { ...n.data, dimensions: value } } : n)); } } }));
 
   return <div ref={host} className="game-flow relative flex min-h-0 flex-1 flex-col overflow-hidden bg-surface-deep" aria-label="游戏资产画布">
     {filters && <div className="z-10 flex shrink-0 flex-wrap gap-1 border-b border-border bg-background px-4 py-2">{filters}</div>}
