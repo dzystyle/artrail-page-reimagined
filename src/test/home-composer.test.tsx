@@ -134,7 +134,8 @@ describe("Homepage composer", () => {
   });
 
   it("filters the file picker by upload kind and opens the asset library", async () => {
-    render(<HomeComposer />);
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(<QueryClientProvider client={client}><HomeComposer /></QueryClientProvider>);
     fireEvent.click(screen.getByRole("button", { name: "添加附件" }));
     fireEvent.click(await screen.findByRole("button", { name: "视频上传" }));
     expect(screen.getByLabelText("添加附件", { selector: "input" })).toHaveAttribute("accept", "video/*");

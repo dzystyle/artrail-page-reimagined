@@ -133,6 +133,6 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
     {notice && <p role="status" className="mt-2 text-center text-sm text-muted-foreground">{notice}</p>}
   </section>
     <ProviderSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
-    <AssetLibraryDialog open={libraryOpen} onOpenChange={setLibraryOpen} localAssets={[]} actionLabel="添加到输入框" onAdd={assets => setLibraryAssets(list => [...list, ...assets.filter(asset => !list.some(item => item.id === asset.id))])} />
+    {libraryOpen && <AssetLibraryDialog open onOpenChange={setLibraryOpen} localAssets={[]} actionLabel="添加到输入框" onAdd={assets => setLibraryAssets(list => [...list, ...assets.filter(asset => !list.some(item => item.id === asset.id))])} />}
   </div>;
 }
