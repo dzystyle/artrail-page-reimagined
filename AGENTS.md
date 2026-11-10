@@ -22,7 +22,7 @@
 - Workspace Agent uses a dedicated browser-safe composer with session-only game Skill selections in revision prompts and no project selector; use a bounded proportional desktop column and an on-demand mobile panel. Why: game editing stays focused while preserving usable canvas space.
 - Homepage templates share a session-only workspace dialog and direct route. Canvas mode uses a full-width React Flow surface, a right image panel and shared description state; recent preview editing passes the actual image to a selected, deduplicated node and focuses it after measurement, retaining nodes across tabs without implying connected generation. Why: browsing stays on the homepage and preview-to-canvas editing preserves the selected material.
 
-- Build reuses the shared composer in game-only mode while story and homepage keep their own choices; this prevents non-game requests entering the game workspace.
+- Build reuses the shared composer in game-only mode while story and homepage keep their own choices; this prevents non-game requests entering the game workspace. Homepage and game-only creation-type lists live in src/lib/creation-types.ts; the homepage routes media types to /create and game types to /game.
 - Game workspace (/game?id=) is AI-generated and persisted in Cloud: browser drives design → assets → code steps via server functions in src/lib/games.functions.ts; generated HTML runs only in a sandboxed iframe. Why: each step stays short, resumable after refresh, and isolated from the app.
 - Sidebar tasks and the game library share the persisted game-list query; invalidate it after creation and generation changes. Why: new games and updated titles must remain consistent across navigation and refresh.
 
