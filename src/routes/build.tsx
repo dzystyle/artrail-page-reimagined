@@ -6,6 +6,8 @@ import { HomeComposer } from "@/components/home-composer";
 import { ExploreGames, type ExploreGame } from "@/components/explore-games";
 import { RandomHeroGame } from "@/components/random-hero-game";
 import { Button } from "@/components/ui/button";
+import { AssetPresetDialog } from "@/components/asset-preset-dialog";
+import { assetPresets } from "@/lib/asset-presets";
 import { parseCreationMode, worksForMode } from "@/lib/creation-mode";
 import explore1 from "@/assets/build-explore-1.jpg";
 import explore2 from "@/assets/build-explore-2.jpg";
@@ -63,6 +65,7 @@ function BuildPage() {
   const story = mode === "story";
   const visibleWorks = worksForMode(works, mode);
   const [baseGame, setBaseGame] = useState<ExploreGame | null>(null);
+  const [assetTemplate, setAssetTemplate] = useState<string | null>(null);
   const [seed, setSeed] = useState<{ text: string; n: number } | null>(null);
   const toComposer = () => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   return <div className="flex min-h-screen bg-background text-foreground">
@@ -87,10 +90,11 @@ function BuildPage() {
         {!story && <section aria-labelledby="asset-templates" className="mt-10 border-t border-border pt-8">
           <h2 id="asset-templates" className="mb-5 text-xl font-semibold">资产模板</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-7 xl:grid-cols-4">
-            {templates.map(t => <div key={t.name}><img src={t.image} alt={t.name} width={400} height={504} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover" /><h3 className="mt-3 text-base font-medium">{t.name}</h3><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t.desc}</p></div>)}
+            {templates.map((t, index) => <Button key={t.name} variant="ghost" onClick={() => setAssetTemplate(assetPresets[index]?.id ?? "characters")} aria-label={`使用${t.name}资产模板`} className="block h-auto min-w-0 whitespace-normal p-0 text-left"><img src={t.image} alt={t.name} width={400} height={504} loading="lazy" className="aspect-[1.6] w-full rounded-lg object-cover" /><h3 className="mt-3 text-base font-medium">{t.name}</h3><p className="mt-1 text-sm font-normal leading-relaxed text-muted-foreground">{t.desc}</p></Button>)}
           </div>
         </section>}
       </div>
     </main>
+    <AssetPresetDialog template={assetTemplate} onClose={() => setAssetTemplate(null)} />
   </div>;
 }
