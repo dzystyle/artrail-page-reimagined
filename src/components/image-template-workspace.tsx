@@ -15,6 +15,7 @@ export function ImageTemplateWorkspace({ initialTemplate, onClose }: { initialTe
   const others = imageTemplates.filter(t => t.id !== template.id);
   const sample = others.slice(0, 2);
   const [recent, setRecent] = useState<RecentImage | null>(null);
+  const [canvasImage, setCanvasImage] = useState<RecentImage | null>(null);
   const [assist, setAssist] = useState(false);
   const [expand, setExpand] = useState(false);
   const [desc, setDesc] = useState(`保留 [图1] 的内容与构图，使用 [图2] 的画风重新绘制。`);
@@ -84,7 +85,12 @@ export function ImageTemplateWorkspace({ initialTemplate, onClose }: { initialTe
         <span className="mt-auto text-xs text-muted-foreground">全部 →</span>
       </aside>
     </div>
-    <div hidden={mode !== "canvas"} className="absolute inset-0">{canvasOpened && <ImageTemplateCanvas key={template.id} template={template} samples={sample} description={desc} onDescriptionChange={setDesc} onWorkspace={() => setMode("workspace")} onClose={onClose} />}</div>
-    <RecentImageViewer item={recent} onClose={() => setRecent(null)} />
+    <div hidden={mode !== "canvas"} className="absolute inset-0">{canvasOpened && <ImageTemplateCanvas key={template.id} template={template} samples={sample} editingImage={canvasImage} description={desc} onDescriptionChange={setDesc} onWorkspace={() => setMode("workspace")} onClose={onClose} />}</div>
+    <RecentImageViewer item={recent} onClose={() => setRecent(null)} onEditCanvas={item => {
+      setCanvasImage({ ...item });
+      setRecent(null);
+      setCanvasOpened(true);
+      setMode("canvas");
+    }} />
   </div>;
 }

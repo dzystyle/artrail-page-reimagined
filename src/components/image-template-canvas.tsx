@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Background, BackgroundVariant, ReactFlow, ReactFlowProvider, useNodesState, useReactFlow, useViewport, type Node, type NodeProps } from "@xyflow/react";
+import { Background, BackgroundVariant, ReactFlow, ReactFlowProvider, useNodesInitialized, useNodesState, useReactFlow, useViewport, type Node, type NodeProps } from "@xyflow/react";
 import { ArrowUp, ArrowUpRight, Bell, ChevronDown, Copy, Gem, Hand, ImagePlus, Layers, Link2, Lock, Maximize, MessageSquare, Minus, MousePointer2, PanelRightClose, Pencil, Plus, RotateCw, Search, Share2, Shapes, Sparkles, Type, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import type { ImageTemplate } from "@/lib/image-templates";
 
 type ImageNode = Node<{ image: string; title: string; size: string }, "templateImage">;
-type Props = { template: ImageTemplate; samples: ImageTemplate[]; description: string; onDescriptionChange: (value: string) => void; onWorkspace: () => void; onClose: () => void };
+type Props = { template: ImageTemplate; samples: ImageTemplate[]; editingImage?: { id: string; image: string; title: string } | null; description: string; onDescriptionChange: (value: string) => void; onWorkspace: () => void; onClose: () => void };
 
 function TemplateImage({ data, selected }: NodeProps<ImageNode>) {
   return <div className="w-[360px]">
@@ -18,7 +18,7 @@ function TemplateImage({ data, selected }: NodeProps<ImageNode>) {
 const nodeTypes = { templateImage: TemplateImage };
 const soon = () => toast("该工具暂未接入");
 
-function Canvas({ template, samples, description, onDescriptionChange, onWorkspace, onClose }: Props) {
+function Canvas({ template, samples, editingImage, description, onDescriptionChange, onWorkspace, onClose }: Props) {
   const [hand, setHand] = useState(false);
   const [panel, setPanel] = useState(true);
   useEffect(() => { if (window.innerWidth < 768) setPanel(false); }, []);
@@ -26,11 +26,32 @@ function Canvas({ template, samples, description, onDescriptionChange, onWorkspa
   const [transparent, setTransparent] = useState(false);
   const [gif, setGif] = useState(false);
   const reference = samples[0] ?? template;
-  const [nodes, , onNodesChange] = useNodesState<ImageNode>([
+  const [nodes, setNodes, onNodesChange] = useNodesState<ImageNode>([
     { id: "reference", type: "templateImage", position: { x: 0, y: 0 }, data: { image: reference.image, title: `${reference.id}.webp`, size: "参考图" } },
     { id: "template", type: "templateImage", position: { x: 455, y: 0 }, data: { image: template.image, title: `模板创作 · ${template.title}`, size: "模板示例" } },
   ]);
-  const { fitView, zoomIn, zoomOut } = useReactFlow();
+  const { fitView, getNode, zoomIn, zoomOut } = useReactFlow();
+  const nodesInitialized = useNodesInitialized();
+  useEffect(() => {
+    if (!editingImage) return;
+    const id = `recent-${editingImage.id}`;
+    setNodes(current => {
+      const existing = current.some(node => node.id === id);
+      const updated = current.map(node => ({ ...node, selected: node.id === id }));
+      return existing ? updated : [...updated, {
+        id, type: "templateImage", selected: true,
+        position: { x: 455 * current.length, y: 0 },
+        data: { image: editingImage.image, title: editingImage.title, size: "素材" },
+      }];
+    });
+    setHand(false);
+  }, [editingImage, setNodes]);
+  useEffect(() => {
+    if (!editingImage || !nodesInitialized) return;
+    const id = `recent-${editingImage.id}`;
+    if (!getNode(id)?.measured?.width) return;
+    void fitView({ nodes: [{ id }], padding: 0.3, maxZoom: 1 });
+  }, [editingImage, nodesInitialized, getNode, fitView]);
   const { zoom } = useViewport();
   const tools = [[ImagePlus, "添加图片"], [Sparkles, "智能工具"], [Shapes, "形状"], [ArrowUpRight, "箭头"], [Pencil, "画笔"], [Type, "文字"], [MessageSquare, "注释"], [Lock, "锁定"], [Copy, "复制"], [RotateCw, "历史记录"], [Upload, "导出"]] as const;
   return <div aria-label="图片模板画布" className="flex h-full min-h-0 w-full bg-background">
