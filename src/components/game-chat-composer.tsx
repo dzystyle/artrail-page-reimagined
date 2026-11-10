@@ -31,7 +31,7 @@ export function GameChatComposer({ ready, onSubmit }: {
     }}>
       <Textarea aria-label="游戏修改需求" placeholder={ready ? "描述你想修改的内容…" : "游戏生成完成后可继续修改"} value={draft} onChange={event => setDraft(event.target.value)} className="h-24 resize-none border-0 p-0 shadow-none focus-visible:ring-0" />
       {skill && <div className="mb-2 flex min-w-0 items-center gap-1 rounded-md border border-border p-1 text-xs"><img src={skill.image} alt="" className="size-6 shrink-0 rounded object-cover" /><span className="min-w-0 flex-1 truncate" title={skill.name}>{skill.name}</span><Button type="button" variant="ghost" size="icon" className="size-6 shrink-0" aria-label={`移除 ${skill.name}`} onClick={() => setSkill(null)}><X /></Button></div>}
-      <div className="mb-1 flex min-w-0 items-center gap-1">
+      <div className="flex min-w-0 items-center gap-1">
         <Popover open={skillOpen} onOpenChange={setSkillOpen}>
           <PopoverTrigger asChild><Button type="button" variant="ghost" size="sm" aria-label="选择 Skill" className="h-8 shrink-0 gap-1 px-2 text-xs text-muted-foreground"><Box />Skill<ChevronDown /></Button></PopoverTrigger>
           <PopoverContent side="top" align="start" className="max-h-[min(560px,70vh)] w-[min(760px,calc(100vw-32px))] overflow-y-auto p-0">
@@ -43,8 +43,9 @@ export function GameChatComposer({ ready, onSubmit }: {
             </div>
           </PopoverContent>
         </Popover>
+        <div className="flex min-w-0 flex-1 items-center"><CreationModelPicker compact model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} /></div>
+        <Button type="submit" size="icon" aria-label="发送修改需求" disabled={!draft.trim() || !ready} className="size-7 shrink-0 rounded-full"><ArrowUp /></Button>
       </div>
-      <div className="flex min-w-0 items-center justify-between gap-1"><CreationModelPicker compact model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} /><Button type="submit" size="icon" aria-label="发送修改需求" disabled={!draft.trim() || !ready} className="size-7 shrink-0 rounded-full"><ArrowUp /></Button></div>
     </form>
   </>;
 }
