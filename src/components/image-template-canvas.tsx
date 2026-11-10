@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Background, BackgroundVariant, ReactFlow, ReactFlowProvider, useNodesState, useReactFlow, useViewport, type Node, type NodeProps } from "@xyflow/react";
 import { ArrowUp, ArrowUpRight, Bell, ChevronDown, Copy, Gem, Hand, ImagePlus, Layers, Link2, Lock, Maximize, MessageSquare, Minus, MousePointer2, PanelRightClose, Pencil, Plus, RotateCw, Search, Share2, Shapes, Sparkles, Type, Upload, X } from "lucide-react";
 import { toast } from "sonner";
@@ -21,6 +21,7 @@ const soon = () => toast("该工具暂未接入");
 function Canvas({ template, samples, description, onDescriptionChange, onWorkspace, onClose }: Props) {
   const [hand, setHand] = useState(false);
   const [panel, setPanel] = useState(true);
+  useEffect(() => { if (window.innerWidth < 768) setPanel(false); }, []);
   const [tab, setTab] = useState("图像");
   const [transparent, setTransparent] = useState(false);
   const [gif, setGif] = useState(false);
