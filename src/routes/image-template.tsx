@@ -10,7 +10,7 @@ type Search = { id: string };
 
 export const Route = createFileRoute("/image-template")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    id: typeof s.id === "string" && imageTemplates.some(t => t.id === s.id) ? s.id : "style",
+    id: typeof s["id"] === "string" && imageTemplates.some(t => t.id === s["id"]) ? s["id"] : "style",
   }),
   head: () => ({
     meta: [
