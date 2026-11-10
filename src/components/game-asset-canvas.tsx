@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { Background, BackgroundVariant, ReactFlow, ReactFlowProvider, useNodesState, useReactFlow, type NodeProps } from "@xyflow/react";
 import { get, set } from "idb-keyval";
-import { Box, Crop, Download, Eraser, Expand, FileText, Grid2X2, Layers, Loader2, ScanFace, SquareUserRound, Trash2, Type, WandSparkles } from "lucide-react";
+import { Box, Crop, Download, Eraser, Expand, FileText, Grid2X2, Layers, Loader2, Minimize2, Search, ScanFace, SquareUserRound, Trash2, Type, WandSparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -52,6 +52,8 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
   const [working, setWorking] = useState(false);
   const [storageError, setStorageError] = useState("");
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [layersOpen, setLayersOpen] = useState(false);
+  const [layerQuery, setLayerQuery] = useState("");
   const host = useRef<HTMLDivElement>(null);
   const latest = useRef(nodes);
   const removedIds = useRef<string[]>([]);
@@ -120,11 +122,19 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
     setHand(false);
   };
   const displayNodes = nodes.map(node => ({ ...node, hidden: (node.type === "design" && !children) || (visibleKind !== "全部" && node.data.kind !== visibleKind), data: { ...node.data, onEdit: () => openEditor("document", node.id), onDimensions: (value: string) => { if (latest.current.find(n => n.id === node.id)?.data.dimensions !== value) setNodes(current => current.map(n => n.id === node.id ? { ...n, data: { ...n.data, dimensions: value } } : n)); } } }));
+  const layers = displayNodes.filter(node => !node.hidden);
+  const layerName = (node: CanvasNode) => node.type === "design" ? "游戏设计文档" : node.data.name;
+  const filteredLayers = layers.filter(node => layerName(node).toLowerCase().includes(layerQuery.trim().toLowerCase()));
+  const selectLayer = (id: string) => {
+    setNodes(current => current.map(node => ({ ...node, selected: node.id === id })));
+    setHand(false);
+    void fitView({ nodes: [{ id }], padding: 0.65, maxZoom: 1, duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 300 });
+  };
 
   return <div ref={host} className="game-flow relative flex min-h-0 flex-1 flex-col overflow-hidden bg-surface-deep" aria-label="游戏资产画布">
     {filters && <div className="z-10 flex shrink-0 flex-wrap gap-1 border-b border-border bg-background px-4 py-2">{filters}</div>}
     {storageError && <p role="alert" className="absolute inset-x-4 top-20 z-30 bg-popover p-2 text-xs text-destructive">{storageError}</p>}
-    {selected && <div role="toolbar" aria-label="图片工具" className={`absolute inset-x-3 z-20 flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg ${filters ? "top-16" : "top-3"}`}>
+    {selected && <div role="toolbar" aria-label="图片工具" className={`absolute right-3 z-20 flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg ${layersOpen ? "left-3 bottom-20 sm:bottom-auto sm:left-[316px]" : "left-3"} ${filters ? "top-16" : "top-3"} ${layersOpen ? "max-sm:top-auto" : ""}`}>
       {tools.map(tool => <Button key={tool.name} variant="ghost" size="sm" aria-disabled="true" title={`${tool.name}（仅展示）`} className="h-10 shrink-0 gap-2 px-3"><tool.icon />{tool.name}</Button>)}<span className="mx-1 h-7 shrink-0 border-l border-border" /><Button variant="ghost" size="icon" aria-label="下载图片" aria-disabled="true" title="下载图片（仅展示）" className="shrink-0"><Download /></Button><Button variant="ghost" size="icon" aria-label="删除图片" aria-disabled="true" title="删除图片（仅展示）" className="shrink-0 text-destructive"><Trash2 /></Button>
     </div>}
     <div className="min-h-0 flex-1">{ready && <ReactFlow nodes={displayNodes} edges={[]} nodeTypes={nodeTypes} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} selectionOnDrag={!hand} deleteKeyCode={editor || libraryOpen || editingDesign ? null : ["Delete", "Backspace"]} onBeforeDelete={async ({ nodes: deleting }) => ({ nodes: deleting.filter(node => !node.hidden && !node.data.partial), edges: [] })} onNodesDelete={deleting => {
@@ -133,6 +143,15 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
       void set(storageKey, { nodes: storedCanvasNodes(latest.current.filter(node => !ids.includes(node.id))), removedIds: removedIds.current }).catch(() => setStorageError("本机保存失败，请勿刷新页面。"));
     }} fitView fitViewOptions={{ padding: 0.25, maxZoom: 1 }} minZoom={0.15} maxZoom={2.5} proOptions={{ hideAttribution: true }}><Background variant={BackgroundVariant.Dots} gap={22} size={1} /></ReactFlow>}</div>
     <CanvasAddMenu onCreate={kind => { if (kind === "library") setLibraryOpen(true); else openEditor(kind); }} hand={hand} onHand={setHand} onFit={() => void fitView({ padding: 0.25, maxZoom: 1 })} />
+    {layersOpen ? <aside aria-label="图层面板" className={`absolute bottom-20 left-3 z-20 flex w-[min(292px,calc(100%-24px))] flex-col overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-lg sm:bottom-3 ${filters ? "top-16" : "top-3"}`}>
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4"><Layers className="size-5 text-muted-foreground" /><h2 className="text-base font-semibold">图层</h2><span className="ml-auto text-xs text-muted-foreground">{layers.length} 个元素</span></header>
+      <div className="shrink-0 border-b border-border p-3"><div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input aria-label="搜索图层" placeholder="搜索图层…" value={layerQuery} onChange={event => setLayerQuery(event.target.value)} className="h-9 rounded-full border-0 bg-secondary pl-9 shadow-none" /></div></div>
+      <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2">
+        {filteredLayers.map(node => <Button key={node.id} variant="ghost" aria-label={`定位图层：${layerName(node)}`} aria-pressed={node.selected} title={layerName(node)} className={`h-14 w-full min-w-0 justify-start gap-3 px-2 font-normal ${node.selected ? "bg-accent" : ""}`} onClick={() => selectLayer(node.id)}><span className="w-5 shrink-0 text-right text-xs text-muted-foreground">{layers.findIndex(layer => layer.id === node.id) + 1}</span><span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded bg-secondary">{node.data.url ? <img src={node.data.url} alt="" className="size-full object-contain" /> : node.type === "image" ? <Loader2 className="size-4 animate-spin text-muted-foreground" /> : <FileText className="size-5 text-muted-foreground" />}</span><span className="min-w-0 truncate text-sm">{layerName(node)}</span></Button>)}
+        {!filteredLayers.length && <p className="p-4 text-center text-sm text-muted-foreground">{layers.length ? "未找到图层" : "暂无图层"}</p>}
+      </div>
+      <footer className="flex h-12 shrink-0 items-center border-t border-border px-3"><Button variant="ghost" size="icon" aria-label="隐藏图层" title="隐藏图层" className="size-8 text-muted-foreground" onClick={() => setLayersOpen(false)}><Minimize2 className="size-4" /></Button></footer>
+    </aside> : <Button variant="outline" size="icon" aria-label="显示图层" title="图层" className="absolute bottom-4 left-4 z-20 size-11 rounded-full bg-popover text-popover-foreground shadow-lg" onClick={() => setLayersOpen(true)}><Layers className="size-5" /></Button>}
     <AssetLibraryDialog open={libraryOpen} onOpenChange={setLibraryOpen} localAssets={localAssets} onAdd={addLibraryAssets} />
     <Dialog open={editor !== null} onOpenChange={value => { if (!value && !working) setEditor(null); }}><DialogContent className="max-w-[calc(100vw-24px)] sm:max-w-lg">
       <DialogTitle>{editor === "image" ? "创建图片" : editingId ? "编辑文档" : "创建文档"}</DialogTitle><DialogDescription className="sr-only">{editor === "image" ? "输入图片描述" : "编辑 Markdown 文档"}</DialogDescription>
