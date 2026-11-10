@@ -20,7 +20,7 @@ export const moleLevels: LevelConfig[] = stages.map(([name, objective, difficult
 }));
 
 // This requested configuration belongs only to this game; saved edits always win.
-export function withMoleLevels(id: string | undefined, design: GameDesign | undefined): GameDesign | undefined {
+export function withMoleLevels(id: string | undefined, design: GameDesign | null | undefined): GameDesign | null | undefined {
   if (!design || id !== moleGameId || design.levels !== undefined) return design;
   return { ...design, levels: moleLevels.map(level => ({ ...level })) };
 }
