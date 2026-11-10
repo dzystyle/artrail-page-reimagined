@@ -66,7 +66,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
     void get<GameDesign>(`artrail-design:${id}`).then(saved => { if (active && saved) setLocalDesign({ id, design: saved }); }).catch(() => {});
     return () => { active = false; };
   }, [id]);
-  const shownDesign = localDesign?.id === id ? localDesign.design : game?.design;
+  const shownDesign = localDesign && localDesign.id === id ? localDesign.design : game?.design;
   const reviseM = useMutation({ mutationFn: (message: string) => revise({ data: { id: id!, message } }), onSettled: () => refresh() });
   const retryM = useMutation({ mutationFn: () => { running.current = null; return retry({ data: { id: id! } }); }, onSettled: () => refresh() });
 
