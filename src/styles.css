@@ -166,6 +166,7 @@
   --image-hot: oklch(0.61 0.23 355);
   --image-new: oklch(0.62 0.14 165);
   --image-badge-foreground: oklch(1 0 0);
+  --image-selection-foreground: oklch(1 0 0);
 }
 
 /* Neutral daylight surfaces preserve the workspace hierarchy and imagery. */
@@ -208,6 +209,7 @@
   --color-surface-deep: var(--surface-deep);
   --color-project-lilac: var(--project-lilac);
   --color-project-mint: var(--project-mint);
+  --color-image-selection-foreground: var(--image-selection-foreground);
   --font-sans: "PingFang SC", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
   --font-brand: "Libre Baskerville", Georgia, serif;
 }

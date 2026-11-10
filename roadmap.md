@@ -27,3 +27,4 @@
 - [x] Reuse homepage model menu in game Chat and verify search, selection and thinking depth.
 - [x] Complete the reference add-provider dialog and verify manual model management, save/cancel and desktop/mobile layout.
 - [x] Add Laya IdeaAPI first in the shared model menu with a distinct game-generation group; verify selection, search and unchanged language-model settings.
+- [x] Show game assets on a shared canvas with selection outlines and reference display-only tools; verify desktop/mobile selection.
