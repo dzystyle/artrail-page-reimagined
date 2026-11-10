@@ -65,7 +65,7 @@ function BuildPage() {
       </header>
       <div className="mx-auto max-w-[1240px] px-5 pb-14 sm:px-8">
         {!story && <RandomHeroGame />}
-        <section className="mx-auto max-w-[800px] pt-3">
+        <section className={story ? "pt-3" : "mx-auto max-w-[800px] pt-3"}>
           <h1 className={story ? "sr-only" : "text-3xl font-semibold"}>{story ? "互动故事创作" : "构建游戏"}</h1>
           {!story && <p className="mt-2 text-sm text-muted-foreground">从一个玩法开始，打造你的游戏世界</p>}
           <HomeComposer key={mode} gameOnly={!story} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
