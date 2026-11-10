@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { imageCategories, imageTemplates, filterImageTemplates, type ImageTemplate } from "@/lib/image-templates";
 import cover from "@/assets/image-tools-cover.jpg";
+import { ImageTemplateWorkspace } from "@/components/image-template-workspace";
 
 const tools = [
   { title: "换风格", badge: "HOT", description: "一键换成主流商业游戏风", image: imageTemplates[1]?.image, tone: "image-tool-style" },
@@ -38,16 +39,15 @@ export function HomeImageGallery() {
       <Button variant="ghost" className="hidden h-6 shrink-0 gap-0 px-0 text-[10px] text-muted-foreground sm:flex" onClick={() => setCategory("全部")}>查看全部<ChevronRight className="size-3" /></Button>
     </div>
     <div aria-label="图片模板列表" className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
-      {filtered.map(item => <Button asChild variant="ghost" key={item.id} className="group relative aspect-square h-auto w-full overflow-hidden rounded-lg bg-card p-0">
-        <Link to="/image-template" search={{ id: item.id }} aria-label={`查看${item.title}`}><img src={item.image} alt={item.title} width={384} height={726} loading="lazy" className="h-full w-full object-fill transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.02]" /></Link>
+      {filtered.map(item => <Button variant="ghost" key={item.id} aria-label={`查看${item.title}`} onClick={() => setSelected(item)} className="group relative aspect-square h-auto w-full overflow-hidden rounded-lg bg-card p-0">
+        <img src={item.image} alt={item.title} width={384} height={726} loading="lazy" className="h-full w-full object-fill transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.02]" />
       </Button>)}
     </div>
     <div className="mt-5 flex justify-center"><Button variant="default" className="rounded-full px-5 text-xs" onClick={() => setCategory("全部")}>查看全部模板<ArrowUpRight className="size-3" /></Button></div>
     <Dialog open={selected !== null} onOpenChange={open => { if (!open) setSelected(null); }}>
-      <DialogContent className="max-h-[90vh] w-[calc(100vw-32px)] max-w-2xl overflow-y-auto sm:p-7">
-        <DialogTitle>{selected?.title}</DialogTitle><DialogDescription className="sr-only">图片模板预览</DialogDescription>
-        {selected && <img src={selected.image} alt={selected.title} width={384} height={726} className="mx-auto max-h-[60vh] w-auto max-w-full rounded-lg object-contain" />}
-        <Button asChild className="justify-self-end"><Link to="/create">去创作<ArrowUpRight /></Link></Button>
+      <DialogContent className="flex h-[94dvh] max-h-[1040px] w-[calc(100vw-24px)] max-w-[1480px] flex-col gap-0 overflow-hidden rounded-lg p-0 [&>button]:hidden">
+        <DialogTitle className="sr-only">{selected?.title} · 模板工作台</DialogTitle><DialogDescription className="sr-only">图片模板工作台与画布</DialogDescription>
+        {selected && <ImageTemplateWorkspace key={selected.id} initialTemplate={selected} onClose={() => setSelected(null)} />}
       </DialogContent>
     </Dialog>
   </section>;
