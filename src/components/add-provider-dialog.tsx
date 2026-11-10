@@ -45,7 +45,7 @@ export function AddProviderDialog({ initial, onClose, onSave }: {
 
   return <Dialog open onOpenChange={value => { if (!value) onClose(); }}>
     <DialogContent className="max-h-[90dvh] w-[calc(100%-32px)] max-w-[936px] gap-0 overflow-hidden rounded-lg border-border bg-background p-0">
-      <form className="flex min-h-0 flex-col overflow-hidden" onSubmit={event => {
+      <form className="flex max-h-[calc(90dvh-2px)] min-h-0 flex-col overflow-hidden" onSubmit={event => {
         event.preventDefault();
         if (!name.trim()) { setError("请输入显示名称。"); return; }
         let url: URL;
