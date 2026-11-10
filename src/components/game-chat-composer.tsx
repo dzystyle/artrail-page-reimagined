@@ -6,11 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { gameSkills, type GameSkill } from "@/lib/game-skills";
+import { ComposerAddMenu } from "@/components/composer-add-menu";
+import type { LibraryAsset } from "@/lib/asset-library";
 
 export function GameChatComposer({ ready, onSubmit }: {
   ready: boolean; onSubmit: (message: string) => void;
 }) {
   const [draft, setDraft] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const [libraryAssets, setLibraryAssets] = useState<LibraryAsset[]>([]);
   const [model, setModel] = useState("deepseek-v4-pro");
   const [depth, setDepth] = useState("High");
   const [skill, setSkill] = useState<GameSkill | null>(null);
@@ -31,7 +35,12 @@ export function GameChatComposer({ ready, onSubmit }: {
     }}>
       <Textarea aria-label="游戏修改需求" placeholder={ready ? "描述你想修改的内容…" : "游戏生成完成后可继续修改"} value={draft} onChange={event => setDraft(event.target.value)} className="h-24 resize-none border-0 p-0 shadow-none focus-visible:ring-0" />
       {skill && <div className="mb-2 flex min-w-0 items-center gap-1 rounded-md border border-border p-1 text-xs"><img src={skill.image} alt="" className="size-6 shrink-0 rounded object-cover" /><span className="min-w-0 flex-1 truncate" title={skill.name}>{skill.name}</span><Button type="button" variant="ghost" size="icon" className="size-6 shrink-0" aria-label={`移除 ${skill.name}`} onClick={() => setSkill(null)}><X /></Button></div>}
+      {(files.length > 0 || libraryAssets.length > 0) && <div className="mb-2 flex flex-wrap gap-1.5">
+        {files.map((file, index) => <div key={`${file.name}-${index}`} className="flex max-w-full min-w-0 items-center gap-1 rounded-md bg-secondary pl-2 text-xs"><span className="min-w-0 truncate">{file.name}</span><Button type="button" variant="ghost" size="icon" className="size-6 shrink-0" aria-label={`移除 ${file.name}`} onClick={() => setFiles(list => list.filter((_, i) => i !== index))}><X /></Button></div>)}
+        {libraryAssets.map(asset => <div key={asset.id} className="flex max-w-full min-w-0 items-center gap-1 rounded-md bg-secondary pl-1 text-xs"><img src={asset.url} alt="" className="size-5 shrink-0 rounded object-cover" /><span className="min-w-0 truncate">{asset.name}</span><Button type="button" variant="ghost" size="icon" className="size-6 shrink-0" aria-label={`移除 ${asset.name}`} onClick={() => setLibraryAssets(list => list.filter(item => item.id !== asset.id))}><X /></Button></div>)}
+      </div>}
       <div className="flex min-w-0 items-center gap-1">
+        <ComposerAddMenu compact side="top" onFiles={selected => setFiles(list => [...list, ...selected])} onLibrary={selected => setLibraryAssets(list => [...list, ...selected.filter(asset => !list.some(item => item.id === asset.id))])} />
         <Popover open={skillOpen} onOpenChange={setSkillOpen}>
           <PopoverTrigger asChild><Button type="button" variant="ghost" size="sm" aria-label="选择 Skill" className="h-8 shrink-0 gap-1 px-2 text-xs text-muted-foreground"><Box />Skill<ChevronDown /></Button></PopoverTrigger>
           <PopoverContent side="top" align="start" className="max-h-[min(560px,70vh)] w-[min(760px,calc(100vw-32px))] overflow-y-auto p-0">
