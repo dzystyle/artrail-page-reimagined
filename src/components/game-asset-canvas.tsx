@@ -33,14 +33,13 @@ function DocumentNode({ data, selected }: NodeProps<CanvasNode>) {
   </div>;
 }
 const DesignContext = createContext<ReactNode>(null);
-const DesignInteractionContext = createContext<(value: boolean) => void>(() => {});
 function DesignNode() { return <div className="w-[300px]">{useContext(DesignContext)}</div>; }
 const nodeTypes = { image: ImageNode, document: DocumentNode, design: DesignNode };
 
-export function GameAssetCanvas(props: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string }) {
+export function GameAssetCanvas(props: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string; editingDesign?: boolean }) {
   return <DesignContext.Provider value={props.children}><ReactFlowProvider><CanvasWorkspace {...props} /></ReactFlowProvider></DesignContext.Provider>;
 }
-function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全部" }: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string }) {
+function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全部", editingDesign = false }: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string; editingDesign?: boolean }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>([]);
   const { fitView, screenToFlowPosition } = useReactFlow<CanvasNode>();
   const [hand, setHand] = useState(false);
@@ -128,7 +127,7 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
     {selected && <div role="toolbar" aria-label="图片工具" className={`absolute inset-x-3 z-20 flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg ${filters ? "top-16" : "top-3"}`}>
       {tools.map(tool => <Button key={tool.name} variant="ghost" size="sm" aria-disabled="true" title={`${tool.name}（仅展示）`} className="h-10 shrink-0 gap-2 px-3"><tool.icon />{tool.name}</Button>)}<span className="mx-1 h-7 shrink-0 border-l border-border" /><Button variant="ghost" size="icon" aria-label="下载图片" aria-disabled="true" title="下载图片（仅展示）" className="shrink-0"><Download /></Button><Button variant="ghost" size="icon" aria-label="删除图片" aria-disabled="true" title="删除图片（仅展示）" className="shrink-0 text-destructive"><Trash2 /></Button>
     </div>}
-    <div className="min-h-0 flex-1">{ready && <ReactFlow nodes={displayNodes} edges={[]} nodeTypes={nodeTypes} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} selectionOnDrag={!hand} deleteKeyCode={editor || libraryOpen ? null : ["Delete", "Backspace"]} onBeforeDelete={async ({ nodes: deleting }) => ({ nodes: deleting.filter(node => !node.hidden && !node.data.partial), edges: [] })} onNodesDelete={deleting => {
+    <div className="min-h-0 flex-1">{ready && <ReactFlow nodes={displayNodes} edges={[]} nodeTypes={nodeTypes} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} selectionOnDrag={!hand} deleteKeyCode={editor || libraryOpen || editingDesign ? null : ["Delete", "Backspace"]} onBeforeDelete={async ({ nodes: deleting }) => ({ nodes: deleting.filter(node => !node.hidden && !node.data.partial), edges: [] })} onNodesDelete={deleting => {
       const ids = deleting.map(node => node.id);
       removedIds.current = Array.from(new Set([...removedIds.current, ...ids]));
       void set(storageKey, { nodes: storedCanvasNodes(latest.current.filter(node => !ids.includes(node.id))), removedIds: removedIds.current }).catch(() => setStorageError("本机保存失败，请勿刷新页面。"));
