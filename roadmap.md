@@ -28,3 +28,4 @@
 - [x] Complete the reference add-provider dialog and verify manual model management, save/cancel and desktop/mobile layout.
 - [x] Add Laya IdeaAPI first in the shared model menu with a distinct game-generation group; verify selection, search and unchanged language-model settings.
 - [x] Show game assets on a shared canvas with selection outlines and reference display-only tools; verify desktop/mobile selection.
+- [ ] Add bottom canvas menu, editable documents, real image generation, free node dragging and pan/fit controls; verify creation, movement and refresh.
