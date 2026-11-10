@@ -6,6 +6,28 @@ import type { GameDesign } from "@/lib/game-pipeline";
 const design: GameDesign = { title: "森林游戏", summary: "收集蘑菇", sections: [{ heading: "玩法", body: "方向键移动" }], assets: [{ name: "蘑菇", kind: "道具", prompt: "红蘑菇" }] };
 afterEach(cleanup);
 describe("design editing", () => {
+  it("adds and saves level configuration without changing the original design", async () => {
+    const save = vi.fn().mockResolvedValue(undefined);
+    render(<GameDesignEditor design={design} onSave={save} onClose={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: "关卡配置表" }));
+    fireEvent.click(screen.getByRole("button", { name: "添加关卡" }));
+    expect(screen.getByRole("button", { name: "保存修改" })).toBeDisabled();
+    fireEvent.change(screen.getByRole("textbox", { name: "第1关名称" }), { target: { value: "森林入口" } });
+    fireEvent.change(screen.getByRole("textbox", { name: "第1关通关目标" }), { target: { value: "收集10个蘑菇" } });
+    fireEvent.change(screen.getByRole("spinbutton", { name: "第1关时限" }), { target: { value: "60" } });
+    fireEvent.change(screen.getByRole("textbox", { name: "第1关奖励" }), { target: { value: "100金币" } });
+    fireEvent.click(screen.getByRole("button", { name: "保存修改" }));
+    await waitFor(() => expect(save).toHaveBeenCalledWith({ ...design, levels: [{ id: expect.any(String), name: "森林入口", objective: "收集10个蘑菇", difficulty: "普通", timeLimit: "60", reward: "100金币" }] }));
+    expect(design.levels).toBeUndefined();
+  });
+  it("removes a level and saves the remaining configuration", async () => {
+    const save = vi.fn().mockResolvedValue(undefined);
+    render(<GameDesignEditor design={{ ...design, levels: [{ id: "level-1", name: "入口", objective: "到达终点", difficulty: "简单", timeLimit: "", reward: "" }] }} onSave={save} onClose={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: "关卡配置表" }));
+    fireEvent.click(screen.getByRole("button", { name: "删除第1关" }));
+    fireEvent.click(screen.getByRole("button", { name: "保存修改" }));
+    await waitFor(() => expect(save).toHaveBeenCalledWith({ ...design, levels: [] }));
+  });
   it("saves changed document fields without modifying the asset plan or source design", async () => {
     const save = vi.fn().mockResolvedValue(undefined);
     render(<GameDesignEditor design={design} onSave={save} onClose={() => {}} />);
