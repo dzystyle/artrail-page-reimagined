@@ -1,4 +1,5 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HomeComposer } from "@/components/home-composer";
 
@@ -121,6 +122,27 @@ describe("Homepage composer", () => {
     fireEvent.change(screen.getByLabelText("添加附件", { selector: "input" }), { target: { files: [new File(["abc"], "story.txt", { type: "text/plain" })] } });
     fireEvent.click(screen.getByRole("button", { name: "移除 story.txt" }));
     expect(screen.queryByRole("button", { name: "移除 story.txt" })).not.toBeInTheDocument();
+  });
+
+  it("opens the add menu with the four upload kinds and the asset library", async () => {
+    render(<HomeComposer />);
+    fireEvent.click(screen.getByRole("button", { name: "添加附件" }));
+    expect(await screen.findByRole("button", { name: "图片上传" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "视频上传" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "音频上传" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "文档上传" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "资产库" })).toBeInTheDocument();
+  });
+
+  it("filters the file picker by upload kind and opens the asset library", async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(<QueryClientProvider client={client}><HomeComposer /></QueryClientProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "添加附件" }));
+    fireEvent.click(await screen.findByRole("button", { name: "视频上传" }));
+    expect(screen.getByLabelText("添加附件", { selector: "input" })).toHaveAttribute("accept", "video/*");
+    fireEvent.click(screen.getByRole("button", { name: "添加附件" }));
+    fireEvent.click(await screen.findByRole("button", { name: "资产库" }));
+    expect(await screen.findByRole("heading", { name: /所有资产/ })).toBeInTheDocument();
   });
 });
 describe("Composer docking", () => {

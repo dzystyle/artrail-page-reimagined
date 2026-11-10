@@ -12,7 +12,7 @@ const defaults: LibraryFilters = { search: "", project: "all", kind: "all", sour
 function Filter({ label, value, options, onChange }: { label: string; value: string; options: { value: string; name: string }[]; onChange: (value: string) => void }) {
   return <Select value={value} onValueChange={onChange}><SelectTrigger aria-label={label} className="h-8 w-auto min-w-[110px] max-w-[180px] gap-2 border-0 bg-secondary text-xs shadow-none"><SelectValue /></SelectTrigger><SelectContent>{options.map(option => <SelectItem key={option.value} value={option.value}>{option.name}</SelectItem>)}</SelectContent></Select>;
 }
-export function AssetLibraryDialog({ open, onOpenChange, localAssets, onAdd }: { open: boolean; onOpenChange: (open: boolean) => void; localAssets: LibraryAsset[]; onAdd: (assets: LibraryAsset[]) => void }) {
+export function AssetLibraryDialog({ open, onOpenChange, localAssets, onAdd, actionLabel = "添加到画布" }: { open: boolean; onOpenChange: (open: boolean) => void; localAssets: LibraryAsset[]; onAdd: (assets: LibraryAsset[]) => void; actionLabel?: string }) {
   const [filters, setFilters] = useState(defaults);
   const [selected, setSelected] = useState<string[]>([]);
   const [view, setView] = useState("grid");
@@ -48,6 +48,6 @@ export function AssetLibraryDialog({ open, onOpenChange, localAssets, onAdd }: {
         </Button>)}
       </div>}
     </div>
-    <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border bg-background px-4 py-3"><div className="flex items-center gap-3"><span className="text-xs text-muted-foreground">已选 {chosen.length} 项</span><Button variant="ghost" size="sm" disabled={!filtered.length} onClick={() => setSelected(current => Array.from(new Set([...current, ...filtered.map(asset => asset.id)])))}>全选当前结果</Button>{selected.length > 0 && <Button variant="ghost" size="sm" onClick={() => setSelected([])}>清空</Button>}</div><div className="ml-auto flex gap-2"><Button variant="ghost" size="sm" onClick={() => changeOpen(false)}>取消</Button><Button size="sm" disabled={!chosen.length} onClick={() => { onAdd(chosen); changeOpen(false); }}>添加到画布{chosen.length ? ` (${chosen.length})` : ""}</Button></div></footer>
+    <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border bg-background px-4 py-3"><div className="flex items-center gap-3"><span className="text-xs text-muted-foreground">已选 {chosen.length} 项</span><Button variant="ghost" size="sm" disabled={!filtered.length} onClick={() => setSelected(current => Array.from(new Set([...current, ...filtered.map(asset => asset.id)])))}>全选当前结果</Button>{selected.length > 0 && <Button variant="ghost" size="sm" onClick={() => setSelected([])}>清空</Button>}</div><div className="ml-auto flex gap-2"><Button variant="ghost" size="sm" onClick={() => changeOpen(false)}>取消</Button><Button size="sm" disabled={!chosen.length} onClick={() => { onAdd(chosen); changeOpen(false); }}>{actionLabel}{chosen.length ? ` (${chosen.length})` : ""}</Button></div></footer>
   </DialogContent></Dialog>;
 }
