@@ -40,3 +40,4 @@
 - [x] Match image-template canvas reference with a full-width spatial surface, right image panel and bottom tools; verify switching, dragging and mobile.
 - [x] Connect recent material preview to canvas editing; verify the selected image appears, focuses and remains across tab switches.
 - [x] Put game view menus beside playtest, move Agent to the right, and share the homepage attachment menu; verify desktop/mobile and uploads.
+- [x] Replace the left image shortcuts with a searchable canvas layer panel and verify show, select and collapse on desktop/mobile.
