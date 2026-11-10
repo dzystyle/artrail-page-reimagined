@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AssetTemplateRouteImport } from './routes/asset-template'
 import { Route as BuildRouteImport } from './routes/build'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as GameRouteImport } from './routes/game'
@@ -17,11 +18,17 @@ import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
+import { Route as ApiPublicAssetTemplateImageRouteImport } from './routes/api/public/asset-template-image'
 import { Route as ApiPublicCanvasImageRouteImport } from './routes/api/public/canvas-image'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssetTemplateRoute = AssetTemplateRouteImport.update({
+  id: '/asset-template',
+  path: '/asset-template',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuildRoute = BuildRouteImport.update({
@@ -59,6 +66,12 @@ const WorksWorkIdRoute = WorksWorkIdRouteImport.update({
   path: '/works/$workId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicAssetTemplateImageRoute =
+  ApiPublicAssetTemplateImageRouteImport.update({
+    id: '/api/public/asset-template-image',
+    path: '/api/public/asset-template-image',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCanvasImageRoute = ApiPublicCanvasImageRouteImport.update({
   id: '/api/public/canvas-image',
   path: '/api/public/canvas-image',
@@ -67,6 +80,7 @@ const ApiPublicCanvasImageRoute = ApiPublicCanvasImageRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/asset-template': typeof AssetTemplateRoute
   '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
@@ -74,10 +88,12 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
+  '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
   '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/asset-template': typeof AssetTemplateRoute
   '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
@@ -85,11 +101,13 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
+  '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
   '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/asset-template': typeof AssetTemplateRoute
   '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
@@ -97,12 +115,14 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
+  '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
   '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/asset-template'
     | '/build'
     | '/create'
     | '/game'
@@ -110,10 +130,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
+    | '/api/public/asset-template-image'
     | '/api/public/canvas-image'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/asset-template'
     | '/build'
     | '/create'
     | '/game'
@@ -121,10 +143,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
+    | '/api/public/asset-template-image'
     | '/api/public/canvas-image'
   id:
     | '__root__'
     | '/'
+    | '/asset-template'
     | '/build'
     | '/create'
     | '/game'
@@ -132,11 +156,13 @@ export interface FileRouteTypes {
     | '/settings'
     | '/projects/$projectId'
     | '/works/$workId'
+    | '/api/public/asset-template-image'
     | '/api/public/canvas-image'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AssetTemplateRoute: typeof AssetTemplateRoute
   BuildRoute: typeof BuildRoute
   CreateRoute: typeof CreateRoute
   GameRoute: typeof GameRoute
@@ -144,6 +170,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   WorksWorkIdRoute: typeof WorksWorkIdRoute
+  ApiPublicAssetTemplateImageRoute: typeof ApiPublicAssetTemplateImageRoute
   ApiPublicCanvasImageRoute: typeof ApiPublicCanvasImageRoute
 }
 
@@ -154,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asset-template': {
+      id: '/asset-template'
+      path: '/asset-template'
+      fullPath: '/asset-template'
+      preLoaderRoute: typeof AssetTemplateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/build': {
@@ -205,6 +239,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorksWorkIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/asset-template-image': {
+      id: '/api/public/asset-template-image'
+      path: '/api/public/asset-template-image'
+      fullPath: '/api/public/asset-template-image'
+      preLoaderRoute: typeof ApiPublicAssetTemplateImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/canvas-image': {
       id: '/api/public/canvas-image'
       path: '/api/public/canvas-image'
@@ -217,6 +258,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AssetTemplateRoute: AssetTemplateRoute,
   BuildRoute: BuildRoute,
   CreateRoute: CreateRoute,
   GameRoute: GameRoute,
@@ -224,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   WorksWorkIdRoute: WorksWorkIdRoute,
+  ApiPublicAssetTemplateImageRoute: ApiPublicAssetTemplateImageRoute,
   ApiPublicCanvasImageRoute: ApiPublicCanvasImageRoute,
 }
 export const routeTree = rootRouteImport
