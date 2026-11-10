@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CanvasAddMenu } from "@/components/canvas-add-menu";
-import { mergeCanvasAssets, storedCanvasNodes, type CanvasNode } from "@/lib/canvas-nodes";
+import { mergeCanvasAssets, storedCanvasNodes, type CanvasNode, type CanvasSnapshot } from "@/lib/canvas-nodes";
 import { streamImage } from "@/lib/stream-image";
 import { AssetLibraryDialog } from "@/components/asset-library-dialog";
 import type { LibraryAsset } from "@/lib/asset-library";
@@ -54,24 +54,26 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
   const [libraryOpen, setLibraryOpen] = useState(false);
   const host = useRef<HTMLDivElement>(null);
   const latest = useRef(nodes);
+  const removedIds = useRef<string[]>([]);
   latest.current = nodes;
   const storageKey = `artrail-canvas:${gameId}`;
 
   useEffect(() => {
     let active = true;
-    void get<CanvasNode[]>(storageKey).then(saved => {
+    void get<CanvasNode[] | CanvasSnapshot>(storageKey).then(saved => {
       if (!active) return;
-      const initial = saved ?? [];
-      const withDesign: CanvasNode[] = children && !initial.some(n => n.id === "design") ? [{ id: "design", type: "design", position: { x: 0, y: 0 }, data: { name: gameId, kind: "设计" } }, ...initial] : initial;
-      setNodes(mergeCanvasAssets(withDesign, assets, !!children));
+      const initial = Array.isArray(saved) ? saved : saved?.nodes ?? [];
+      removedIds.current = Array.isArray(saved) ? [] : saved?.removedIds ?? [];
+      const withDesign: CanvasNode[] = children && !removedIds.current.includes("design") && !initial.some(n => n.id === "design") ? [{ id: "design", type: "design", position: { x: 0, y: 0 }, data: { name: gameId, kind: "设计" } }, ...initial] : initial;
+      setNodes(mergeCanvasAssets(withDesign, assets, !!children, removedIds.current));
       setReady(true);
     }).catch(() => { if (active) { setNodes(mergeCanvasAssets([], assets, !!children)); setReady(true); setStorageError("本机保存不可用，刷新后将无法保留新内容。"); } });
     return () => { active = false; };
   }, [storageKey]);
-  useEffect(() => { if (ready) setNodes(current => mergeCanvasAssets(current, assets, !!children)); }, [assets.map(a => a.id).join(","), ready]);
+  useEffect(() => { if (ready) setNodes(current => mergeCanvasAssets(current, assets, !!children, removedIds.current)); }, [assets.map(a => a.id).join(","), ready]);
   useEffect(() => {
     if (!ready) return;
-    const timer = window.setTimeout(() => { void set(storageKey, storedCanvasNodes(nodes)).catch(() => setStorageError("本机保存失败，请勿刷新页面。")); }, 250);
+    const timer = window.setTimeout(() => { void set(storageKey, { nodes: storedCanvasNodes(nodes), removedIds: removedIds.current }).catch(() => setStorageError("本机保存失败，请勿刷新页面。")); }, 250);
     return () => window.clearTimeout(timer);
   }, [nodes, ready, storageKey]);
 
@@ -125,7 +127,11 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
     {selected && <div role="toolbar" aria-label="图片工具" className={`absolute inset-x-3 z-20 flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg ${filters ? "top-16" : "top-3"}`}>
       {tools.map(tool => <Button key={tool.name} variant="ghost" size="sm" aria-disabled="true" title={`${tool.name}（仅展示）`} className="h-10 shrink-0 gap-2 px-3"><tool.icon />{tool.name}</Button>)}<span className="mx-1 h-7 shrink-0 border-l border-border" /><Button variant="ghost" size="icon" aria-label="下载图片" aria-disabled="true" title="下载图片（仅展示）" className="shrink-0"><Download /></Button><Button variant="ghost" size="icon" aria-label="删除图片" aria-disabled="true" title="删除图片（仅展示）" className="shrink-0 text-destructive"><Trash2 /></Button>
     </div>}
-    <div className="min-h-0 flex-1">{ready && <ReactFlow nodes={displayNodes} edges={[]} nodeTypes={nodeTypes} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} selectionOnDrag={!hand} deleteKeyCode={null} fitView fitViewOptions={{ padding: 0.25, maxZoom: 1 }} minZoom={0.15} maxZoom={2.5} proOptions={{ hideAttribution: true }}><Background variant={BackgroundVariant.Dots} gap={22} size={1} /></ReactFlow>}</div>
+    <div className="min-h-0 flex-1">{ready && <ReactFlow nodes={displayNodes} edges={[]} nodeTypes={nodeTypes} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} selectionOnDrag={!hand} deleteKeyCode={editor || libraryOpen ? null : ["Delete", "Backspace"]} onBeforeDelete={async ({ nodes: deleting }) => ({ nodes: deleting.filter(node => !node.hidden && !node.data.partial), edges: [] })} onNodesDelete={deleting => {
+      const ids = deleting.map(node => node.id);
+      removedIds.current = Array.from(new Set([...removedIds.current, ...ids]));
+      void set(storageKey, { nodes: storedCanvasNodes(latest.current.filter(node => !ids.includes(node.id))), removedIds: removedIds.current }).catch(() => setStorageError("本机保存失败，请勿刷新页面。"));
+    }} fitView fitViewOptions={{ padding: 0.25, maxZoom: 1 }} minZoom={0.15} maxZoom={2.5} proOptions={{ hideAttribution: true }}><Background variant={BackgroundVariant.Dots} gap={22} size={1} /></ReactFlow>}</div>
     <CanvasAddMenu onCreate={kind => { if (kind === "library") setLibraryOpen(true); else openEditor(kind); }} hand={hand} onHand={setHand} onFit={() => void fitView({ padding: 0.25, maxZoom: 1 })} />
     <AssetLibraryDialog open={libraryOpen} onOpenChange={setLibraryOpen} localAssets={localAssets} onAdd={addLibraryAssets} />
     <Dialog open={editor !== null} onOpenChange={value => { if (!value && !working) setEditor(null); }}><DialogContent className="max-w-[calc(100vw-24px)] sm:max-w-lg">
