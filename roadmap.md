@@ -30,4 +30,4 @@
 - [x] Show game assets on a shared canvas with selection outlines and reference display-only tools; verify desktop/mobile selection.
 - [x] Add bottom canvas menu, editable documents, real image generation, free node dragging and pan/fit controls; verify creation, movement and refresh.
 - [x] Add From Library asset picker with real images, search/filter, multi-select and insertion; verify desktop/mobile and persistence.
-- [ ] Enable game design document editing from Canvas and Design; verify save, cancel, refresh and mobile layout.
+- [x] Enable game design document editing from Canvas and Design; verify save, cancel, refresh and mobile layout.

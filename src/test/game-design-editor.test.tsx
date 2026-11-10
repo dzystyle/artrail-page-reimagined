@@ -10,7 +10,7 @@ describe("design editing", () => {
     const save = vi.fn().mockResolvedValue(undefined);
     render(<GameDesignEditor design={design} onSave={save} onClose={() => {}} />);
     fireEvent.change(screen.getByRole("textbox", { name: "设计文档标题" }), { target: { value: "蘑菇冒险" } });
-    fireEvent.click(screen.getByRole("button", { name: "1.玩法" }));
+    fireEvent.click(screen.getByRole("button", { name: "1. 玩法" }));
     fireEvent.change(screen.getByRole("textbox", { name: "章节内容" }), { target: { value: "点击移动" } });
     fireEvent.click(screen.getByRole("button", { name: "保存修改" }));
     await waitFor(() => expect(save).toHaveBeenCalledWith({ ...design, title: "蘑菇冒险", sections: [{ heading: "玩法", body: "点击移动" }] }));
