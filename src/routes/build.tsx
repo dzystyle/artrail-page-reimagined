@@ -36,13 +36,6 @@ export const Route = createFileRoute("/build")({
   component: BuildPage,
 });
 
-const works = [
-  { name: "电路工匠", image: explore1, type: "网页游戏" },
-  { name: "潮汐研讨会", image: explore2, type: "网页游戏" },
-  { name: "余烬之路", image: explore3, type: "网页游戏" },
-  { name: "湿地观鸟", image: explore4, type: "网页游戏" },
-  { name: "末班车", image: explore5, type: "互动故事" },
-];
 const templates = [
   { name: "人物", desc: "角色设定图、精灵图和头像", image: template1 },
   { name: "帧动画", desc: "空闲、行走、奔跑、攻击和受伤帧", image: template2 },
