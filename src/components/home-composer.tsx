@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Box, Check, ChevronDown, Folder, Gamepad2, Lightbulb, Plus, Search, X } from "lucide-react";
+import { ArrowUp, AudioLines, Box, Check, ChevronDown, FileText, Folder, Gamepad2, Image, LayoutGrid, Lightbulb, Plus, Search, Video, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,16 @@ import { CreationModelPicker, ProviderSettings } from "@/components/creation-mod
 import { type CreationRequest } from "@/lib/game-workspace";
 import { gameCreationTypes, homeCreationTypes } from "@/lib/creation-types";
 import { gameSkills, type GameSkill } from "@/lib/game-skills";
+import { AssetLibraryDialog } from "@/components/asset-library-dialog";
+import { type LibraryAsset } from "@/lib/asset-library";
+
+/** Add-menu entries: the four upload kinds plus the shared asset library. */
+const addItems = [
+  { label: "图片上传", icon: Image, accept: "image/*" },
+  { label: "视频上传", icon: Video, accept: "video/*" },
+  { label: "音频上传", icon: AudioLines, accept: "audio/*" },
+  { label: "文档上传", icon: FileText, accept: ".pdf,.doc,.docx,.txt,.md,.csv,.json" },
+];
 
 /** Keeps the composer in one instance so the draft survives docking/expanding. */
 export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed, alwaysFloating = false, gameOnly = false }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null; alwaysFloating?: boolean; gameOnly?: boolean } = {}) {
@@ -51,6 +61,9 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
   const [skillCategory, setSkillCategory] = useState("全部");
   const [skillPreview, setSkillPreview] = useState<GameSkill | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [addOpen, setAddOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [libraryAssets, setLibraryAssets] = useState<LibraryAsset[]>([]);
   const [notice, setNotice] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
   const textarea = useRef<HTMLTextAreaElement>(null);
@@ -75,10 +88,18 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
       {skill && <div className="mb-3 flex"><div className="flex max-w-full items-center gap-2 rounded-lg border border-border py-1 pl-1 pr-2 text-sm"><img src={skill.image} alt="" className="size-6 rounded object-cover" /><span className="truncate">{skill.name}</span><Button variant="ghost" type="button" size="icon" className="size-6" aria-label={`移除 ${skill.name}`} onClick={() => setSkill(null)}><X /></Button></div></div>}
       {baseGame && <div className="mb-3 flex"><div className="flex items-center gap-2 rounded-xl border border-border py-1.5 pl-1.5 pr-2 text-[15px]"><img src={baseGame.image} alt="" className="size-6 rounded-md object-cover" /><span>{baseGame.name}</span><button type="button" aria-label={`移除 ${baseGame.name}`} onClick={onRemoveBaseGame} className="text-muted-foreground hover:text-foreground"><X className="size-4" /></button></div></div>}
       {files.length > 0 && <div className="mb-3 flex flex-wrap gap-2">{files.map((file, i) => <div key={`${file.name}-${i}`} className="flex max-w-full items-center gap-1 rounded-md bg-secondary pl-2 text-xs"><span className="truncate">{file.name}</span><Button type="button" size="icon" variant="ghost" className="size-7" aria-label={`移除 ${file.name}`} onClick={() => setFiles(list => list.filter((_, index) => index !== i))}><X /></Button></div>)}</div>}
+      {libraryAssets.length > 0 && <div className="mb-3 flex flex-wrap gap-2">{libraryAssets.map(asset => <div key={asset.id} className="flex max-w-full items-center gap-1 rounded-md bg-secondary pl-1 text-xs"><img src={asset.url} alt="" className="size-5 rounded object-cover" /><span className="truncate">{asset.name}</span><Button type="button" size="icon" variant="ghost" className="size-7" aria-label={`移除 ${asset.name}`} onClick={() => setLibraryAssets(list => list.filter(item => item.id !== asset.id))}><X /></Button></div>)}</div>}
       <div className="flex flex-wrap items-center justify-between gap-2 lg:flex-nowrap">
         <div className="flex min-w-0 flex-wrap items-center gap-1 lg:flex-nowrap lg:overflow-x-auto [scrollbar-width:none]">
           <input ref={fileInput} type="file" multiple className="hidden" aria-label="添加附件" onChange={e => { setFiles(list => [...list, ...Array.from(e.target.files ?? [])]); e.target.value = ""; }} />
-          <Button type="button" variant="ghost" size="icon" title="添加附件" aria-label="添加附件" className="shrink-0" onClick={() => fileInput.current?.click()}><Plus className="size-5" /></Button>
+          <Popover open={addOpen} onOpenChange={setAddOpen}>
+            <PopoverTrigger asChild><Button type="button" variant="ghost" size="icon" title="添加附件" aria-label="添加附件" className="shrink-0"><Plus className="size-5" /></Button></PopoverTrigger>
+            <PopoverContent align="start" side="bottom" className="w-[min(230px,calc(100vw-32px))] rounded-xl p-1.5">
+              {addItems.map(item => <Button type="button" key={item.label} variant="ghost" className="h-10 w-full justify-start gap-3 px-3 font-normal" onClick={() => { setAddOpen(false); const el = fileInput.current; if (el) { el.accept = item.accept; el.click(); } }}><item.icon className="size-4 text-muted-foreground" />{item.label}</Button>)}
+              <div className="my-1 h-px bg-border" />
+              <Button type="button" variant="ghost" className="h-10 w-full justify-start gap-3 px-3 font-normal" onClick={() => { setAddOpen(false); setLibraryOpen(true); }}><LayoutGrid className="size-4 text-muted-foreground" />资产库</Button>
+            </PopoverContent>
+          </Popover>
           <Popover open={skillOpen} onOpenChange={setSkillOpen}>
             <PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择 Skill" className="shrink-0 text-muted-foreground"><Box />Skill<ChevronDown /></Button></PopoverTrigger>
             <PopoverContent align="start" side="bottom" className="max-h-[min(560px,70vh)] w-[min(850px,calc(100vw-32px))] overflow-y-auto p-0">
@@ -112,5 +133,6 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
     {notice && <p role="status" className="mt-2 text-center text-sm text-muted-foreground">{notice}</p>}
   </section>
     <ProviderSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
+    <AssetLibraryDialog open={libraryOpen} onOpenChange={setLibraryOpen} localAssets={[]} actionLabel="添加到输入框" onAdd={assets => setLibraryAssets(list => [...list, ...assets.filter(asset => !list.some(item => item.id === asset.id))])} />
   </div>;
 }
