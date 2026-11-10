@@ -22,7 +22,7 @@ const tabs = [{ id: "game", label: "Game", icon: Gamepad2 }, { id: "design", lab
 
 const busy = (s?: string) => s === "designing" || s === "assets" || s === "coding" || s === "revising";
 
-export function GameWorkspace({ id, tab, onTab, project = "ArTrail", onProjectChange = () => {} }: { id?: string | undefined; tab: WorkspaceTab; onTab: (tab: WorkspaceTab) => void; project?: string; onProjectChange?: (project: string) => void }) {
+export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab: WorkspaceTab; onTab: (tab: WorkspaceTab) => void }) {
   const fetchGame = useServerFn(getGame);
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({
@@ -55,6 +55,7 @@ export function GameWorkspace({ id, tab, onTab, project = "ArTrail", onProjectCh
   }, [game?.status, assets.length, planned, id]);
 
   const [chatOpen, setChatOpen] = useState(true);
+  useEffect(() => { if (window.innerWidth < 1024) setChatOpen(false); }, []);
   const [assetKind, setAssetKind] = useState("全部");
   const [designEditOpen, setDesignEditOpen] = useState(false);
   const [localDesign, setLocalDesign] = useState<{ id: string; design: GameDesign } | null>(null);
@@ -81,11 +82,11 @@ export function GameWorkspace({ id, tab, onTab, project = "ArTrail", onProjectCh
 
   return <div className="flex h-dvh flex-col overflow-hidden bg-surface-deep text-foreground">
     <header className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border px-3"><div className="flex min-w-0 items-center gap-2"><Button asChild size="icon" variant="ghost"><Link to="/build" search={{ mode: "build" }} aria-label="返回构建"><ArrowLeft /></Link></Button><span className="truncate text-sm font-medium">{game.title} · 游戏创作</span><span className="hidden sm:inline">{status}</span></div><Button size="sm" variant="secondary" disabled={!game.code} onClick={() => onTab("game")}><Play />试玩</Button></header>
-    <div className="flex min-h-0 flex-1 gap-1.5 p-1.5 pt-0">
-      <aside className="hidden w-11 shrink-0 flex-col items-center gap-3 py-3 md:flex"><Button asChild size="icon" variant="ghost"><Link to="/" aria-label="返回首页"><Gamepad2 /></Link></Button>{assets.slice(0, 4).map(a => <Button key={a.id} variant="ghost" size="icon" title={a.kind} aria-label={`查看${a.kind}资产`} className="overflow-hidden p-0" onClick={() => { setAssetKind(a.kind); onTab("assets"); }}><img src={a.url} alt={a.kind} className="size-full object-cover" /></Button>)}<div className="mt-auto text-[10px] text-muted-foreground">ArTrail</div></aside>
-      {chatOpen && <aside className="hidden w-[280px] shrink-0 flex-col rounded-lg bg-background lg:flex xl:w-[310px]">
-        <div className="flex h-11 items-center justify-between px-4 text-xs"><span className="flex items-center gap-2"><MessageSquare className="size-4" />Chat</span><Button variant="ghost" size="icon" className="size-7" title="收起会话" aria-label="收起会话" onClick={() => setChatOpen(false)}><PanelLeftClose /></Button></div>
-        <div className="flex-1 space-y-4 overflow-y-auto p-4 text-sm">
+    <div className="relative flex min-h-0 flex-1">
+      <aside className="hidden w-11 shrink-0 flex-col items-center gap-3 border-r border-border py-3 md:flex"><Button asChild size="icon" variant="ghost"><Link to="/" aria-label="返回首页"><Gamepad2 /></Link></Button>{assets.slice(0, 4).map(a => <Button key={a.id} variant="ghost" size="icon" title={a.kind} aria-label={`查看${a.kind}资产`} className="overflow-hidden p-0" onClick={() => { setAssetKind(a.kind); onTab("assets"); }}><img src={a.url} alt={a.kind} className="size-full object-cover" /></Button>)}<div className="mt-auto text-[10px] text-muted-foreground">ArTrail</div></aside>
+      {chatOpen && <aside aria-label="Agent 会话" className="absolute inset-y-0 left-0 z-20 flex w-full min-w-0 flex-col border-r border-border bg-background md:left-11 md:w-[360px] lg:static lg:w-[clamp(340px,28%,440px)] lg:shrink-0">
+        <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-4 text-sm font-medium"><span className="flex items-center gap-2"><Sparkles className="size-4 text-project-mint" />Agent</span><Button variant="ghost" size="icon" className="size-7" title="收起会话" aria-label="收起会话" onClick={() => setChatOpen(false)}><PanelLeftClose /></Button></div>
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 text-sm [overflow-wrap:anywhere]">
           {data.messages.map(m => m.role === "user" ? <p key={m.id} className="rounded-lg bg-secondary p-3 leading-relaxed">{m.content}</p> : <div key={m.id} className="flex gap-2"><Sparkles className="mt-0.5 size-4 shrink-0 text-project-mint" /><p className="leading-relaxed">{m.content}</p></div>)}
           {(busy(game.status) || game.status === "error") && <div className="space-y-2 border-l border-border pl-3 text-xs text-muted-foreground">
             <Step done={!!game.design} active={game.status === "designing"}>设计文档</Step>
@@ -94,10 +95,10 @@ export function GameWorkspace({ id, tab, onTab, project = "ArTrail", onProjectCh
             {game.status === "error" && <p className="text-destructive">{game.error}</p>}
           </div>}
         </div>
-        <GameChatComposer key={id} ready={game.status === "ready" && !reviseM.isPending} project={project} onProjectChange={onProjectChange} onSubmit={message => reviseM.mutate(message)} />
+        <GameChatComposer key={id} ready={game.status === "ready" && !reviseM.isPending} onSubmit={message => reviseM.mutate(message)} />
       </aside>}
-      <main className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-background">
-        <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-border px-2">{!chatOpen && <Button variant="ghost" size="icon" className="hidden size-7 lg:flex" aria-label="展开会话" title="展开会话" onClick={() => setChatOpen(true)}><PanelLeftOpen /></Button>}<nav aria-label="游戏工作区视图" className="flex min-w-0 overflow-x-auto">{tabs.map(t => <Button key={t.id} variant={tab === t.id ? "secondary" : "ghost"} size="sm" className="h-7 shrink-0 gap-1.5 px-2 text-xs" aria-current={tab === t.id ? "page" : undefined} onClick={() => onTab(t.id)}><t.icon className="size-3.5" />{t.label}</Button>)}</nav><Button variant={tab === "settings" ? "secondary" : "outline"} size="icon" className="size-8 shrink-0" aria-label="游戏设置" title="设置" onClick={() => onTab("settings")}><Settings className="size-4" /></Button></div>
+      <main aria-label="游戏创作区域" className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
+        <div className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-border px-3">{!chatOpen && <Button variant="ghost" size="icon" className="size-7 shrink-0" aria-label="展开会话" title="展开会话" onClick={() => setChatOpen(true)}><PanelLeftOpen /></Button>}<nav aria-label="游戏工作区视图" className="flex min-w-0 overflow-x-auto">{tabs.map(t => <Button key={t.id} variant={tab === t.id ? "secondary" : "ghost"} size="sm" className="h-7 shrink-0 gap-1.5 px-2 text-xs" aria-current={tab === t.id ? "page" : undefined} onClick={() => onTab(t.id)}><t.icon className="size-3.5" />{t.label}</Button>)}</nav><Button variant={tab === "settings" ? "secondary" : "outline"} size="icon" className="size-8 shrink-0" aria-label="游戏设置" title="设置" onClick={() => onTab("settings")}><Settings className="size-4" /></Button></div>
         {tab === "game" && (game.code ? <iframe key={game.updated_at} title={`${game.title} 试玩`} sandbox="allow-scripts allow-pointer-lock" srcDoc={game.code} className="min-h-0 w-full flex-1 border-0 bg-black" /> : pending(statusLabel[game.status] ?? ""))}
         {tab === "canvas" && <GameAssetCanvas key={`${id}-canvas`} gameId={id} assets={assets} editingDesign={designEditOpen}>
           <Button variant="ghost" aria-label="编辑游戏设计文档" disabled={!shownDesign} className="block h-auto w-full max-w-[320px] whitespace-normal rounded-lg border border-border bg-card p-3 text-left" onClick={() => setDesignEditOpen(true)}><span className="mb-3 flex items-center gap-2 text-xs text-muted-foreground"><FileText />游戏设计文档</span><span className="block space-y-2 rounded bg-surface-deep p-4 text-xs leading-relaxed">{shownDesign ? <><span className="block font-semibold">{shownDesign.title}</span><span className="line-clamp-6 block font-normal">{shownDesign.summary}</span><span className="block border-t border-border pt-2 text-muted-foreground">关卡配置表 · {shownDesign.levels?.length ?? 0} 关</span></> : <span className="flex items-center gap-2 text-muted-foreground"><Loader2 className="size-3 animate-spin" />撰写中…</span>}</span></Button>
