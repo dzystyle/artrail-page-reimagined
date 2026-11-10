@@ -5,6 +5,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowUp, Code2, Download, FileText, Gamepad2, Image, Layers, Loader2, MessageSquare, PanelLeftClose, PanelLeftOpen, Play, RotateCcw, Sparkles, Swords, Settings, AlertCircle, Check } from "lucide-react";
 import { CreationModelPicker } from "@/components/creation-model-picker";
 import { GameAssetCanvas } from "@/components/game-asset-canvas";
+import { GameDesignEditor } from "@/components/game-design-editor";
+import { get, set } from "idb-keyval";
+import type { GameDesign } from "@/lib/game-pipeline";
 import { GameSettings } from "@/components/game-settings";
 import { MultiplayerPanel } from "@/components/multiplayer-panel";
 import { Button } from "@/components/ui/button";
@@ -55,11 +58,20 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
   const [model, setModel] = useState("deepseek-v4-pro");
   const [depth, setDepth] = useState("High");
   const [assetKind, setAssetKind] = useState("全部");
+  const [designEditOpen, setDesignEditOpen] = useState(false);
+  const [localDesign, setLocalDesign] = useState<{ id: string; design: GameDesign } | null>(null);
+  useEffect(() => {
+    if (!id) return;
+    let active = true;
+    void get<GameDesign>(`artrail-design:${id}`).then(saved => { if (active && saved) setLocalDesign({ id, design: saved }); }).catch(() => {});
+    return () => { active = false; };
+  }, [id]);
+  const shownDesign = localDesign && localDesign.id === id ? localDesign.design : game?.design;
   const reviseM = useMutation({ mutationFn: (message: string) => revise({ data: { id: id!, message } }), onSettled: () => refresh() });
   const retryM = useMutation({ mutationFn: () => { running.current = null; return retry({ data: { id: id! } }); }, onSettled: () => refresh() });
 
   const download = (text: string, name: string) => { const url = URL.createObjectURL(new Blob([text], { type: "text/plain" })); const a = document.createElement("a"); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url); };
-  const designMd = useMemo(() => game?.design ? `# ${game.design.title}\n\n${game.design.summary}\n\n${game.design.sections.map(s => `## ${s.heading}\n${s.body}`).join("\n\n")}` : "", [game?.design]);
+  const designMd = useMemo(() => shownDesign ? `# ${shownDesign.title}\n\n${shownDesign.summary}\n\n${shownDesign.sections.map(s => `## ${s.heading}\n${s.body}`).join("\n\n")}` : "", [shownDesign]);
 
   if (!id) return <RecentGames />;
   if (isLoading) return <div className="flex h-dvh items-center justify-center bg-surface-deep text-muted-foreground"><Loader2 className="animate-spin" /></div>;
@@ -92,16 +104,17 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-background">
         <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-border px-2">{!chatOpen && <Button variant="ghost" size="icon" className="hidden size-7 lg:flex" aria-label="展开会话" title="展开会话" onClick={() => setChatOpen(true)}><PanelLeftOpen /></Button>}<nav aria-label="游戏工作区视图" className="flex min-w-0 overflow-x-auto">{tabs.map(t => <Button key={t.id} variant={tab === t.id ? "secondary" : "ghost"} size="sm" className="h-7 shrink-0 gap-1.5 px-2 text-xs" aria-current={tab === t.id ? "page" : undefined} onClick={() => onTab(t.id)}><t.icon className="size-3.5" />{t.label}</Button>)}</nav><Button variant={tab === "settings" ? "secondary" : "outline"} size="icon" className="size-8 shrink-0" aria-label="游戏设置" title="设置" onClick={() => onTab("settings")}><Settings className="size-4" /></Button></div>
         {tab === "game" && (game.code ? <iframe key={game.updated_at} title={`${game.title} 试玩`} sandbox="allow-scripts allow-pointer-lock" srcDoc={game.code} className="min-h-0 w-full flex-1 border-0 bg-black" /> : pending(statusLabel[game.status] ?? ""))}
-        {tab === "canvas" && <GameAssetCanvas key={`${id}-canvas`} gameId={id} assets={assets}>
-          <div className="w-full max-w-[320px] rounded-lg border border-border bg-card p-3"><Button variant="ghost" className="mb-2 h-7 px-0 text-xs text-muted-foreground" onClick={() => onTab("design")}><FileText />游戏设计文档</Button><div className="space-y-2 rounded bg-surface-deep p-4 text-xs leading-relaxed">{game.design ? <><p className="font-semibold">{game.design.title}</p><p className="line-clamp-6">{game.design.summary}</p></> : <p className="flex items-center gap-2 text-muted-foreground"><Loader2 className="size-3 animate-spin" />撰写中…</p>}</div></div>
+        {tab === "canvas" && <GameAssetCanvas key={`${id}-canvas`} gameId={id} assets={assets} editingDesign={designEditOpen}>
+          <Button variant="ghost" aria-label="编辑游戏设计文档" disabled={!shownDesign} className="block h-auto w-full max-w-[320px] whitespace-normal rounded-lg border border-border bg-card p-3 text-left" onClick={() => setDesignEditOpen(true)}><span className="mb-3 flex items-center gap-2 text-xs text-muted-foreground"><FileText />游戏设计文档</span><span className="block space-y-2 rounded bg-surface-deep p-4 text-xs leading-relaxed">{shownDesign ? <><span className="block font-semibold">{shownDesign.title}</span><span className="line-clamp-6 block font-normal">{shownDesign.summary}</span></> : <span className="flex items-center gap-2 text-muted-foreground"><Loader2 className="size-3 animate-spin" />撰写中…</span>}</span></Button>
         </GameAssetCanvas>}
-        {tab === "design" && (game.design ? <div className="min-h-0 flex-1 overflow-y-auto"><div className="sticky top-0 flex justify-end bg-background p-3"><Button variant="ghost" size="icon" aria-label="下载设计文档" title="下载设计文档" onClick={() => download(designMd, "game-design.md")}><Download /></Button></div><article className="mx-auto max-w-[760px] px-6 pb-12"><h1 className="mb-3 text-2xl font-semibold">{game.design.title}</h1><p className="mb-8 text-sm text-muted-foreground">{game.design.summary}</p>{game.design.sections.map((s, i) => <section key={i} className="mb-8"><h2 className="mb-3 text-lg font-semibold">{i + 1}. {s.heading}</h2><p className="whitespace-pre-wrap text-sm leading-7 text-foreground/80">{s.body}</p></section>)}</article></div> : pending(statusLabel["designing"] ?? ""))}
+        {tab === "design" && (shownDesign ? <div className="min-h-0 flex-1 overflow-y-auto"><div className="sticky top-0 flex justify-end gap-2 bg-background p-3"><Button variant="ghost" size="sm" onClick={() => setDesignEditOpen(true)}><FileText />编辑文档</Button><Button variant="ghost" size="icon" aria-label="下载设计文档" title="下载设计文档" onClick={() => download(designMd, "game-design.md")}><Download /></Button></div><article className="mx-auto max-w-[760px] px-6 pb-12"><h1 className="mb-3 text-2xl font-semibold">{shownDesign.title}</h1><p className="mb-8 text-sm text-muted-foreground">{shownDesign.summary}</p>{shownDesign.sections.map((s, i) => <section key={i} className="mb-8"><h2 className="mb-3 text-lg font-semibold">{i + 1}. {s.heading}</h2><p className="whitespace-pre-wrap text-sm leading-7 text-foreground/80">{s.body}</p></section>)}</article></div> : pending(statusLabel["designing"] ?? ""))}
         {tab === "assets" && (assets.length ? <GameAssetCanvas key={`${id}-assets`} gameId={id} assets={assets} visibleKind={assetKind} filters={["全部", ...new Set(assets.map(a => a.kind))].map(k => <Button key={k} size="sm" variant={assetKind === k ? "secondary" : "ghost"} onClick={() => setAssetKind(k)}>{k}</Button>)} /> : pending(statusLabel["assets"] ?? ""))}
         {tab === "code" && (game.code ? <div className="flex min-h-0 flex-1 flex-col"><div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs"><span>index.html</span><Button variant="ghost" size="sm" onClick={() => download(game.code!, "index.html")}><Download />下载</Button></div><pre className="min-h-0 flex-1 overflow-auto p-4 text-xs leading-5"><code>{game.code}</code></pre></div> : pending(statusLabel["coding"] ?? ""))}
         {tab === "multiplayer" && <MultiplayerPanel />}
         {tab === "settings" && <GameSettings initialName={game.title} />}
       </main>
     </div>
+    {designEditOpen && shownDesign && <GameDesignEditor design={shownDesign} onClose={() => setDesignEditOpen(false)} onSave={async updated => { await set(`artrail-design:${id}`, updated); setLocalDesign({ id, design: updated }); }} />}
   </div>;
 }
 
