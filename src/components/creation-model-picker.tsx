@@ -85,7 +85,7 @@ export function CreationModelPicker({ model, depth, onModelChange, onDepthChange
                       <span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{gameGenerationModel.name}</span><span className="mt-0.5 block text-xs text-muted-foreground">{gameGenerationModel.description}</span></span>
                       {isGameApi ? <Check className="size-4 shrink-0" /> : <span className="shrink-0 text-[10px] text-muted-foreground">待接入</span>}
                     </Button>
-                    {isGameApi && <p role="status" className="px-2.5 pb-1 text-xs leading-5 text-muted-foreground">待接入 · 当前生成服务保持不变</p>}
+                    {isGameApi && <p role="status" className="px-2.5 pb-1 text-xs leading-5 text-muted-foreground">{"\n"}</p>}
                   </div>}
                   {languageMatches.length > 0 && <><p className="px-2.5 pb-1 pt-2 text-xs text-muted-foreground">A · ArTrail-deepseed</p>{languageMatches.map(m => <Button type="button" key={m} variant="ghost" className="h-9 w-full justify-between px-3 font-normal" onClick={() => { onModelChange(m); setModelOpen(false); }}>{m}{model === m && <Check />}</Button>)}</>}
                   {matches.length === 0 && <p className="p-3 text-sm text-muted-foreground">没有匹配的模型</p>}
