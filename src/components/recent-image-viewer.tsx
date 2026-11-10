@@ -14,7 +14,7 @@ export function RecentImageViewer({ item, onClose }: { item: RecentImage | null;
   const btn = "flex h-10 items-center justify-center gap-2 rounded-lg bg-secondary text-sm font-medium hover:bg-secondary/70";
 
   return <Dialog open={!!item} onOpenChange={o => !o && onClose()}>
-    <DialogContent className="h-screen max-h-screen w-screen max-w-none gap-0 overflow-hidden rounded-none border-0 bg-transparent p-0 sm:rounded-none [&>button]:hidden">
+    <DialogContent className="h-screen max-h-screen w-screen max-w-none gap-0 overflow-hidden rounded-none border-0 bg-background p-0 sm:rounded-none [&>button]:hidden">
       <DialogTitle className="sr-only">{item?.title ?? "图片详情"}</DialogTitle>
       {item && <div className="relative flex h-full w-full">
         <img src={item.image} alt="" aria-hidden className="absolute inset-0 h-full w-full scale-110 object-cover blur-3xl opacity-60" />
