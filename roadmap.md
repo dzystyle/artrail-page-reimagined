@@ -31,4 +31,4 @@
 - [x] Add bottom canvas menu, editable documents, real image generation, free node dragging and pan/fit controls; verify creation, movement and refresh.
 - [x] Add From Library asset picker with real images, search/filter, multi-select and insertion; verify desktop/mobile and persistence.
 - [x] Enable game design document editing from Canvas and Design; verify save, cancel, refresh and mobile layout.
-- [ ] Make game asset templates selectable by pixel style, open a reference canvas, and verify image replacement and real generation.
+- [x] Make game asset templates selectable by pixel style, open a reference canvas, and verify image replacement and real generation.
