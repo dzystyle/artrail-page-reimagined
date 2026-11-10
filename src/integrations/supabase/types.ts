@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      canvas_image_access: {
+        Row: {
+          blocked_status: number | null
+          id: string
+          message: string | null
+          updated_at: string
+        }
+        Insert: {
+          blocked_status?: number | null
+          id: string
+          message?: string | null
+          updated_at?: string
+        }
+        Update: {
+          blocked_status?: number | null
+          id?: string
+          message?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       game_assets: {
         Row: {
           created_at: string
