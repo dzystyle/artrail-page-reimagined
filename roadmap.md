@@ -36,4 +36,4 @@
 - [x] Add editable level configuration to game design documents; verify save, refresh and mobile layout.
 
 - [x] Remove the game project menu and rebalance Agent/canvas layout; verify desktop and mobile.
-- [ ] Open homepage image templates in a shared workspace dialog and implement canvas switching; verify desktop/mobile and retained edits.
+- [x] Open homepage image templates in a shared workspace dialog and implement canvas switching; verify desktop/mobile and retained edits.
