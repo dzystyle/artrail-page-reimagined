@@ -32,3 +32,4 @@
 - [x] Add From Library asset picker with real images, search/filter, multi-select and insertion; verify desktop/mobile and persistence.
 - [x] Enable game design document editing from Canvas and Design; verify save, cancel, refresh and mobile layout.
 - [x] Make game asset templates selectable by pixel style, open a reference canvas, and verify image replacement and real generation.
+- [ ] Add Skill and project selection/management to the workspace Chat composer and verify the interactions.
