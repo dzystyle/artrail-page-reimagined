@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { ArrowLeft, Box, Check, ChevronDown, ChevronRight, KeyRound, Plus, Search, Settings } from "lucide-react";
+import { ArrowLeft, Box, Check, ChevronDown, ChevronRight, Gamepad2, KeyRound, Plus, Search, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { AddProviderDialog, type ProviderDraft } from "@/components/add-provider-dialog";
+import { gameGenerationModel, languageModelNames, matchingCreationModels } from "@/lib/creation-models";
 
-const modelNames = ["deepseek-flash", "deepseek-v4-flash", "deepseek-v4-pro", "gemini-3.5-flash", "gemini-3.8-flash", "gemini-4-argon", "gpt-5.5", "gpt-5.6-luna", "gpt-5.6-sol"];
 const depths = ["Off", "Low", "Medium", "High"];
 const initialProviders: ({ name: string; detail: string; enabled: boolean } & Partial<ProviderDraft>)[] = [
   { name: "ArTrail-deepseed", detail: "自定义端点 · 语言 · 图像", enabled: true },
@@ -69,14 +69,28 @@ export function CreationModelPicker({ model, depth, onModelChange, onDepthChange
   const [search, setSearch] = useState("");
   const [depthView, setDepthView] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const isGameApi = model === gameGenerationModel.name;
+  const matches = matchingCreationModels(search);
+  const languageMatches = languageModelNames.filter(name => matches.includes(name));
   return <>
-          <Popover open={modelOpen} onOpenChange={v => { setModelOpen(v); if (!v) { setDepthView(false); setSearch(""); } }}><PopoverTrigger asChild><Button type="button" aria-label="选择创作模型" variant="ghost" className={compact ? "h-7 min-w-0 max-w-full gap-1 px-1 text-[10px] text-muted-foreground [&_svg]:size-3" : "min-w-0 gap-1.5 px-2 text-muted-foreground sm:gap-2"}><span className="rounded bg-secondary px-1.5 text-xs">A</span><span className="truncate text-foreground">{model}</span><span className="text-muted-foreground">{depth}</span><ChevronDown /></Button></PopoverTrigger>
+          <Popover open={modelOpen} onOpenChange={v => { setModelOpen(v); if (!v) { setDepthView(false); setSearch(""); } }}><PopoverTrigger asChild><Button type="button" aria-label="选择创作模型" variant="ghost" className={compact ? "h-7 min-w-0 max-w-full gap-1 px-1 text-[10px] text-muted-foreground [&_svg]:size-3" : "min-w-0 gap-1.5 px-2 text-muted-foreground sm:gap-2"}>{isGameApi ? <Gamepad2 className="shrink-0 text-build" /> : <span className="rounded bg-secondary px-1.5 text-xs">A</span>}<span className="truncate text-foreground">{model}</span>{!isGameApi && <span className="text-muted-foreground">{depth}</span>}<ChevronDown className="shrink-0" /></Button></PopoverTrigger>
             <PopoverContent align="end" side="bottom" className="w-[min(315px,calc(100vw-32px))] rounded-lg p-0">
               {depthView ? <><Button type="button" variant="ghost" className="h-12 w-full justify-start rounded-none border-b border-border px-4 text-base" onClick={() => setDepthView(false)}><ArrowLeft />Thinking depth</Button><div className="p-1.5">{depths.map(d => <Button type="button" variant="ghost" key={d} className="h-11 w-full justify-between px-3 text-base font-normal" onClick={() => { onDepthChange(d); setModelOpen(false); setDepthView(false); }}>{d}{depth === d && <Check />}</Button>)}</div></> : <>
                 <div className="flex items-center gap-2 border-b border-border px-3 py-2"><Search className="size-4 text-muted-foreground" /><Input value={search} onChange={e => setSearch(e.target.value)} aria-label="搜索模型" placeholder="Search models" className="h-8 min-w-0 border-0 bg-transparent p-0 shadow-none focus-visible:ring-0" /><Button type="button" variant="ghost" size="icon" aria-label="提供商设置" title="提供商设置" onClick={() => { setModelOpen(false); setSettingsOpen(true); }}><Settings /></Button></div>
-                <p className="px-4 pb-1 pt-3 text-xs text-muted-foreground">A · ArTrail-deepseed</p>
-                <div className="max-h-[330px] overflow-y-auto p-1.5">{modelNames.filter(m => m.toLowerCase().includes(search.toLowerCase())).map(m => <Button type="button" key={m} variant="ghost" className="h-9 w-full justify-between px-3 font-normal" onClick={() => { onModelChange(m); setModelOpen(false); }}>{m}{model === m && <Check />}</Button>)}{!modelNames.some(m => m.includes(search.toLowerCase())) && <p className="p-3 text-sm text-muted-foreground">没有匹配的模型</p>}</div>
-                <Button type="button" variant="ghost" className="h-11 w-full justify-between rounded-none border-t border-border px-4 font-normal" onClick={() => setDepthView(true)}>Thinking depth<span className="flex items-center gap-1 text-muted-foreground">{depth}<ChevronRight /></span></Button>
+                <div className="max-h-[390px] overflow-y-auto p-1.5">
+                  {matches.includes(gameGenerationModel.name) && <div className="mb-1 border-b border-border pb-2">
+                    <p className="px-2.5 pb-1 pt-2 text-xs text-muted-foreground">游戏生成</p>
+                    <Button type="button" variant="ghost" aria-label="Laya IdeaAPI" className="h-auto min-h-16 w-full justify-start gap-3 px-2.5 py-2.5 text-left font-normal" onClick={() => { onModelChange(gameGenerationModel.name); setModelOpen(false); }}>
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-build/10 text-build"><Gamepad2 className="size-5" /></span>
+                      <span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{gameGenerationModel.name}</span><span className="mt-0.5 block text-xs text-muted-foreground">{gameGenerationModel.description}</span></span>
+                      {isGameApi ? <Check className="size-4 shrink-0" /> : <span className="shrink-0 text-[10px] text-muted-foreground">待接入</span>}
+                    </Button>
+                    {isGameApi && <p role="status" className="px-2.5 pb-1 text-xs leading-5 text-muted-foreground">待接入 · 当前生成服务保持不变</p>}
+                  </div>}
+                  {languageMatches.length > 0 && <><p className="px-2.5 pb-1 pt-2 text-xs text-muted-foreground">A · ArTrail-deepseed</p>{languageMatches.map(m => <Button type="button" key={m} variant="ghost" className="h-9 w-full justify-between px-3 font-normal" onClick={() => { onModelChange(m); setModelOpen(false); }}>{m}{model === m && <Check />}</Button>)}</>}
+                  {matches.length === 0 && <p className="p-3 text-sm text-muted-foreground">没有匹配的模型</p>}
+                </div>
+                {!isGameApi && <Button type="button" variant="ghost" className="h-11 w-full justify-between rounded-none border-t border-border px-4 font-normal" onClick={() => setDepthView(true)}>Thinking depth<span className="flex items-center gap-1 text-muted-foreground">{depth}<ChevronRight /></span></Button>}
               </>}
             </PopoverContent>
           </Popover>

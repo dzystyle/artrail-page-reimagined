@@ -25,5 +25,5 @@
 - Game workspace (/game?id=) is AI-generated and persisted in Cloud: browser drives design → assets → code steps via server functions in src/lib/games.functions.ts; generated HTML runs only in a sandboxed iframe. Why: each step stays short, resumable after refresh, and isolated from the app.
 - Sidebar tasks and the game library share the persisted game-list query; invalidate it after creation and generation changes. Why: new games and updated titles must remain consistent across navigation and refresh.
 
-- Homepage and game Chat reuse the browser-safe creation model picker; game Chat selections remain session-only and do not change generation calls. Why: identical menus without silently changing the connected AI provider.
+- Homepage and game Chat reuse the browser-safe creation model picker and ordered catalogue; specialized game APIs are separated from language models, hide unsupported thinking-depth controls, and remain session-only without changing generation calls until connected. Why: consistent selection without implying an unconnected provider is live.
 - Provider configuration uses a separate browser-safe dialog; keep non-secret drafts session-only and discard credential inputs on close or save until a secure service integration exists. Why: reference UI must not persist secrets or claim a live connection.
