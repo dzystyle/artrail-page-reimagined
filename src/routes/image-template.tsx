@@ -10,7 +10,7 @@ type Search = { id: string };
 
 export const Route = createFileRoute("/image-template")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    id: typeof s.id === "string" && imageTemplates.some(t => t.id === s.id) ? s.id : imageTemplates[0].id,
+    id: typeof s.id === "string" && imageTemplates.some(t => t.id === s.id) ? s.id : "style",
   }),
   head: () => ({
     meta: [
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/image-template")({
 function ImageTemplatePage() {
   const { id } = Route.useSearch();
   const navigate = useNavigate({ from: "/image-template" });
-  const template = imageTemplates.find(t => t.id === id) ?? imageTemplates[0];
+  const template = imageTemplates.find(t => t.id === id) ?? imageTemplates[0]!;
   const others = imageTemplates.filter(t => t.id !== template.id);
   const sample = others.slice(0, 2);
   const [assist, setAssist] = useState(false);
