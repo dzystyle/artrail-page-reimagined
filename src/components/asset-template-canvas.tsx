@@ -51,7 +51,7 @@ function Workspace({ template, density }: { template: string; density: string })
       const result = snapshot.results[String(index)];
       return { id: String(index), type: "assetTile", position: snapshot.positions[String(index)] ?? { x: 410 + (index % 2) * 390, y: Math.floor(index / 2) * 440 }, data: { title, src: result?.src ?? sample, reference: false, sample: !result, busy: busy === index, partial: !!result && !result.final, stale: !!result && result.reference !== snapshot.reference, output: index } };
     })];
-    setNodes(current => tiles.map(tile => ({ ...tile, selected: current.find(node => node.id === tile.id)?.selected })));
+    setNodes(current => tiles.map(tile => ({ ...tile, selected: current.find(node => node.id === tile.id)?.selected ?? false })));
   }, [snapshot, busy, ready, preset, style, sample, setNodes]);
   const replace = (src: string) => { setSnapshot(current => ({ ...current, reference: src })); setError(""); };
   async function generate(index: number) {
