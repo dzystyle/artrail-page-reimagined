@@ -19,6 +19,7 @@
 - Workspace search uses the shared browser-safe demo project catalogue and works catalogue; canvas matches open project pages with a validated URL filter so direct links and refresh retain the selected search.
 - The sidebar asset entry reuses the project page with validated URL asset mode; its project selector preserves that mode and search across project changes and refreshes.
 - Keep the create-page media composer separate from the homepage/game composer; reuse create-page Skill data and keep media modes, settings, canvas toggle and reference rates session-only until generation and billing services are connected.
+- Workspace Chat uses a browser-safe dedicated composer with session-only game Skill selections included in revision prompts; project selection uses URL state and the shared project catalogue, and management opens existing project views without reassigning saved games. Why: selections survive navigation without implying unsupported project mutations.
 - Keep homepage image-template catalogue browser-safe and separate from featured-work data; category filters and preview dialogs are session-only, while creation links reuse /create without implying generation.
 
 - Build reuses the shared composer in game-only mode while story and homepage keep their own choices; this prevents non-game requests entering the game workspace.
