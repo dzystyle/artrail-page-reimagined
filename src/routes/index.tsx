@@ -108,7 +108,7 @@ export function Index() {
                 <img src={entryCreate} alt="" aria-hidden width={1536} height={512} className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" /><span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/70 to-transparent" />
                 <span className="relative flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-create"><Shapes className="size-3.5" />Create</span>
                 <span className="relative mt-1 flex items-center gap-1 text-[17px] font-semibold tracking-tight">创建图片和视频<ChevronRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" /></span>
-                 <span className="relative mt-0.5 text-xs text-muted-foreground">海报、插画、短片，一键成片</span>
+                 <span className="relative mt-0.5 text-xs text-muted-foreground">游戏宣传图、玩法短片、投流买量视频</span>
               </Link>
             </div>
             <Link to="/build" search={{ mode: "story" }} className="group relative flex min-h-[204px] flex-col items-center justify-end gap-1.5 overflow-hidden rounded-2xl border border-border/70 bg-card/60 shadow-[0_8px_24px_-12px_oklch(0_0_0/0.6)] hover:-translate-y-0.5 p-4 text-center transition-all duration-300 hover:border-foreground/30">
