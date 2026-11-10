@@ -33,6 +33,7 @@ function DocumentNode({ data, selected }: NodeProps<CanvasNode>) {
   </div>;
 }
 const DesignContext = createContext<ReactNode>(null);
+const DesignInteractionContext = createContext<(value: boolean) => void>(() => {});
 function DesignNode() { return <div className="w-[300px]">{useContext(DesignContext)}</div>; }
 const nodeTypes = { image: ImageNode, document: DocumentNode, design: DesignNode };
 
