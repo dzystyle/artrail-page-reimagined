@@ -5,6 +5,16 @@ import { HomeComposer } from "@/components/home-composer";
 describe("Homepage composer", () => {
   afterEach(cleanup);
 
+  it("submits Laya IdeaAPI as a game creation type without changing the model", async () => {
+    const onCreate = vi.fn();
+    render(<HomeComposer onCreate={onCreate} />);
+    fireEvent.click(screen.getByRole("button", { name: "选择创作类型" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Laya IdeaAPI 创作类型" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "制作一个打地鼠游戏" } });
+    fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
+    expect(onCreate).toHaveBeenCalledWith({ prompt: "制作一个打地鼠游戏", type: "Laya IdeaAPI", project: "ArTrail", model: "deepseek-v4-pro", depth: "High" });
+  });
+
   it("submits the entered game request and selected project", () => {
     const onCreate = vi.fn();
     render(<HomeComposer initialType="Web Game" onCreate={onCreate} />);
