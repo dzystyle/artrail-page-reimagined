@@ -25,3 +25,4 @@
 - [x] Connect sidebar tasks to saved games and verify reopening and refresh.
 
 - [x] Reuse homepage model menu in game Chat and verify search, selection and thinking depth.
+- [x] Complete the reference add-provider dialog and verify manual model management, save/cancel and desktop/mobile layout.

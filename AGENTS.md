@@ -26,3 +26,4 @@
 - Sidebar tasks and the game library share the persisted game-list query; invalidate it after creation and generation changes. Why: new games and updated titles must remain consistent across navigation and refresh.
 
 - Homepage and game Chat reuse the browser-safe creation model picker; game Chat selections remain session-only and do not change generation calls. Why: identical menus without silently changing the connected AI provider.
+- Provider configuration uses a separate browser-safe dialog; keep non-secret drafts session-only and discard credential inputs on close or save until a secure service integration exists. Why: reference UI must not persist secrets or claim a live connection.
