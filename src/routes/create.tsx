@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, FlaskConical, Play, Sparkles } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { MediaComposer } from "@/components/media-composer";
+import { setMediaWorkspaceDraft } from "@/lib/media-workspace";
 import { type MediaSkill } from "@/lib/media-composer";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -144,6 +145,7 @@ function ModelPicker() {
 }
 
 function CreatePage() {
+  const navigate = useNavigate();
   const mainRef = useRef<HTMLElement>(null);
   const templateRow = useRef<HTMLDivElement>(null);
   const [tab, setTab] = useState(tabs[0]!);
@@ -174,7 +176,7 @@ function CreatePage() {
         <div className="mx-auto max-w-[1240px] px-5 pb-8 sm:px-8">
           <section className="mx-auto max-w-[1040px] pb-6 pt-2">
             <h1 className="sr-only">创建图片和视频</h1>
-            <MediaComposer skills={composerSkills} skill={skill} onSkillChange={setSkill} seed={seed} />
+            <MediaComposer skills={composerSkills} skill={skill} onSkillChange={setSkill} seed={seed} onSubmit={submission => { setMediaWorkspaceDraft(submission); void navigate({ to: "/media-workspace", search: { prompt: submission.text, mode: submission.mode } }); }} />
           </section>
 
           {/* 顶部模板大卡 */}

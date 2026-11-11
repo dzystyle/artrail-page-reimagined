@@ -15,6 +15,7 @@ import { Route as BuildRouteImport } from './routes/build'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as ImageTemplateRouteImport } from './routes/image-template'
+import { Route as MediaWorkspaceRouteImport } from './routes/media-workspace'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ToolboxRouteImport } from './routes/toolbox'
@@ -51,6 +52,11 @@ const GameRoute = GameRouteImport.update({
 const ImageTemplateRoute = ImageTemplateRouteImport.update({
   id: '/image-template',
   path: '/image-template',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaWorkspaceRoute = MediaWorkspaceRouteImport.update({
+  id: '/media-workspace',
+  path: '/media-workspace',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PluginsRoute = PluginsRouteImport.update({
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/image-template': typeof ImageTemplateRoute
+  '/media-workspace': typeof MediaWorkspaceRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/image-template': typeof ImageTemplateRoute
+  '/media-workspace': typeof MediaWorkspaceRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/image-template': typeof ImageTemplateRoute
+  '/media-workspace': typeof MediaWorkspaceRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/game'
     | '/image-template'
+    | '/media-workspace'
     | '/plugins'
     | '/settings'
     | '/toolbox'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/game'
     | '/image-template'
+    | '/media-workspace'
     | '/plugins'
     | '/settings'
     | '/toolbox'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/game'
     | '/image-template'
+    | '/media-workspace'
     | '/plugins'
     | '/settings'
     | '/toolbox'
@@ -191,6 +203,7 @@ export interface RootRouteChildren {
   CreateRoute: typeof CreateRoute
   GameRoute: typeof GameRoute
   ImageTemplateRoute: typeof ImageTemplateRoute
+  MediaWorkspaceRoute: typeof MediaWorkspaceRoute
   PluginsRoute: typeof PluginsRoute
   SettingsRoute: typeof SettingsRoute
   ToolboxRoute: typeof ToolboxRoute
@@ -242,6 +255,13 @@ declare module '@tanstack/react-router' {
       path: '/image-template'
       fullPath: '/image-template'
       preLoaderRoute: typeof ImageTemplateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media-workspace': {
+      id: '/media-workspace'
+      path: '/media-workspace'
+      fullPath: '/media-workspace'
+      preLoaderRoute: typeof MediaWorkspaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plugins': {
@@ -303,6 +323,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreateRoute: CreateRoute,
   GameRoute: GameRoute,
   ImageTemplateRoute: ImageTemplateRoute,
+  MediaWorkspaceRoute: MediaWorkspaceRoute,
   PluginsRoute: PluginsRoute,
   SettingsRoute: SettingsRoute,
   ToolboxRoute: ToolboxRoute,
