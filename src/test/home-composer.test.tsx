@@ -36,6 +36,25 @@ describe("Homepage composer", () => {
     expect(screen.queryByRole("button", { name: /TapTap Maker game/ })).not.toBeInTheDocument();
   });
 
+  it("shows a media model dropdown matching the selected media creation type", async () => {
+    render(<HomeComposer />);
+    expect(screen.queryByRole("button", { name: "选择媒体模型" })).not.toBeInTheDocument();
+    const cases: Array<[string, string]> = [["图片生成", "图片"], ["视频生成", "视频"], ["音频生成", "音频"]];
+    for (const [typeName, label] of cases) {
+      fireEvent.click(screen.getByRole("button", { name: "选择创作类型" }));
+      fireEvent.click(await screen.findByRole("button", { name: new RegExp(typeName) }));
+      const picker = screen.getByRole("button", { name: "选择媒体模型" });
+      expect(picker).toHaveTextContent(label);
+      expect(screen.queryByRole("button", { name: /模型：/ })).not.toBeInTheDocument();
+    }
+  });
+
+  it("keeps the language model picker for non-media creation types", () => {
+    render(<HomeComposer initialType="Web Game" />);
+    expect(screen.queryByRole("button", { name: "选择媒体模型" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /模型：/ })).toBeInTheDocument();
+  });
+
   it("submits the selected media generation type", async () => {
     const onCreate = vi.fn();
     render(<HomeComposer onCreate={onCreate} />);
