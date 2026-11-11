@@ -5,7 +5,7 @@ import { mediaModes, referenceMediaRate } from "@/lib/media-composer";
 
 const skills = [{ name: "短片叙事模板", image: "/preview.jpg", category: "视频制作" }];
 describe("Media composer", () => {
-  afterEach(() => { vi.unstubAllGlobals(); cleanup(); });
+  afterEach(cleanup);
   it("provides the four reference modes", () => {
     expect(mediaModes.map(item => item.id)).toEqual(["agent", "video", "image", "audio"]);
   });
@@ -27,20 +27,11 @@ describe("Media composer", () => {
     fireEvent.click(screen.getByRole("button", { name: "短片叙事模板" }));
     expect(onSkillChange).toHaveBeenCalledWith(skills[0]);
   });
-  it("redirects a submitted description to the requested canvas", () => {
+  it("preserves the draft without implying generation", () => {
     render(<MediaComposer skills={skills} skill={null} onSkillChange={vi.fn()} />);
-    const assign = vi.fn();
-    vi.stubGlobal("window", new Proxy(window, { get: (target, key) => key === "location" ? { assign } : Reflect.get(target, key) }));
     fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "猫咪短片" } });
     fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
-    expect(assign).toHaveBeenCalledExactlyOnceWith("https://artrail.ai/canvas?id=8a265472-f98a-41aa-b462-19930032918e");
-  });
-  it("does not redirect an empty description", () => {
-    render(<MediaComposer skills={skills} skill={null} onSkillChange={vi.fn()} />);
-    const assign = vi.fn();
-    vi.stubGlobal("window", new Proxy(window, { get: (target, key) => key === "location" ? { assign } : Reflect.get(target, key) }));
-    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "   " } });
-    fireEvent.submit(screen.getByRole("button", { name: "发送创作内容" }).closest("form") as HTMLFormElement);
-    expect(assign).not.toHaveBeenCalled();
+    expect(screen.getByRole("textbox", { name: "创作描述" })).toHaveValue("猫咪短片");
+    expect(screen.getByRole("status")).toBeInTheDocument();
   });
 });
