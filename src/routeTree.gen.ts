@@ -17,6 +17,7 @@ import { Route as GameRouteImport } from './routes/game'
 import { Route as ImageTemplateRouteImport } from './routes/image-template'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ToolboxRouteImport } from './routes/toolbox'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
 import { Route as ApiPublicAssetTemplateImageRouteImport } from './routes/api/public/asset-template-image'
@@ -62,6 +63,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolboxRoute = ToolboxRouteImport.update({
+  id: '/toolbox',
+  path: '/toolbox',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/projects/$projectId',
   path: '/projects/$projectId',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/image-template': typeof ImageTemplateRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
+  '/toolbox': typeof ToolboxRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/image-template': typeof ImageTemplateRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
+  '/toolbox': typeof ToolboxRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/image-template': typeof ImageTemplateRoute
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
+  '/toolbox': typeof ToolboxRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/image-template'
     | '/plugins'
     | '/settings'
+    | '/toolbox'
     | '/projects/$projectId'
     | '/works/$workId'
     | '/api/public/asset-template-image'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/image-template'
     | '/plugins'
     | '/settings'
+    | '/toolbox'
     | '/projects/$projectId'
     | '/works/$workId'
     | '/api/public/asset-template-image'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/image-template'
     | '/plugins'
     | '/settings'
+    | '/toolbox'
     | '/projects/$projectId'
     | '/works/$workId'
     | '/api/public/asset-template-image'
@@ -181,6 +193,7 @@ export interface RootRouteChildren {
   ImageTemplateRoute: typeof ImageTemplateRoute
   PluginsRoute: typeof PluginsRoute
   SettingsRoute: typeof SettingsRoute
+  ToolboxRoute: typeof ToolboxRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   WorksWorkIdRoute: typeof WorksWorkIdRoute
   ApiPublicAssetTemplateImageRoute: typeof ApiPublicAssetTemplateImageRoute
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/toolbox': {
+      id: '/toolbox'
+      path: '/toolbox'
+      fullPath: '/toolbox'
+      preLoaderRoute: typeof ToolboxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$projectId': {
       id: '/projects/$projectId'
       path: '/projects/$projectId'
@@ -285,6 +305,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImageTemplateRoute: ImageTemplateRoute,
   PluginsRoute: PluginsRoute,
   SettingsRoute: SettingsRoute,
+  ToolboxRoute: ToolboxRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   WorksWorkIdRoute: WorksWorkIdRoute,
   ApiPublicAssetTemplateImageRoute: ApiPublicAssetTemplateImageRoute,
