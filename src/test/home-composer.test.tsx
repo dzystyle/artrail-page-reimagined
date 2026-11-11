@@ -45,7 +45,7 @@ describe("Homepage composer", () => {
       fireEvent.click(await screen.findByRole("button", { name: new RegExp(typeName) }));
       const picker = screen.getByRole("button", { name: "选择媒体模型" });
       expect(picker).toHaveTextContent(label);
-      expect(screen.queryByRole("button", { name: /模型：/ })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "选择创作模型" })).not.toBeInTheDocument();
     }
   });
 
