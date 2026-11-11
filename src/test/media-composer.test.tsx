@@ -30,7 +30,7 @@ describe("Media composer", () => {
   it("redirects a submitted description to the requested canvas", () => {
     render(<MediaComposer skills={skills} skill={null} onSkillChange={vi.fn()} />);
     const assign = vi.fn();
-    vi.stubGlobal("window", { ...window, location: { assign } });
+    vi.stubGlobal("window", new Proxy(window, { get: (target, key) => key === "location" ? { assign } : Reflect.get(target, key) }));
     fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "猫咪短片" } });
     fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
     expect(assign).toHaveBeenCalledExactlyOnceWith("https://artrail.ai/canvas?id=8a265472-f98a-41aa-b462-19930032918e");
@@ -38,7 +38,7 @@ describe("Media composer", () => {
   it("does not redirect an empty description", () => {
     render(<MediaComposer skills={skills} skill={null} onSkillChange={vi.fn()} />);
     const assign = vi.fn();
-    vi.stubGlobal("window", { ...window, location: { assign } });
+    vi.stubGlobal("window", new Proxy(window, { get: (target, key) => key === "location" ? { assign } : Reflect.get(target, key) }));
     fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "   " } });
     fireEvent.submit(screen.getByRole("button", { name: "发送创作内容" }).closest("form") as HTMLFormElement);
     expect(assign).not.toHaveBeenCalled();
