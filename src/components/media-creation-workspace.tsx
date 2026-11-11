@@ -9,7 +9,7 @@ import { MediaComposer, type MediaSubmission } from "@/components/media-composer
 import { getMediaWorkspaceDraft, mediaBriefFields } from "@/lib/media-workspace";
 import type { MediaMode, MediaSkill } from "@/lib/media-composer";
 
-type CanvasNode = Node<{ title: string; image?: string; text?: string }, "material">;
+type CanvasNode = Node<{ title: string; image?: string | undefined; text?: string | undefined }, "material">;
 function Material({ data, selected }: NodeProps<CanvasNode>) {
   return <div className={`w-[320px] rounded-lg border bg-card shadow-sm ${selected ? "border-build ring-1 ring-build" : "border-border"}`}><p className="truncate border-b border-border px-3 py-2 text-xs text-muted-foreground">{data.title}</p>{data.image ? <img src={data.image} alt={data.title} draggable={false} className="max-h-[360px] w-full object-contain" /> : <p className="whitespace-pre-wrap p-4 text-sm leading-6">{data.text || ""}</p>}</div>;
 }

@@ -5,8 +5,8 @@ let draft: MediaWorkspaceDraft | null = null;
 export function setMediaWorkspaceDraft(value: MediaWorkspaceDraft) { draft = value; }
 export function getMediaWorkspaceDraft(prompt: string) { return draft?.text === prompt ? draft : null; }
 export function validateMediaWorkspaceSearch(search: Record<string, unknown>): { prompt: string; mode: MediaMode } {
-  const mode = search.mode === "image" || search.mode === "audio" || search.mode === "agent" ? search.mode : "video";
-  return { prompt: typeof search.prompt === "string" ? search.prompt.slice(0, 8000) : "", mode };
+  const mode = search["mode"] === "image" || search["mode"] === "audio" || search["mode"] === "agent" ? search["mode"] : "video";
+  return { prompt: typeof search["prompt"] === "string" ? search["prompt"].slice(0, 8000) : "", mode };
 }
 export const mediaBriefFields = [
   { title: "游戏信息", hint: "请输入游戏名称、类型及核心卖点", placeholder: "例如：森林冒险，一款轻松有趣的探索游戏…" },
