@@ -34,4 +34,13 @@ describe("Media composer", () => {
     expect(screen.getByRole("textbox", { name: "创作描述" })).toHaveValue("猫咪短片");
     expect(screen.getByRole("status")).toBeInTheDocument();
   });
+  it("passes the actual prompt and selected mode into the workspace", () => {
+    const onSubmit = vi.fn();
+    render(<MediaComposer skills={skills} skill={skills[0] ?? null} onSkillChange={vi.fn()} onSubmit={onSubmit} />);
+    fireEvent.click(screen.getByRole("button", { name: "选择生成模式" }));
+    fireEvent.click(screen.getByRole("button", { name: /图片生成/ }));
+    fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "  游戏宣传海报  " } });
+    fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
+    expect(onSubmit).toHaveBeenCalledWith({ text: "游戏宣传海报", mode: "image", skill: skills[0], files: [] });
+  });
 });
