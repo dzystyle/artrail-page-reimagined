@@ -41,4 +41,4 @@
 - [x] Connect recent material preview to canvas editing; verify the selected image appears, focuses and remains across tab switches.
 - [x] Put game view menus beside playtest, move Agent to the right, and share the homepage attachment menu; verify desktop/mobile and uploads.
 - [x] Replace the left image shortcuts with a searchable canvas layer panel and verify show, select and collapse on desktop/mobile.
-- [ ] Move game Agent to the left with a bounded conversation width, left-side collapse controls and mobile overlay; verify canvas space and composer controls.
+- [x] Move game Agent to the left with a bounded conversation width, left-side collapse controls and mobile overlay; verify canvas space and composer controls.
