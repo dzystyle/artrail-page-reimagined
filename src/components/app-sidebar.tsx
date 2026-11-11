@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, Folder, Box, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell } from "lucide-react";
+import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, Folder, Box, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell, Wrench } from "lucide-react";
 import { WorkspaceSearch } from "@/components/workspace-search";
 import { SidebarTasks } from "@/components/sidebar-tasks";
 
@@ -21,10 +21,11 @@ const nav = [
 const nav2 = [
   { icon: Folder, label: "资产" },
   { icon: Box, label: "Skill" },
+  { icon: Wrench, label: "工具箱", to: "/toolbox" as const },
   // { icon: Puzzle, label: "插件", to: "/plugins" as const },
 ];
 
-function Item({ icon: Icon, label, badge, spin, to }: { icon: typeof Search; label: string; badge?: string; spin?: boolean; to?: "/" | "/plugins" }) {
+function Item({ icon: Icon, label, badge, spin, to }: { icon: typeof Search; label: string; badge?: string; spin?: boolean; to?: "/" | "/plugins" | "/toolbox" }) {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const active = to !== undefined && path === to;
   const cls = `flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-[15px] text-sidebar-foreground hover:bg-sidebar-accent ${active ? "bg-sidebar-accent font-semibold" : ""}`;

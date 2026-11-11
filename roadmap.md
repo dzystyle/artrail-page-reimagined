@@ -43,3 +43,4 @@
 - [x] Replace the left image shortcuts with a searchable canvas layer panel and verify show, select and collapse on desktop/mobile.
 - [x] Move game Agent to the left with a bounded conversation width, left-side collapse controls and mobile overlay; verify canvas space and composer controls.
 - [x] Align the creation toolbar beside the Agent header and verify desktop/mobile navigation and panel collapse.
+- [ ] Add the sidebar toolbox, categorized tool discovery and upcoming editing/localization previews; verify desktop/mobile navigation and filters.
