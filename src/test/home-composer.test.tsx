@@ -52,7 +52,7 @@ describe("Homepage composer", () => {
   it("keeps the language model picker for non-media creation types", () => {
     render(<HomeComposer initialType="Web Game" />);
     expect(screen.queryByRole("button", { name: "选择媒体模型" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /模型：/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "选择创作模型" })).toBeInTheDocument();
   });
 
   it("submits the selected media generation type", async () => {
