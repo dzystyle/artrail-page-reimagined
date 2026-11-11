@@ -44,3 +44,4 @@
 - [x] Move game Agent to the left with a bounded conversation width, left-side collapse controls and mobile overlay; verify canvas space and composer controls.
 - [x] Align the creation toolbar beside the Agent header and verify desktop/mobile navigation and panel collapse.
 - [x] Add the sidebar toolbox, categorized tool discovery and upcoming editing/localization previews; verify desktop/mobile navigation and filters.
+- [ ] Open a reference-style media canvas from /create submissions, carrying the actual prompt and selected mode; verify conversation, requirements, canvas tools and mobile layout.
