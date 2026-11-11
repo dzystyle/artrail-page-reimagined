@@ -1,0 +1,76 @@
+import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { ReactFlow, ReactFlowProvider, useNodesState, useReactFlow, useViewport, type Node, type NodeProps } from "@xyflow/react";
+import { ArrowLeft, ArrowLeftRight, ArrowUpDown, Box, Check, ChevronDown, ChevronLeft, ChevronRight, Clock, FileText, Hand, ImagePlus, Keyboard, Layers, Lightbulb, Maximize, MessageCircle, MessageSquare, Minus, MousePointer2, Music, PanelLeft, PanelRightClose, Pencil, Plus, Share2, Square, SquarePlus, Type, Video, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { MediaComposer, type MediaSubmission } from "@/components/media-composer";
+import { getMediaWorkspaceDraft, mediaBriefFields } from "@/lib/media-workspace";
+import type { MediaMode, MediaSkill } from "@/lib/media-composer";
+
+type CanvasNode = Node<{ title: string; image?: string; text?: string }, "material">;
+function Material({ data, selected }: NodeProps<CanvasNode>) {
+  return <div className={`w-[320px] rounded-lg border bg-card shadow-sm ${selected ? "border-build ring-1 ring-build" : "border-border"}`}><p className="truncate border-b border-border px-3 py-2 text-xs text-muted-foreground">{data.title}</p>{data.image ? <img src={data.image} alt={data.title} draggable={false} className="max-h-[360px] w-full object-contain" /> : <p className="whitespace-pre-wrap p-4 text-sm leading-6">{data.text || ""}</p>}</div>;
+}
+const nodeTypes = { material: Material };
+type Props = { prompt: string; mode: MediaMode };
+function CanvasWorkspace({ prompt, mode }: Props) {
+  const draft = getMediaWorkspaceDraft(prompt);
+  const [skill, setSkill] = useState<MediaSkill | null>(draft?.skill ?? null);
+  const [tab, setTab] = useState<MediaMode>(mode);
+  const [panel, setPanel] = useState(true);
+  const [hand, setHand] = useState(false);
+  const [layers, setLayers] = useState(false);
+  const [layerQuery, setLayerQuery] = useState("");
+  const [messages, setMessages] = useState(prompt ? [prompt] : []);
+  const [briefIndex, setBriefIndex] = useState(0);
+  const [answers, setAnswers] = useState(["", "", "", ""]);
+  const [submitted, setSubmitted] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [history, setHistory] = useState(false);
+  const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>([]);
+  const upload = useRef<HTMLInputElement>(null);
+  const urls = useRef<string[]>([]);
+  const { fitView, zoomIn, zoomOut } = useReactFlow();
+  const { zoom } = useViewport();
+  useEffect(() => () => urls.current.forEach(url => URL.revokeObjectURL(url)), []);
+  const insertFiles = (files: File[]) => {
+    setNodes(current => [...current, ...files.map((file, i): CanvasNode => {
+      const image = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
+      if (image) urls.current.push(image);
+      return { id: crypto.randomUUID(), type: "material", position: { x: 120 + (current.length + i) * 360, y: 180 }, data: { title: file.name, image, text: image ? undefined : file.name } };
+    })]);
+  };
+  useEffect(() => { if (draft?.files.length) insertFiles(draft.files); }, []);
+  const addDocument = () => setNodes(current => [...current, { id: crypto.randomUUID(), type: "material", position: { x: 120 + current.length * 360, y: 180 }, data: { title: "创作需求", text: [messages[0], ...mediaBriefFields.map((field, i) => answers[i] ? `${field.title}\n${answers[i]}` : "")].filter(Boolean).join("\n\n") } }]);
+  const send = (submission: MediaSubmission) => { setMessages(current => [...current, submission.text]); insertFiles(submission.files); setNotice("已加入当前会话；图片、视频和音频生成服务尚未连接。"); };
+  const activeField = mediaBriefFields[briefIndex] ?? mediaBriefFields[0];
+  const tools = [[MousePointer2, "选择", () => setHand(false)], [Hand, "移动画布", () => setHand(true)], [MessageCircle, "注释", addDocument], [SquarePlus, "添加素材", () => upload.current?.click()], [Square, "形状", () => setNotice("形状工具暂未开放")], [Type, "文字", addDocument], [Pencil, "画笔", () => setNotice("画笔工具暂未开放")], [ImagePlus, "添加图片", () => upload.current?.click()], [Video, "添加视频", () => { if (upload.current) { upload.current.accept = "video/*"; upload.current.click(); } }], [Music, "添加音频", () => { if (upload.current) { upload.current.accept = "audio/*"; upload.current.click(); } }], [Box, "资产库", () => setNotice("请通过输入框添加本机素材")]] as const;
+  return <div aria-label="媒体创作画布" className="flex h-dvh w-full overflow-hidden bg-muted text-foreground">
+    <section className="media-flow game-flow relative min-w-0 flex-1">
+      <ReactFlow nodes={nodes} nodeTypes={nodeTypes} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} defaultViewport={{ x: 0, y: 0, zoom: 0.49 }} minZoom={0.1} maxZoom={3} deleteKeyCode={["Backspace", "Delete"]} proOptions={{ hideAttribution: true }} />
+      <header className="absolute left-3 top-3 z-10 flex h-10 max-w-[calc(100%-24px)] items-center gap-2 rounded-lg border border-border bg-card px-2 shadow-sm">
+        <Button asChild variant="ghost" size="icon" className="size-7 rounded-full"><Link to="/create" aria-label="返回媒体创作"><ArrowLeft className="size-4" /></Link></Button><h1 className="max-w-[130px] truncate text-xs font-semibold">{prompt ? "创作画布" : "新画布"}</h1><span className="mx-2 h-4 border-l border-border" /><Lightbulb className="size-3.5 text-create" /><span className="hidden text-[11px] text-muted-foreground sm:inline">当前会话</span><Button variant="ghost" className="h-7 px-2 text-[11px]" onClick={async () => { await navigator.clipboard.writeText(window.location.href); setNotice("画布链接已复制，附件仅在当前会话可用。"); }}><Share2 className="size-3" />分享</Button>
+      </header>
+      <div className="absolute right-3 top-16 z-10 flex items-center gap-0.5 rounded-lg border border-border bg-card p-1 shadow-sm lg:top-3"><Button variant="ghost" size="icon" className="size-7" aria-label="适应画布" title="适应画布" onClick={() => void fitView({ padding: 0.2, maxZoom: 1 })}><Maximize className="size-3.5" /></Button><ArrowLeftRight className="mx-1 hidden size-3 text-muted-foreground xl:block" /><ArrowUpDown className="mx-1 hidden size-3 text-muted-foreground xl:block" /><span className="mx-1 h-4 border-l border-border" /><Button variant="ghost" size="icon" className="size-7" aria-label="缩小画布" title="缩小" onClick={() => void zoomOut()}><Minus className="size-3" /></Button><span className="w-10 text-center text-[11px]">{Math.round(zoom * 100)}%</span><Button variant="ghost" size="icon" className="size-7" aria-label="放大画布" title="放大" onClick={() => void zoomIn()}><Plus className="size-3" /></Button></div>
+      <div className="absolute left-3 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-1 rounded-xl border border-border bg-card p-1.5 shadow-lg"><Button size="icon" variant="ghost" className="size-8 border-b border-border" aria-label="切换对话面板" title="对话面板" onClick={() => setPanel(value => !value)}><PanelLeft className="size-4" /></Button>{tools.map(([Icon, label, action]) => <Button key={label} size="icon" variant={(label === "选择" && !hand) || (label === "移动画布" && hand) ? "secondary" : "ghost"} className="size-8" aria-label={label} title={label} onClick={action}><Icon className="size-4" /></Button>)}</div>
+      <input ref={upload} type="file" multiple accept="image/*,video/*,audio/*,.txt,.md,.pdf" aria-label="上传画布素材" className="hidden" onChange={event => { insertFiles(Array.from(event.target.files ?? [])); event.target.value = ""; event.target.accept = "image/*,video/*,audio/*,.txt,.md,.pdf"; }} />
+      <div className="absolute bottom-4 left-3 z-10 flex gap-2"><Button size="icon" variant="outline" className="size-9 rounded-full bg-card shadow-sm" aria-label="显示图层" title="图层" onClick={() => setLayers(value => !value)}><Layers className="size-4" /></Button><Button size="icon" variant="outline" className="size-9 rounded-full bg-card shadow-sm" aria-label="画布键盘设置" title="键盘设置" onClick={() => setNotice("画布支持 Delete 删除选中素材")}><Keyboard className="size-4" /></Button></div>
+      {layers && <aside aria-label="图层面板" className="absolute bottom-16 left-3 z-20 w-[240px] rounded-lg border border-border bg-card p-3 shadow-lg"><div className="mb-3 flex items-center gap-2 text-sm font-semibold"><Layers className="size-4" />图层<span className="ml-auto text-xs text-muted-foreground">{nodes.length}</span><Button size="icon" variant="ghost" className="size-6" aria-label="隐藏图层" onClick={() => setLayers(false)}><X /></Button></div><Input aria-label="搜索图层" placeholder="搜索图层…" value={layerQuery} onChange={event => setLayerQuery(event.target.value)} /><div className="mt-2 max-h-64 overflow-y-auto">{nodes.filter(node => node.data.title.includes(layerQuery)).map(node => <Button key={node.id} variant="ghost" className="w-full justify-start truncate text-xs" onClick={() => { setNodes(current => current.map(item => ({ ...item, selected: item.id === node.id }))); void fitView({ nodes: [{ id: node.id }], maxZoom: 1, padding: 0.3 }); }}>{node.data.image ? <img src={node.data.image} alt="" className="size-6 object-cover" /> : <FileText className="size-4" />}<span className="truncate">{node.data.title}</span></Button>)}{nodes.length === 0 && <p className="py-4 text-center text-xs text-muted-foreground">暂无图层</p>}</div></aside>}
+      {!panel && <Button variant="outline" size="icon" className="absolute bottom-4 right-3 rounded-full bg-card" aria-label="展开画布助手" onClick={() => setPanel(true)}><MessageSquare /></Button>}
+    </section>
+    {panel && <aside aria-label="创作助手" className="absolute inset-y-2 right-2 z-30 flex w-[calc(100%-72px)] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-lg md:relative md:inset-auto md:m-2 md:ml-0 md:w-[clamp(360px,28vw,440px)] md:shrink-0">
+      <div className="flex h-14 shrink-0 items-center justify-end gap-2 px-4">{[[MessageSquare, "会话", () => setHistory(false)], [Clock, "会话记录", () => setHistory(value => !value)], [FileText, "添加需求文档", addDocument], [PanelRightClose, "收起助手", () => setPanel(false)]].map(([Icon, label, action]) => { const ToolIcon = Icon as typeof MessageSquare; return <Button key={String(label)} size="icon" variant="ghost" className="size-7 text-muted-foreground" aria-label={String(label)} title={String(label)} onClick={action as () => void}><ToolIcon className="size-4" /></Button>; })}</div>
+      <div className="flex shrink-0 gap-1 border-b border-border px-3 pb-2">{([{ id: "agent", label: "画布助手" }, { id: "image", label: "图片生成" }, { id: "video", label: "视频生成" }, { id: "audio", label: "音频生成" }] as const).map(item => <Button key={item.id} variant="ghost" className={`h-7 px-2 text-[11px] ${tab === item.id ? "bg-build/10 font-semibold text-build" : "text-muted-foreground"}`} aria-pressed={tab === item.id} onClick={() => setTab(item.id)}>{item.label}</Button>)}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+        <div className="sticky top-0 z-10 flex justify-end gap-2 bg-card py-3"><Button variant="secondary" className="h-7 rounded-full px-3 text-[11px]" onClick={() => setHistory(value => !value)}>会话</Button><Button className="h-7 rounded-full bg-build px-3 text-[11px] text-image-selection-foreground hover:bg-build/90" onClick={() => { setMessages([]); setAnswers(["", "", "", ""]); setSubmitted(false); setBriefIndex(0); }}>新会话</Button></div>
+        {history ? <div className="space-y-2"><h2 className="text-sm font-semibold">当前会话记录</h2>{messages.map((message, i) => <p key={i} className="rounded-lg bg-secondary p-3 text-xs leading-6">{message}</p>)}{!messages.length && <p className="text-xs text-muted-foreground">暂无会话</p>}</div> : <><div className="space-y-3">{messages.map((message, i) => <div key={i} className="flex justify-end"><p className="max-w-[90%] whitespace-pre-wrap break-words rounded-xl rounded-tr-sm bg-build px-3 py-2 text-sm leading-6 text-image-selection-foreground">{message}</p></div>)}</div><p className="mb-5 mt-6 text-[13px] leading-6">先整理这次创作的需求：游戏信息、视觉风格、素材规格与补充内容。填写后可将需求加入画布，继续完善创作。</p>
+        <section aria-label="创作需求" className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm"><div className="flex items-center justify-between px-5 pt-5"><h2 className="text-sm font-semibold">{activeField.title}</h2><div className="flex items-center rounded-full bg-secondary"><Button size="icon" variant="ghost" className="size-7" aria-label="上一项需求" disabled={briefIndex === 0} onClick={() => setBriefIndex(i => i - 1)}><ChevronLeft className="size-3" /></Button><span className="w-8 text-center text-[11px] font-semibold">{briefIndex + 1}/4</span><Button size="icon" variant="ghost" className="size-7" aria-label="下一项需求" disabled={briefIndex === 3} onClick={() => setBriefIndex(i => i + 1)}><ChevronRight className="size-3" /></Button></div></div><p className="px-5 pb-3 pt-4 text-[11px] leading-5 text-muted-foreground">{activeField.hint}</p><div className="px-5 pb-5"><Textarea aria-label={activeField.title} placeholder={activeField.placeholder} value={answers[briefIndex]} className="min-h-20 resize-none rounded-xl text-xs md:text-xs" onChange={event => { setAnswers(current => current.map((answer, i) => i === briefIndex ? event.target.value : answer)); setSubmitted(false); }} /></div><div className="flex items-center justify-between border-t border-border px-5 py-3"><span className="flex items-center gap-1 text-[11px] text-muted-foreground">{submitted ? <><Check className="size-3 text-image-new" />已加入画布</> : `${answers.filter(answer => answer.trim()).length}/4 已填写`}</span><Button variant="ghost" className="h-7 text-xs" disabled={!answers.some(answer => answer.trim())} onClick={() => { if (briefIndex < 3) setBriefIndex(i => i + 1); else { addDocument(); setSubmitted(true); } }}>{briefIndex < 3 ? "下一步" : "加入画布"}</Button></div></section>
+        <div className="mt-3 flex items-center gap-2 rounded-full bg-secondary/60 px-3 py-2 text-[11px] text-muted-foreground"><Check className="size-3 text-build" />创作需求整理<span className="ml-auto">{answers.filter(answer => answer.trim()).length}/4</span><ChevronDown className="size-3" /></div><div className="mt-5 text-center"><span className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-[11px] text-muted-foreground"><FileText className="size-3 text-build" />{submitted ? "需求文档已加入画布" : "收集游戏创作需求"}</span></div></>}
+      </div>
+      <div className="shrink-0 px-3 pb-2">{notice && <p role="status" className="mb-2 rounded-lg bg-secondary px-3 py-2 text-xs leading-5 text-muted-foreground">{notice}</p>}<MediaComposer key={tab} compact initialMode={tab} skills={skill ? [skill] : []} skill={skill} onSkillChange={setSkill} onSubmit={send} /><p className="pt-2 text-center text-[10px] text-muted-foreground">生成服务尚未连接 · 当前内容仅保留于本次会话</p></div>
+    </aside>}
+  </div>;
+}
+export function MediaCreationWorkspace(props: Props) { return <ReactFlowProvider><CanvasWorkspace {...props} /></ReactFlowProvider>; }
