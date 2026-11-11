@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Switch } from "@/components/ui/switch";
 import { mediaModes, mediaModels, referenceMediaRate, type MediaMode, type MediaSkill } from "@/lib/media-composer";
 import { MediaModelPicker } from "@/components/media-model-picker";
 
@@ -22,7 +21,6 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
   const [project, setProject] = useState("ArTrail");
   const [projectOpen, setProjectOpen] = useState(false);
   const [projectQuery, setProjectQuery] = useState("");
-  const [canvas, setCanvas] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [notice, setNotice] = useState("");
   const textarea = useRef<HTMLTextAreaElement>(null);
@@ -70,8 +68,6 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
         <div className="ml-auto flex max-w-full items-center gap-2">
           <Button type="button" variant="outline" size="icon" className="size-9 rounded-full sm:size-10" title="语音输入" aria-label="语音输入" onClick={() => setNotice("语音输入尚未接入，请输入文字或添加素材。")}><Mic /></Button>
         <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-3">
-          <label className="flex cursor-pointer items-center gap-2"><Switch aria-label="画布" checked={canvas} onCheckedChange={setCanvas} />画布</label>
-          <span className="h-4 border-l border-border" />
           <span aria-label={`${referenceMediaRate.current} 积分/秒，原价 ${referenceMediaRate.previous} 积分/秒`} title="参考积分，尚未接入计费" className="flex items-center gap-1"><Sparkles className="size-4 text-create" /><span className="font-semibold">{referenceMediaRate.current}</span><span className="text-xs text-muted-foreground">积分/s</span><s className="ml-1 text-muted-foreground">{referenceMediaRate.previous}</s></span>
         </div>
           <Button type="submit" size="icon" aria-label="发送创作内容" title="发送" className="size-10 rounded-full" disabled={!text.trim()}><ArrowUp /></Button>
