@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, ArrowUpRight, AudioLines, Box, Check, Film, Globe2, Image, Languages, Search, Scissors, Sparkles, Wrench } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, AudioLines, Box, Check, Film, Image, Languages, Search, Scissors, Sparkles, Wrench } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
