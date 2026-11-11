@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, LayoutGrid, Folder, Box, Puzzle, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell } from "lucide-react";
+import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, Folder, Box, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell } from "lucide-react";
 import { WorkspaceSearch } from "@/components/workspace-search";
 import { SidebarTasks } from "@/components/sidebar-tasks";
 
@@ -16,12 +16,12 @@ export function Logo({ className = "" }: { className?: string }) {
 const nav = [
   { icon: Sparkles, label: "创作", to: "/" as const },
   { icon: MessageSquarePlus, label: "新会话" },
-  { icon: LayoutGrid, label: "画布" },
+  // { icon: LayoutGrid, label: "画布" },
 ];
 const nav2 = [
   { icon: Folder, label: "资产" },
   { icon: Box, label: "Skill" },
-  { icon: Puzzle, label: "插件", to: "/plugins" as const },
+  // { icon: Puzzle, label: "插件", to: "/plugins" as const },
 ];
 
 function Item({ icon: Icon, label, badge, spin, to }: { icon: typeof Search; label: string; badge?: string; spin?: boolean; to?: "/" | "/plugins" }) {
