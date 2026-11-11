@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { FileText, Loader2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -14,6 +14,14 @@ export function GameDesignEditor({ design, onSave, onClose }: { design: GameDesi
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [discard, setDiscard] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const scrollAfterAdd = useRef(false);
+  useLayoutEffect(() => {
+    if (!scrollAfterAdd.current) return;
+    scrollAfterAdd.current = false;
+    const content = contentRef.current;
+    if (content) content.scrollTop = content.scrollHeight;
+  }, [draft.levels]);
   const dirty = JSON.stringify(draft) !== JSON.stringify(design);
   const valid = !!draft.title.trim() && !!draft.summary.trim() && draft.sections.every(section => section.heading.trim() && section.body.trim()) && validLevels(draft.levels ?? []);
   const close = () => { if (saving) return; if (dirty) setDiscard(true); else onClose(); };
@@ -31,8 +39,8 @@ export function GameDesignEditor({ design, onSave, onClose }: { design: GameDesi
         {draft.sections.map((item, index) => <Button key={index} size="sm" variant={active === index ? "secondary" : "ghost"} className="shrink-0 justify-start sm:w-full" onClick={() => setActive(index)}><span className="text-muted-foreground">{index + 1}.</span><span className="truncate">{item.heading}</span></Button>)}
         <Button size="sm" variant={active === -2 ? "secondary" : "ghost"} className="shrink-0 justify-start" onClick={() => setActive(-2)}>关卡配置表</Button>
       </nav>
-      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5 sm:p-7">
-        {active === -2 && <><GameLevelTable levels={draft.levels ?? []} disabled={saving} onChange={levels => setDraft(current => ({ ...current, levels }))} />{!validLevels(draft.levels ?? []) && <p role="alert" className="text-sm text-destructive">请填写关卡名称和通关目标；时限可留空，或填写正整数秒数。</p>}</>}
+      <div ref={contentRef} className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5 sm:p-7">
+        {active === -2 && <><GameLevelTable levels={draft.levels ?? []} disabled={saving} onChange={levels => { scrollAfterAdd.current = levels.length > (draft.levels?.length ?? 0); setDraft(current => ({ ...current, levels })); }} />{!validLevels(draft.levels ?? []) && <p role="alert" className="text-sm text-destructive">请填写关卡名称和通关目标；时限可留空，或填写正整数秒数。</p>}</>}
         {active === -1 ? <><label className="block space-y-2 text-sm"><span>文档标题</span><Input aria-label="设计文档标题" value={draft.title} disabled={saving} onChange={event => setDraft(current => ({ ...current, title: event.target.value }))} /></label><label className="block space-y-2 text-sm"><span>游戏概述</span><Textarea aria-label="设计文档概述" value={draft.summary} disabled={saving} className="min-h-64 resize-y leading-7" onChange={event => setDraft(current => ({ ...current, summary: event.target.value }))} /></label></> : section && <><label className="block space-y-2 text-sm"><span>章节标题</span><Input aria-label="章节标题" value={section.heading} disabled={saving} onChange={event => setDraft(current => ({ ...current, sections: current.sections.map((item, index) => index === active ? { ...item, heading: event.target.value } : item) }))} /></label><label className="block space-y-2 text-sm"><span>章节内容</span><Textarea aria-label="章节内容" value={section.body} disabled={saving} className="min-h-80 resize-y leading-7" onChange={event => setDraft(current => ({ ...current, sections: current.sections.map((item, index) => index === active ? { ...item, body: event.target.value } : item) }))} /></label></>}
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </div>
