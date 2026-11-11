@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, Box, Check, ChevronDown, Folder, Grid2X2, Mic, Plus, Search, Sparkles, X } from "lucide-react";
+import { ArrowUp, Box, Check, ChevronDown, Folder, Mic, Plus, Search, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
 import { mediaModes, mediaModels, referenceMediaRate, type MediaMode, type MediaSkill } from "@/lib/media-composer";
+import { MediaModelPicker } from "@/components/media-model-picker";
 
 export function MediaComposer({ skills, skill, onSkillChange, seed }: {
   skills: MediaSkill[]; skill: MediaSkill | null; onSkillChange: (skill: MediaSkill | null) => void;
@@ -14,9 +14,7 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
 }) {
   const [text, setText] = useState("");
   const [mode, setMode] = useState<MediaMode>("video");
-  const [model, setModel] = useState("Seedance 2.5");
   const [modeOpen, setModeOpen] = useState(false);
-  const [modelOpen, setModelOpen] = useState(false);
   const [skillOpen, setSkillOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("全部");
@@ -25,11 +23,6 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
   const [projectOpen, setProjectOpen] = useState(false);
   const [projectQuery, setProjectQuery] = useState("");
   const [canvas, setCanvas] = useState(false);
-  const [ratio, setRatio] = useState("16:9");
-  const [reference, setReference] = useState("全能参考");
-  const [duration, setDuration] = useState(10);
-  const [customSeed, setCustomSeed] = useState(false);
-  const [seedValue, setSeedValue] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [notice, setNotice] = useState("");
   const textarea = useRef<HTMLTextAreaElement>(null);
@@ -64,25 +57,12 @@ export function MediaComposer({ skills, skill, onSkillChange, seed }: {
         <Popover open={modeOpen} onOpenChange={setModeOpen}>
           <PopoverTrigger asChild><Button type="button" variant="secondary" aria-label="选择生成模式" className={pill}>{activeMode?.label}<ChevronDown /></Button></PopoverTrigger>
           <PopoverContent side="top" align="start" className="w-[min(360px,calc(100vw-32px))] p-2">
-            {mediaModes.map(item => <Button type="button" variant="ghost" key={item.id} aria-pressed={mode === item.id} className="h-auto min-h-14 w-full justify-start px-3 py-3 text-left" onClick={() => { setMode(item.id); setModel(mediaModels[item.id][0] ?? ""); setModeOpen(false); }}>
+            {mediaModes.map(item => <Button type="button" variant="ghost" key={item.id} aria-pressed={mode === item.id} className="h-auto min-h-14 w-full justify-start px-3 py-3 text-left" onClick={() => { setMode(item.id); setModeOpen(false); }}>
               <span className="flex-1"><span className="flex items-center gap-2 text-base">{item.label}{item.badge && <span className="rounded bg-secondary px-1.5 py-0.5 text-xs font-normal">{item.badge}</span>}</span>{item.id === "audio" && <span className="mt-1 block text-xs font-normal text-muted-foreground">选择音频模型，直接生成音频</span>}</span>{mode === item.id && <Check />}
             </Button>)}
           </PopoverContent>
         </Popover>
-        <Popover open={modelOpen} onOpenChange={setModelOpen}>
-          <PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择媒体模型" className={`${pill} min-w-0 max-w-[220px]`}><Grid2X2 /><span className="truncate">{mode === "video" ? "视频" : mode === "image" ? "图片" : mode === "audio" ? "音频" : "Agent"}：{model}</span><ChevronDown className="text-muted-foreground" /></Button></PopoverTrigger>
-          <PopoverContent side="top" align="start" className="max-h-[70vh] w-[min(820px,calc(100vw-32px))] overflow-y-auto p-4 sm:p-5">
-            <div className={`grid gap-5 ${mode === "video" || mode === "image" ? "sm:grid-cols-2" : ""}`}>
-              <div><p className="mb-3 text-sm text-muted-foreground">模型</p>{mediaModels[mode].map(item => <Button type="button" variant="ghost" key={item} aria-pressed={model === item} className="mb-1 h-auto min-h-12 w-full justify-between whitespace-normal text-left" onClick={() => setModel(item)}><span>{item}</span>{model === item && <Check />}</Button>)}</div>
-              {(mode === "video" || mode === "image") && <div className="space-y-5 border-t border-border pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
-                {mode === "video" && <div><p className="mb-2 text-sm text-muted-foreground">模式选择</p><div className="flex rounded-full bg-secondary p-1">{["全能参考", "首尾帧"].map(item => <Button type="button" variant={reference === item ? "outline" : "ghost"} aria-pressed={reference === item} className="flex-1 rounded-full" key={item} onClick={() => setReference(item)}>{item}</Button>)}</div></div>}
-                <div><p className="mb-2 text-sm text-muted-foreground">画面比例</p><div className="flex flex-wrap gap-1">{["智能", "16:9", "21:9", "9:16", "4:3", "1:1"].map(item => <Button type="button" variant={ratio === item ? "secondary" : "ghost"} aria-pressed={ratio === item} key={item} className="px-2" onClick={() => setRatio(item)}>{item}</Button>)}</div></div>
-                {mode === "video" && <div><p className="mb-3 flex justify-between text-sm text-muted-foreground"><span>时长</span><span>{duration} 秒</span></p><Slider aria-label="视频时长" min={4} max={15} step={1} value={[duration]} onValueChange={value => setDuration(value[0] ?? 10)} /><div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>4秒</span><span>15秒</span></div></div>}
-                <div><p className="mb-2 text-sm text-muted-foreground">Seed</p><div className="flex gap-2">{[false, true].map(value => <Button type="button" key={String(value)} variant={customSeed === value ? "secondary" : "ghost"} aria-pressed={customSeed === value} className="flex-1 px-2" onClick={() => setCustomSeed(value)}>{value ? "自定义生成" : "随机生成"}</Button>)}</div>{customSeed && <Input aria-label="自定义 Seed" type="number" min={0} step={1} value={seedValue} onChange={event => setSeedValue(event.target.value)} className="mt-2" />}</div>
-              </div>}
-            </div>
-          </PopoverContent>
-        </Popover>
+        <MediaModelPicker key={mode} mode={mode} buttonClassName={`${pill} min-w-0 max-w-[220px]`} />
         <Popover open={projectOpen} onOpenChange={setProjectOpen}>
           <PopoverTrigger asChild><Button type="button" variant="ghost" aria-label="选择项目" className={`${pill} max-w-[180px] border-link/30 bg-link/10 text-link`}><Folder /><span className="truncate">项目：{project}</span><ChevronDown /></Button></PopoverTrigger>
           <PopoverContent side="top" align="start" className="w-[min(280px,calc(100vw-32px))] p-2"><Input aria-label="搜索项目" placeholder="搜索项目…" value={projectQuery} onChange={event => setProjectQuery(event.target.value)} className="mb-2" />{["NEW-HOPE", "F3/FX", "ArTrail"].filter(item => item.toLowerCase().includes(projectQuery.toLowerCase())).map(item => <Button type="button" variant="ghost" className="w-full justify-start" key={item} onClick={() => { setProject(item); setProjectOpen(false); }}><Folder /><span className="flex-1 text-left">{item}</span>{project === item && <Check />}</Button>)}</PopoverContent>
