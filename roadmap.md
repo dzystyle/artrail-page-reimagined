@@ -42,3 +42,4 @@
 - [x] Put game view menus beside playtest, move Agent to the right, and share the homepage attachment menu; verify desktop/mobile and uploads.
 - [x] Replace the left image shortcuts with a searchable canvas layer panel and verify show, select and collapse on desktop/mobile.
 - [x] Move game Agent to the left with a bounded conversation width, left-side collapse controls and mobile overlay; verify canvas space and composer controls.
+- [ ] Align the creation toolbar beside the Agent header and verify desktop/mobile navigation and panel collapse.
