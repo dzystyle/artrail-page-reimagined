@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CreationModelPicker, ProviderSettings } from "@/components/creation-model-picker";
 import { type CreationRequest } from "@/lib/game-workspace";
-import { gameCreationTypes, homeCreationTypes, isMediaCreation } from "@/lib/creation-types";
+import { gameCreationTypes, homeCreationTypes } from "@/lib/creation-types";
 import { MediaModelPicker } from "@/components/media-model-picker";
 import { type MediaMode } from "@/lib/media-composer";
 import { gameSkills, type GameSkill } from "@/lib/game-skills";
