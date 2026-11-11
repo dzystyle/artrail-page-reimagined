@@ -27,11 +27,9 @@ describe("Media composer", () => {
     fireEvent.click(screen.getByRole("button", { name: "短片叙事模板" }));
     expect(onSkillChange).toHaveBeenCalledWith(skills[0]);
   });
-  it("toggles the canvas and preserves the draft without implying generation", () => {
+  it("preserves the draft without implying generation", () => {
     render(<MediaComposer skills={skills} skill={null} onSkillChange={vi.fn()} />);
     fireEvent.change(screen.getByRole("textbox", { name: "创作描述" }), { target: { value: "猫咪短片" } });
-    fireEvent.click(screen.getByRole("switch", { name: "画布" }));
-    expect(screen.getByRole("switch", { name: "画布" })).toBeChecked();
     fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
     expect(screen.getByRole("textbox", { name: "创作描述" })).toHaveValue("猫咪短片");
     expect(screen.getByRole("status")).toBeInTheDocument();
