@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CreationModelPicker, ProviderSettings } from "@/components/creation-model-picker";
 import { type CreationRequest } from "@/lib/game-workspace";
-import { gameCreationTypes, homeCreationTypes } from "@/lib/creation-types";
+import { gameCreationTypes, homeCreationTypes, isMediaCreation } from "@/lib/creation-types";
+import { MediaModelPicker } from "@/components/media-model-picker";
+import { type MediaMode } from "@/lib/media-composer";
 import { gameSkills, type GameSkill } from "@/lib/game-skills";
 import { ComposerAddMenu } from "@/components/composer-add-menu";
 import { type LibraryAsset } from "@/lib/asset-library";
@@ -60,6 +62,7 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
   useEffect(() => { if (baseGame) textarea.current?.focus(); }, [baseGame]);
   if (!type) return null;
   const TypeIcon = type.icon;
+  const mediaMode: MediaMode | null = type.name === "图片生成" ? "image" : type.name === "视频生成" ? "video" : type.name === "音频生成" ? "audio" : null;
   const filteredSkills = gameSkills.filter(item => item.name.toLowerCase().includes(skillQuery.toLowerCase()) && (skillCategory === "全部" || item.category === skillCategory));
   const currentSkillPreview = skillPreview ?? filteredSkills[0];
   const floating = alwaysFloating || (docked && expanded);
@@ -106,8 +109,8 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
           </Popover>
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <CreationModelPicker model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} />
-          <Button type="submit" size="icon" aria-label="发送创作内容" title="发送" disabled={!text.trim()} className="size-10 shrink-0 rounded-full"><ArrowUp /></Button>
+          {mediaMode ? <MediaModelPicker key={mediaMode} mode={mediaMode} buttonClassName="min-w-0 max-w-[220px] shrink-0 text-muted-foreground" /> : <CreationModelPicker model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} />}
+           <Button type="submit" size="icon" aria-label="发送创作内容" title="发送" disabled={!text.trim()} className="size-10 shrink-0 rounded-full"><ArrowUp /></Button>
         </div>
       </div>
     </form>
