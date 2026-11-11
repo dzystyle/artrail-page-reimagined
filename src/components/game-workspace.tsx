@@ -96,7 +96,6 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
         </div>
         <GameChatComposer key={id} ready={game.status === "ready" && !reviseM.isPending} onSubmit={message => reviseM.mutate(message)} />
       </aside>}
-      {tab !== "canvas" && tab !== "assets" && <aside className="hidden w-11 shrink-0 flex-col items-center border-r border-border py-3 md:flex"><Button asChild size="icon" variant="ghost"><Link to="/" aria-label="返回首页"><Gamepad2 /></Link></Button><div className="mt-auto text-[10px] text-muted-foreground">ArTrail</div></aside>}
       <main aria-label="游戏创作区域" className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
         <header aria-label="游戏创作工具栏" className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
           <div className={chatOpen ? "flex shrink-0 items-center gap-2 lg:hidden" : "flex min-w-0 shrink-0 items-center gap-2"}>{!chatOpen && <Button asChild size="icon" variant="ghost" className="size-8"><Link to="/build" search={{ mode: "build" }} aria-label="返回构建"><ArrowLeft /></Link></Button>}<Button variant="ghost" size="icon" className="size-8 shrink-0" aria-label="展开会话" title="展开会话" onClick={() => setChatOpen(true)}><PanelLeftOpen /></Button>{!chatOpen && <span className="hidden max-w-[180px] truncate text-sm font-medium xl:block">{game.title}</span>}</div>
