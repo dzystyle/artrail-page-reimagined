@@ -55,7 +55,7 @@ export function GameChatComposer({ ready, onSubmit }: {
           </PopoverContent>
         </Popover>
         <div className="flex min-w-0 flex-1 items-center"><CreationModelPicker compact model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} /></div>
-        <Button type="button" variant="ghost" size="icon" aria-label="语音输入" title={voice.state === "recording" ? "停止录音并识别" : "语音输入"} onClick={() => void voice.toggle()} className="size-7 shrink-0 rounded-full">
+        <Button type="button" variant="outline" size="icon" aria-label="语音输入" title={voice.state === "recording" ? "停止录音并识别" : "语音输入"} onClick={() => void voice.toggle()} className="size-7 shrink-0 rounded-full">
           {voice.state === "transcribing" ? <Loader2 className="animate-spin" /> : <Mic className={voice.state === "recording" ? "animate-pulse text-destructive" : ""} />}
         </Button>
         <Button type="submit" size="icon" aria-label="发送修改需求" disabled={!draft.trim() || !ready} className="size-7 shrink-0 rounded-full"><ArrowUp /></Button>
