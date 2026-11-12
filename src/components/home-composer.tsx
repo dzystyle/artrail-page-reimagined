@@ -107,9 +107,10 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
               <div className="p-1.5">{["NEW-HOPE", "F3/FX", "ArTrail"].filter(n => n.toLowerCase().includes(projectQuery.toLowerCase())).map(n => <Button type="button" key={n} variant="ghost" onClick={() => { setProject(n); setProjectOpen(false); }} className={`h-11 w-full justify-start gap-3 px-2 font-normal ${n === project ? "bg-accent text-link" : ""}`}><span className="grid size-8 place-items-center rounded-full bg-secondary"><Folder className="size-4 text-link" /></span>{n}</Button>)}</div>
             </PopoverContent>
           </Popover>
+          {simple && (mediaMode ? <MediaModelPicker key={mediaMode} mode={mediaMode} buttonClassName="min-w-0 max-w-[220px] shrink-0 text-muted-foreground" /> : <CreationModelPicker model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} />)}
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          {mediaMode ? <MediaModelPicker key={mediaMode} mode={mediaMode} buttonClassName="min-w-0 max-w-[220px] shrink-0 text-muted-foreground" /> : <CreationModelPicker model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} />}
+          {!simple && (mediaMode ? <MediaModelPicker key={mediaMode} mode={mediaMode} buttonClassName="min-w-0 max-w-[220px] shrink-0 text-muted-foreground" /> : <CreationModelPicker model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} />)}
            <Button type="submit" size="icon" aria-label="发送创作内容" title="发送" disabled={!text.trim()} className="size-10 shrink-0 rounded-full"><ArrowUp /></Button>
         </div>
       </div>
