@@ -28,6 +28,7 @@ export function MediaComposer({ skills, skill, onSkillChange, seed, initialMode 
   const [files, setFiles] = useState<File[]>([]);
   const [notice, setNotice] = useState("");
   const textarea = useRef<HTMLTextAreaElement>(null);
+  const voice = useVoiceInput(text => { setText(current => current ? `${current} ${text}` : text); textarea.current?.focus(); });
   const fileInput = useRef<HTMLInputElement>(null);
   useEffect(() => { if (seed) { setText(seed.text); textarea.current?.focus(); } }, [seed]);
   useEffect(() => { if (skill) textarea.current?.focus(); }, [skill]);
@@ -70,7 +71,7 @@ export function MediaComposer({ skills, skill, onSkillChange, seed, initialMode 
           <PopoverContent side="top" align="start" className="w-[min(280px,calc(100vw-32px))] p-2"><Input aria-label="搜索项目" placeholder="搜索项目…" value={projectQuery} onChange={event => setProjectQuery(event.target.value)} className="mb-2" />{["NEW-HOPE", "F3/FX", "ArTrail"].filter(item => item.toLowerCase().includes(projectQuery.toLowerCase())).map(item => <Button type="button" variant="ghost" className="w-full justify-start" key={item} onClick={() => { setProject(item); setProjectOpen(false); }}><Folder /><span className="flex-1 text-left">{item}</span>{project === item && <Check />}</Button>)}</PopoverContent>
         </Popover>}
         <div className="ml-auto flex max-w-full items-center gap-2">
-          <Button type="button" variant="outline" size="icon" className={compact ? "size-8 rounded-full" : "size-9 rounded-full sm:size-10"} title="语音输入" aria-label="语音输入" onClick={() => setNotice("语音输入尚未接入，请输入文字或添加素材。")}><Mic /></Button>
+          <Button type="button" variant="outline" size="icon" className={compact ? "size-8 rounded-full" : "size-9 rounded-full sm:size-10"} title={voice.state === "recording" ? "停止录音并识别" : "语音输入"} aria-label="语音输入" onClick={() => void voice.toggle()}>{voice.state === "transcribing" ? <Loader2 className="animate-spin" /> : <Mic className={voice.state === "recording" ? "animate-pulse text-destructive" : ""} />}</Button>
         {!compact && <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-3">
           <span aria-label={`${referenceMediaRate.current} 积分/秒，原价 ${referenceMediaRate.previous} 积分/秒`} title="参考积分，尚未接入计费" className="flex items-center gap-1"><Sparkles className="size-4 text-create" /><span className="font-semibold">{referenceMediaRate.current}</span><span className="text-xs text-muted-foreground">积分/s</span><s className="ml-1 text-muted-foreground">{referenceMediaRate.previous}</s></span>
         </div>}
@@ -78,6 +79,7 @@ export function MediaComposer({ skills, skill, onSkillChange, seed, initialMode 
         </div>
       </div>
       {notice && <p role="status" className="mt-3 text-sm text-muted-foreground">{notice}</p>}
+      {voice.error && <p role="alert" className="mt-3 text-sm text-destructive">{voice.error}</p>}
     </form>
   </section>;
 }
