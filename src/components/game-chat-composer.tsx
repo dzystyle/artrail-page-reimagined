@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowUp, Box, Check, ChevronDown, Plus, Search, X } from "lucide-react";
+import { ArrowUp, Box, Check, ChevronDown, Loader2, Mic, Plus, Search, X } from "lucide-react";
+import { useVoiceInput } from "@/lib/use-voice-input";
 import { CreationModelPicker } from "@/components/creation-model-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,7 @@ export function GameChatComposer({ ready, onSubmit }: {
   const [skillQuery, setSkillQuery] = useState("");
   const [category, setCategory] = useState("全部");
   const [preview, setPreview] = useState<GameSkill | null>(null);
+  const voice = useVoiceInput(text => setDraft(current => current ? `${current} ${text}` : text));
   const filtered = gameSkills.filter(item => item.name.toLowerCase().includes(skillQuery.toLowerCase()) && (category === "全部" || item.category === category));
   const currentPreview = filtered.find(item => item.name === preview?.name) ?? filtered[0];
   const chooseSkill = (item: GameSkill) => { setSkill(item); setSkillOpen(false); };
@@ -53,8 +55,12 @@ export function GameChatComposer({ ready, onSubmit }: {
           </PopoverContent>
         </Popover>
         <div className="flex min-w-0 flex-1 items-center"><CreationModelPicker compact model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} /></div>
+        <Button type="button" variant="ghost" size="icon" aria-label="语音输入" title={voice.state === "recording" ? "停止录音并识别" : "语音输入"} onClick={() => void voice.toggle()} className="size-7 shrink-0 rounded-full">
+          {voice.state === "transcribing" ? <Loader2 className="animate-spin" /> : <Mic className={voice.state === "recording" ? "animate-pulse text-destructive" : ""} />}
+        </Button>
         <Button type="submit" size="icon" aria-label="发送修改需求" disabled={!draft.trim() || !ready} className="size-7 shrink-0 rounded-full"><ArrowUp /></Button>
       </div>
+      {voice.error && <p role="alert" className="mt-2 text-xs text-destructive">{voice.error}</p>}
     </form>
   </>;
 }

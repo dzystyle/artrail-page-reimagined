@@ -23,6 +23,7 @@ import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projec
 import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
 import { Route as ApiPublicAssetTemplateImageRouteImport } from './routes/api/public/asset-template-image'
 import { Route as ApiPublicCanvasImageRouteImport } from './routes/api/public/canvas-image'
+import { Route as ApiPublicTranscribeRouteImport } from './routes/api/public/transcribe'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -95,6 +96,11 @@ const ApiPublicCanvasImageRoute = ApiPublicCanvasImageRouteImport.update({
   path: '/api/public/canvas-image',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTranscribeRoute = ApiPublicTranscribeRouteImport.update({
+  id: '/api/public/transcribe',
+  path: '/api/public/transcribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
   '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
+  '/api/public/transcribe': typeof ApiPublicTranscribeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
   '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
+  '/api/public/transcribe': typeof ApiPublicTranscribeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
   '/api/public/canvas-image': typeof ApiPublicCanvasImageRoute
+  '/api/public/transcribe': typeof ApiPublicTranscribeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/works/$workId'
     | '/api/public/asset-template-image'
     | '/api/public/canvas-image'
+    | '/api/public/transcribe'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/works/$workId'
     | '/api/public/asset-template-image'
     | '/api/public/canvas-image'
+    | '/api/public/transcribe'
   id:
     | '__root__'
     | '/'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/works/$workId'
     | '/api/public/asset-template-image'
     | '/api/public/canvas-image'
+    | '/api/public/transcribe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -211,6 +223,7 @@ export interface RootRouteChildren {
   WorksWorkIdRoute: typeof WorksWorkIdRoute
   ApiPublicAssetTemplateImageRoute: typeof ApiPublicAssetTemplateImageRoute
   ApiPublicCanvasImageRoute: typeof ApiPublicCanvasImageRoute
+  ApiPublicTranscribeRoute: typeof ApiPublicTranscribeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -313,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCanvasImageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/transcribe': {
+      id: '/api/public/transcribe'
+      path: '/api/public/transcribe'
+      fullPath: '/api/public/transcribe'
+      preLoaderRoute: typeof ApiPublicTranscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -331,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   WorksWorkIdRoute: WorksWorkIdRoute,
   ApiPublicAssetTemplateImageRoute: ApiPublicAssetTemplateImageRoute,
   ApiPublicCanvasImageRoute: ApiPublicCanvasImageRoute,
+  ApiPublicTranscribeRoute: ApiPublicTranscribeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
