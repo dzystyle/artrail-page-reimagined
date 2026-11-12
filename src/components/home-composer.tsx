@@ -59,6 +59,7 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
   const [libraryAssets, setLibraryAssets] = useState<LibraryAsset[]>([]);
   const [notice, setNotice] = useState("");
   const textarea = useRef<HTMLTextAreaElement>(null);
+  const voice = useVoiceInput(text => { setText(current => current ? `${current} ${text}` : text); textarea.current?.focus(); });
   useEffect(() => { if (seed) { setText(seed.text); textarea.current?.focus(); } }, [seed]);
   useEffect(() => { if (baseGame) textarea.current?.focus(); }, [baseGame]);
   if (!type) return null;
@@ -112,11 +113,15 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
           {!simple && (mediaMode ? <MediaModelPicker key={mediaMode} mode={mediaMode} buttonClassName="min-w-0 max-w-[220px] shrink-0 text-muted-foreground" /> : <CreationModelPicker model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} />)}
+          <Button type="button" variant="ghost" size="icon" aria-label="语音输入" title={voice.state === "recording" ? "停止录音并识别" : "语音输入"} onClick={() => void voice.toggle()} className="size-10 shrink-0 rounded-full">
+            {voice.state === "transcribing" ? <Loader2 className="animate-spin" /> : <AudioLines className={voice.state === "recording" ? "animate-pulse text-destructive" : ""} />}
+          </Button>
            <Button type="submit" size="icon" aria-label="发送创作内容" title="发送" disabled={!text.trim()} className="size-10 shrink-0 rounded-full"><ArrowUp /></Button>
         </div>
       </div>
     </form>
     {notice && <p role="status" className="mt-2 text-center text-sm text-muted-foreground">{notice}</p>}
+    {voice.error && <p role="alert" className="mt-2 text-center text-sm text-destructive">{voice.error}</p>}
   </section>
     <ProviderSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
   </div>;
