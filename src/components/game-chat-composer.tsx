@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ArrowUp, Box, Check, ChevronDown, Plus, Search, X } from "lucide-react";
+import { ArrowUp, Box, Check, ChevronDown, Loader2, Mic, Plus, Search, X } from "lucide-react";
+import { useVoiceInput } from "@/lib/use-voice-input";
 import { CreationModelPicker } from "@/components/creation-model-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

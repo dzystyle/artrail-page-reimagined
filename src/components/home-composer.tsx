@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, AudioLines, Box, Check, ChevronDown, FileText, Folder, Gamepad2, Image, LayoutGrid, Lightbulb, Plus, Search, Video, X } from "lucide-react";
+import { ArrowUp, AudioLines, Box, Check, ChevronDown, FileText, Folder, Gamepad2, Image, LayoutGrid, Lightbulb, Loader2, Plus, Search, Video, X } from "lucide-react";
+import { useVoiceInput } from "@/lib/use-voice-input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
