@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, AudioLines, Box, Check, ChevronDown, FileText, Folder, Gamepad2, Image, LayoutGrid, Lightbulb, Loader2, Plus, Search, Video, X } from "lucide-react";
+import { ArrowUp, Box, Check, ChevronDown, FileText, Folder, Gamepad2, Image, LayoutGrid, Lightbulb, Loader2, Mic, Plus, Search, Video, X } from "lucide-react";
 import { useVoiceInput } from "@/lib/use-voice-input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -113,8 +113,8 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
           {!simple && (mediaMode ? <MediaModelPicker key={mediaMode} mode={mediaMode} buttonClassName="min-w-0 max-w-[220px] shrink-0 text-muted-foreground" /> : <CreationModelPicker model={model} depth={depth} onModelChange={setModel} onDepthChange={setDepth} />)}
-          <Button type="button" variant="ghost" size="icon" aria-label="语音输入" title={voice.state === "recording" ? "停止录音并识别" : "语音输入"} onClick={() => void voice.toggle()} className="size-10 shrink-0 rounded-full">
-            {voice.state === "transcribing" ? <Loader2 className="animate-spin" /> : <AudioLines className={voice.state === "recording" ? "animate-pulse text-destructive" : ""} />}
+          <Button type="button" variant="outline" size="icon" aria-label="语音输入" title={voice.state === "recording" ? "停止录音并识别" : "语音输入"} onClick={() => void voice.toggle()} className="size-10 shrink-0 rounded-full">
+            {voice.state === "transcribing" ? <Loader2 className="animate-spin" /> : <Mic className={voice.state === "recording" ? "animate-pulse text-destructive" : ""} />}
           </Button>
            <Button type="submit" size="icon" aria-label="发送创作内容" title="发送" disabled={!text.trim()} className="size-10 shrink-0 rounded-full"><ArrowUp /></Button>
         </div>
