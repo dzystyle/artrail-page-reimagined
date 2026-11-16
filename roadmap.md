@@ -47,4 +47,4 @@
 - [x] Open a reference-style media canvas from /create submissions, carrying the actual prompt and selected mode; verify conversation, requirements, canvas tools and mobile layout.
 
 - [x] Trigger a GitHub sync after connecting the repository.
-- [ ] Replace the homepage canvas content with reference game rows and gallery; verify desktop/mobile and preview interactions.
+- [x] Replace the homepage canvas content with reference game rows and gallery; verify desktop/mobile and preview interactions.
