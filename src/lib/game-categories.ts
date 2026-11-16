@@ -35,9 +35,6 @@ const hotAll: HomeGamePreview[] = [
   { id: "cat-all-2-5", title: "企鹅奔牛节", image: "/__l5e/assets-v1/6fdc4d1f-db57-4934-aff9-979ae8349a6b/all-2-5.jpg" },
 ];
 
-const row = (prefix: string, ids: string[]): HomeGamePreview[] =>
-  ids.map(id => ({ id: `${prefix}-${id}`, title: "", image: "" }));
-
 export const gameCategories: GameCategory[] = [
   {
     id: "hot",
