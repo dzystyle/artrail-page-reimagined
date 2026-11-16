@@ -13,6 +13,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { WorkspaceSearch } from "@/components/workspace-search";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases } from "@/components/home-gallery";
+import { CanvasCreation } from "@/components/canvas-creation";
 import { isGameCreation } from "@/lib/game-workspace";
 import { isMediaCreation } from "@/lib/creation-types";
 import entryBuild from "@/assets/game-3.jpg";
@@ -120,7 +121,8 @@ export function Index() {
           </div>
           <HomeComposer scrollRoot={mainRef} onCreate={request => { if (isGameCreation(request.type)) void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); else if (isMediaCreation(request.type)) void navigate({ to: "/create" }); else void navigate({ to: "/build", search: { mode: request.type === "Interactive Story" ? "story" : "build" } }); }} />
         </section>
-        <div className="mx-auto w-full max-w-[1600px] px-6 pt-8 sm:px-8">
+        <div className="mx-auto w-full max-w-[1600px] space-y-10 px-6 pt-8 sm:px-8">
+          <CanvasCreation />
           <RecentCanvases />
         </div>
 
