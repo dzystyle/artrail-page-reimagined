@@ -1,59 +1,67 @@
 import { useState } from "react";
-import { ChevronRight, Plus, Workflow, ImageIcon } from "lucide-react";
-import canvas1 from "@/assets/canvas-1.jpg";
-import canvas2 from "@/assets/canvas-2.jpg";
-import canvas3 from "@/assets/canvas-3.jpg";
-import canvas4 from "@/assets/canvas-4.jpg";
+import { Link } from "@tanstack/react-router";
+import { Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { homeGameRows, moreHomeGames, type HomeGamePreview } from "@/lib/home-game-previews";
 
-const canvases = [
-  { img: canvas1, title: "戴安娜-Diana", count: 681, meta: "刚刚编辑 · 宋扬", icon: Workflow },
-  { img: canvas2, title: "1105-2", count: 63, meta: "刚刚编辑 · chengpeng", icon: ImageIcon },
-  { img: canvas3, title: "节点", count: 6, meta: "1 分钟前编辑 · 郭智妍", icon: Workflow },
-  { img: canvas4, title: "机甲炮击", count: 171, meta: "1 分钟前编辑 · 朱玉儿", icon: ImageIcon },
-];
-
-function Tabs({ items, active, onChange, dots }: { items: string[]; active: string; onChange: (v: string) => void; dots?: boolean }) {
+function GameCard({ game, onSelect }: { game: HomeGamePreview; onSelect: (game: HomeGamePreview) => void }) {
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      {items.map((t, i) => (
-        <span key={t} className="flex items-center gap-4">
-          {dots && i > 0 && <span className="size-1 rounded-full bg-muted-foreground/40" />}
-          <button onClick={() => onChange(t)} className={`text-[15px] transition-colors ${active === t ? "font-semibold text-foreground" : "text-muted-foreground hover:text-foreground"}`}>{t}</button>
-        </span>
-      ))}
-    </div>
+    <Button variant="ghost" aria-label={`预览${game.title}`} onClick={() => onSelect(game)} className="group relative h-auto w-full overflow-hidden rounded-lg border border-border p-0 hover:bg-transparent">
+      <img src={game.image} alt={game.title} loading="lazy" width={357} height={200} className="aspect-video w-full object-cover" />
+      <span aria-hidden className="home-game-play pointer-events-none absolute left-1/2 top-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"><Play className="fill-current" /></span>
+    </Button>
   );
 }
 
 export function RecentCanvases() {
-  const tabs = ["画布创作", "最近使用", "本周热门", "推荐技能"];
-  const [tab, setTab] = useState(tabs[0]!);
+  const [preview, setPreview] = useState<HomeGamePreview | null>(null);
+  const [collection, setCollection] = useState<(typeof homeGameRows)[number] | null>(null);
+  const [remix, setRemix] = useState("Colossus Gauntlet, but in the Wild West");
   return (
-    <section aria-label="最近画布">
-      <Tabs items={tabs} active={tab} onChange={setTab} dots />
-      <div className="mt-4 flex items-baseline justify-between">
-        <h2 className="text-xl font-semibold">最近画布 <span className="text-sm font-normal text-muted-foreground">(10)</span></h2>
-        <button className="flex items-center text-sm text-muted-foreground hover:text-foreground">查看全部<ChevronRight className="size-4" /></button>
-      </div>
-      <div className="-mx-1 mt-4 flex snap-x gap-3 overflow-x-auto px-1 pb-2">
-        <button className="flex w-[200px] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-2xl bg-card p-3 transition-colors hover:bg-accent xl:w-[calc((100%-48px)/5)]">
-          <Plus className="size-6" />
-          <span className="text-sm font-semibold">新建画布</span>
-        </button>
-        {canvases.map((c) => (
-          <button key={c.title} className="w-[200px] shrink-0 snap-start rounded-2xl bg-card p-2.5 text-left transition-colors hover:bg-accent xl:w-[calc((100%-48px)/5)]">
-            <img src={c.img} alt={c.title} loading="lazy" width={992} height={672} className="aspect-[16/11] w-full rounded-xl object-cover" />
-            <div className="mt-2.5 flex items-center gap-2 px-1">
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{c.title} <span className="text-muted-foreground">({c.count})</span></p>
-                <p className="truncate text-xs text-muted-foreground">{c.meta}</p>
-              </div>
-              <c.icon className="size-5 shrink-0 text-muted-foreground" />
+    <div className="home-game-gallery space-y-10 pb-12 sm:space-y-12">
+      {homeGameRows.map(row => (
+        <section key={row.title} aria-label={row.title}>
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2.5 text-lg font-semibold"><span aria-hidden className="text-xl">{row.icon}</span>{row.title}</h2>
+            <Button variant="secondary" size="sm" className="h-7 rounded-full px-3 font-normal" aria-label={`查看全部${row.title}`} onClick={() => setCollection(row)}>查看全部</Button>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 xl:grid-cols-5">
+            {row.games.map(game => <GameCard key={game.id} game={game} onSelect={setPreview} />)}
+          </div>
+        </section>
+      ))}
+      <section aria-label="更多游戏">
+        <h2 className="mb-5 flex items-center gap-2.5 text-lg font-semibold"><span aria-hidden className="text-xl">📚</span>更多游戏</h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-7 xl:grid-cols-5">
+          {moreHomeGames.map((game, index) => (
+            <div key={game.id} className="contents">
+              {index === 13 && <div className="home-game-remix flex aspect-video min-w-0 flex-col justify-between gap-2 rounded-lg border border-border p-3 sm:p-4">
+                <h3 className="text-xs font-semibold sm:text-sm">🧬 混音：创建你自己的游戏</h3>
+                <div className="space-y-2">
+                  <input aria-label="游戏混音创意" value={remix} onChange={event => setRemix(event.target.value)} className="home-game-play h-9 w-full min-w-0 rounded-lg border border-border px-3 text-xs outline-none focus:border-ring sm:text-sm" />
+                  <Button asChild className="h-8 w-full rounded-full sm:h-9"><Link to="/build" search={{ mode: "build" }}>创造</Link></Button>
+                </div>
+              </div>}
+              <GameCard game={game} onSelect={setPreview} />
             </div>
-          </button>
-        ))}
-      </div>
-    </section>
+          ))}
+        </div>
+      </section>
+      <Dialog open={collection !== null} onOpenChange={open => { if (!open) setCollection(null); }}>
+        <DialogContent className="max-h-[85dvh] w-[calc(100%-32px)] max-w-5xl overflow-y-auto">
+          <DialogTitle>{collection?.icon} {collection?.title}</DialogTitle>
+          <DialogDescription className="sr-only">游戏封面展示</DialogDescription>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">{collection?.games.map(game => <GameCard key={game.id} game={game} onSelect={game => { setCollection(null); setPreview(game); }} />)}</div>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={preview !== null} onOpenChange={open => { if (!open) setPreview(null); }}>
+        <DialogContent className="w-[calc(100%-32px)] max-w-3xl">
+          <DialogTitle>{preview?.title}</DialogTitle>
+          <DialogDescription>游戏封面预览</DialogDescription>
+          {preview && <img src={preview.image} alt={preview.title} className="aspect-video w-full rounded-lg object-cover" />}
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
-

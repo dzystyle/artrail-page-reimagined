@@ -11,7 +11,7 @@
 
 - Keep the homepage creation composer in a browser-safe component with session-only UI state; service connections and generation require a separately implemented Cloud integration.
 - Creation workspace uses a validated URL mode to select entry-specific examples and composer defaults while reusing the sidebar and layout; this keeps refresh and direct links consistent.
-- Featured-work detail content is browser-safe demo data in src/lib/works.ts; the detail route resolves it by id and 404s unknown ids instead of rendering an empty panel.
+- Featured-work details resolve browser-safe demo data by id and 404 unknown ids; homepage game covers use a separate reference catalogue and preview-only dialogs to avoid implying playable games.
 
 - Subscription dialogs keep reference pricing in a browser-safe shared module and session-only selections; payment and entitlement actions must not imply a completed purchase without a separately connected payment service.
 - Theme state is shared by a browser-safe root provider and persisted as a local device preference; semantic CSS tokens switch the whole workspace without changing layouts.
