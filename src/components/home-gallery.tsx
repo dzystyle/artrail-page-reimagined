@@ -16,7 +16,6 @@ function GameCard({ game, onSelect }: { game: HomeGamePreview; onSelect: (game: 
 
 export function RecentCanvases() {
   const [preview, setPreview] = useState<HomeGamePreview | null>(null);
-  const [collection, setCollection] = useState<(typeof homeGameRows)[number] | null>(null);
   const [remix, setRemix] = useState("Colossus Gauntlet, but in the Wild West");
   return (
     <div className="home-game-gallery space-y-10 pb-12 sm:space-y-12">
@@ -24,7 +23,7 @@ export function RecentCanvases() {
         <section key={row.title} aria-label={row.title}>
           <div className="mb-5 flex items-center justify-between gap-3">
             <h2 className="flex items-center gap-2.5 text-lg font-semibold"><span aria-hidden className="text-xl">{row.icon}</span>{row.title}</h2>
-            <Button variant="secondary" size="sm" className="h-7 rounded-full px-3 font-normal" aria-label={`查看全部${row.title}`} onClick={() => setCollection(row)}>查看全部</Button>
+            <Button asChild variant="secondary" size="sm" className="h-7 rounded-full px-3 font-normal" aria-label={`查看全部${row.title}`}><Link to="/games/$category" params={{ category: row.categoryId }}>查看全部</Link></Button>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 xl:grid-cols-5">
             {row.games.map(game => <GameCard key={game.id} game={game} onSelect={setPreview} />)}
@@ -48,13 +47,6 @@ export function RecentCanvases() {
           ))}
         </div>
       </section>
-      <Dialog open={collection !== null} onOpenChange={open => { if (!open) setCollection(null); }}>
-        <DialogContent className="max-h-[85dvh] w-[calc(100%-32px)] max-w-5xl overflow-y-auto">
-          <DialogTitle>{collection?.icon} {collection?.title}</DialogTitle>
-          <DialogDescription className="sr-only">游戏封面展示</DialogDescription>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">{collection?.games.map(game => <GameCard key={game.id} game={game} onSelect={game => { setCollection(null); setPreview(game); }} />)}</div>
-        </DialogContent>
-      </Dialog>
       <Dialog open={preview !== null} onOpenChange={open => { if (!open) setPreview(null); }}>
         <DialogContent className="w-[calc(100%-32px)] max-w-3xl">
           <DialogTitle>{preview?.title}</DialogTitle>

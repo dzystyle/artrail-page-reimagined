@@ -19,6 +19,7 @@ import { Route as MediaWorkspaceRouteImport } from './routes/media-workspace'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ToolboxRouteImport } from './routes/toolbox'
+import { Route as GamesCategoryRouteImport } from './routes/games.$category'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
 import { Route as ApiPublicAssetTemplateImageRouteImport } from './routes/api/public/asset-template-image'
@@ -75,6 +76,11 @@ const ToolboxRoute = ToolboxRouteImport.update({
   path: '/toolbox',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GamesCategoryRoute = GamesCategoryRouteImport.update({
+  id: '/games/$category',
+  path: '/games/$category',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/projects/$projectId',
   path: '/projects/$projectId',
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
+  '/games/$category': typeof GamesCategoryRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
+  '/games/$category': typeof GamesCategoryRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
+  '/games/$category': typeof GamesCategoryRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
   '/api/public/asset-template-image': typeof ApiPublicAssetTemplateImageRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/plugins'
     | '/settings'
     | '/toolbox'
+    | '/games/$category'
     | '/projects/$projectId'
     | '/works/$workId'
     | '/api/public/asset-template-image'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/plugins'
     | '/settings'
     | '/toolbox'
+    | '/games/$category'
     | '/projects/$projectId'
     | '/works/$workId'
     | '/api/public/asset-template-image'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/plugins'
     | '/settings'
     | '/toolbox'
+    | '/games/$category'
     | '/projects/$projectId'
     | '/works/$workId'
     | '/api/public/asset-template-image'
@@ -219,6 +231,7 @@ export interface RootRouteChildren {
   PluginsRoute: typeof PluginsRoute
   SettingsRoute: typeof SettingsRoute
   ToolboxRoute: typeof ToolboxRoute
+  GamesCategoryRoute: typeof GamesCategoryRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   WorksWorkIdRoute: typeof WorksWorkIdRoute
   ApiPublicAssetTemplateImageRoute: typeof ApiPublicAssetTemplateImageRoute
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolboxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/games/$category': {
+      id: '/games/$category'
+      path: '/games/$category'
+      fullPath: '/games/$category'
+      preLoaderRoute: typeof GamesCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$projectId': {
       id: '/projects/$projectId'
       path: '/projects/$projectId'
@@ -347,6 +367,7 @@ const rootRouteChildren: RootRouteChildren = {
   PluginsRoute: PluginsRoute,
   SettingsRoute: SettingsRoute,
   ToolboxRoute: ToolboxRoute,
+  GamesCategoryRoute: GamesCategoryRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   WorksWorkIdRoute: WorksWorkIdRoute,
   ApiPublicAssetTemplateImageRoute: ApiPublicAssetTemplateImageRoute,
