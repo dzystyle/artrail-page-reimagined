@@ -13,7 +13,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { WorkspaceSearch } from "@/components/workspace-search";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases } from "@/components/home-gallery";
-import { HomeImageGallery } from "@/components/home-image-gallery";
 import { isGameCreation } from "@/lib/game-workspace";
 import { isMediaCreation } from "@/lib/creation-types";
 import entryBuild from "@/assets/game-3.jpg";
@@ -123,7 +122,6 @@ export function Index() {
         </section>
         <div className="mx-auto w-full max-w-[1600px] px-6 pt-8 sm:px-8">
           <RecentCanvases />
-          <HomeImageGallery />
         </div>
 
       </main>
