@@ -13,6 +13,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { WorkspaceSearch } from "@/components/workspace-search";
 import { HomeComposer } from "@/components/home-composer";
 import { RecentCanvases } from "@/components/home-gallery";
+import { CanvasCreation } from "@/components/canvas-creation";
 import { isGameCreation } from "@/lib/game-workspace";
 import { isMediaCreation } from "@/lib/creation-types";
 import entryBuild from "@/assets/game-3.jpg";
