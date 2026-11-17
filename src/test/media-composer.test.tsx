@@ -43,4 +43,10 @@ describe("Media composer", () => {
     fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
     expect(onSubmit).toHaveBeenCalledWith({ text: "游戏宣传海报", mode: "image", skill: skills[0], files: [] });
   });
+  it("carries a chosen game asset starter's prompt and mode into submission", () => {
+    const onSubmit = vi.fn();
+    render(<MediaComposer skills={skills} skill={null} onSkillChange={vi.fn()} seed={{ text: "游戏角色三视图", mode: "image", n: 1 }} onSubmit={onSubmit} />);
+    fireEvent.click(screen.getByRole("button", { name: "发送创作内容" }));
+    expect(onSubmit).toHaveBeenCalledWith({ text: "游戏角色三视图", mode: "image", skill: null, files: [] });
+  });
 });

@@ -12,7 +12,7 @@ export type MediaSubmission = { text: string; mode: MediaMode; skill: MediaSkill
 
 export function MediaComposer({ skills, skill, onSkillChange, seed, initialMode = "video", compact = false, onSubmit }: {
   skills: MediaSkill[]; skill: MediaSkill | null; onSkillChange: (skill: MediaSkill | null) => void;
-  seed?: { text: string; n: number } | null;
+  seed?: { text: string; n: number; mode?: MediaMode } | null;
   initialMode?: MediaMode; compact?: boolean; onSubmit?: (submission: MediaSubmission) => void;
 }) {
   const [text, setText] = useState("");
@@ -30,7 +30,7 @@ export function MediaComposer({ skills, skill, onSkillChange, seed, initialMode 
   const textarea = useRef<HTMLTextAreaElement>(null);
   const voice = useVoiceInput(text => { setText(current => current ? `${current} ${text}` : text); textarea.current?.focus(); });
   const fileInput = useRef<HTMLInputElement>(null);
-  useEffect(() => { if (seed) { setText(seed.text); textarea.current?.focus(); } }, [seed]);
+  useEffect(() => { if (seed) { setText(seed.text); if (seed.mode) setMode(seed.mode); textarea.current?.focus({ preventScroll: true }); } }, [seed]);
   useEffect(() => { if (skill) textarea.current?.focus(); }, [skill]);
   const activeMode = mediaModes.find(item => item.id === mode);
   const filtered = skills.filter(item => item.name.toLowerCase().includes(query.toLowerCase()) && (category === "全部" || item.category === category));
