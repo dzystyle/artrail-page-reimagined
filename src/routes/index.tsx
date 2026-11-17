@@ -91,9 +91,13 @@ export function Index() {
 
         <section className="mx-auto flex w-full max-w-[1040px] flex-col px-6 pb-0 pt-2 sm:px-8 sm:pt-3 [&>div:last-child]:mb-0 [&>div:last-child]:mt-5">
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 py-2 sm:flex-nowrap sm:py-3">
-            <div className="flex shrink-0 items-center gap-3 text-foreground">
-              <Logo className="size-12 shrink-0 sm:size-14" />
-              <span className="font-brand text-[36px] font-bold leading-none sm:text-[42px]">ArTrail</span>
+            <div className="min-w-0 text-foreground">
+              <div className="flex items-center gap-3">
+                <Logo className="size-12 shrink-0 sm:size-14" />
+                <h1 className="font-brand text-[36px] font-bold leading-none sm:text-[42px]">ArTrail</h1>
+              </div>
+              <p className="mt-4 text-lg font-medium leading-7 sm:text-xl">你的专属 AI 创作平台</p>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">把品味和习惯写进 Skill，让精力回归创意</p>
             </div>
             <PromoCarousel />
           </div>
