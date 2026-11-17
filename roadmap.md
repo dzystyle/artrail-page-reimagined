@@ -51,4 +51,4 @@
 - [x] Enrich /create with a game-material heading and visual starters, preserve existing content and verify starter submission and mobile layout.
 - [x] Redesign /build around a prominent composer, lightweight story capabilities and editorial showcase; verify both modes and mobile.
 - [x] Restore the previous game-build layout and change only story showcase to four columns on desktop; verify both modes.
-- [ ] Restyle /create introduction as a centered heading and lightweight icon menu; retain starter selection and verify desktop/mobile.
+- [x] Restyle /create introduction as a centered heading and lightweight icon menu; retain starter selection and verify desktop/mobile.
