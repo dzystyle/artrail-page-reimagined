@@ -41,32 +41,23 @@ const features = [
 
 export function StoryFeatures() {
   return (
-    <section aria-labelledby="story-features" className="pt-6">
-      <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">Create without limits</p>
-      <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
-        <h2 id="story-features" className="max-w-[560px] text-3xl font-semibold leading-tight sm:text-4xl">
-          你的想象力，
-          <br />
-          有了完整的创作工具。
-        </h2>
-        <p className="max-w-[320px] text-sm leading-relaxed text-muted-foreground lg:pb-1 lg:text-right">
-          从内容生成、互动设计到作品封装。
-          <br />
-          让每一个故事，都拥有完整的可玩体验。
-        </p>
+    <section aria-labelledby="story-features" className="mt-12 border-t border-border pt-8">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+        <h2 id="story-features" className="text-lg font-semibold">完整的创作工具</h2>
+        <p className="text-xs text-muted-foreground">从内容生成、互动设计到作品封装，让每一个故事都拥有完整的可玩体验</p>
       </div>
-      <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-5 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 xl:grid-cols-3">
         {features.map((f, index) => (
-          <article key={f.title} className="relative bg-card p-6 transition-colors hover:bg-accent/40">
-            <span aria-hidden className="absolute right-6 top-6 text-xs tabular-nums text-muted-foreground/60">
+          <article key={f.title} className="relative bg-card p-5 transition-colors hover:bg-accent/40">
+            <span aria-hidden className="absolute right-5 top-5 text-xs tabular-nums text-muted-foreground/60">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <div className="flex size-11 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
-              <f.icon className="size-5" />
+            <div className="flex size-9 items-center justify-center rounded-lg border border-border bg-muted text-foreground">
+              <f.icon className="size-4" />
             </div>
-            <h3 className="mt-5 text-lg font-semibold">{f.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <h3 className="mt-3 text-sm font-semibold">{f.title}</h3>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{f.desc}</p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
               {f.tags.map(tag => (
                 <span key={tag} className="rounded-md border border-border px-2.5 py-1 text-xs text-muted-foreground">
                   {tag}
