@@ -26,7 +26,7 @@ export function MediaCreationIntro({ onChoose, selected }: { onChoose: (prompt: 
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="游戏素材灵感">
       {starters.map(item => <Button key={item.title} type="button" variant="ghost" aria-pressed={selected === item.title} onClick={() => onChoose(item.prompt, item.mode, item.title)} className={`group block h-auto min-w-0 overflow-hidden rounded-lg border p-0 text-left font-normal transition-colors ${selected === item.title ? "border-create bg-accent" : "border-border bg-card hover:border-muted-foreground/50"}`}>
         <span className="relative block aspect-[2.6/1] overflow-hidden bg-muted">
-          <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105" />
+          <img src={item.image} alt={item.title} className={`h-full w-full transition-transform duration-300 motion-safe:group-hover:scale-105 ${item.title === "角色与立绘" ? "object-contain" : "object-cover"}`} />
         </span>
         <span className="block px-3 py-3">
           <span className="flex items-center gap-2 text-sm font-medium"><item.icon className="size-3.5 shrink-0 text-create" /><span className="min-w-0 flex-1 whitespace-normal">{item.title}</span><ArrowUpRight className="size-3.5 shrink-0 text-muted-foreground" /></span>
