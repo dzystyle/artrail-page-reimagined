@@ -15,22 +15,18 @@ const starters = [
 
 export function MediaCreationIntro({ onChoose, selected }: { onChoose: (prompt: string, mode: MediaMode, title: string) => void; selected: string | null }) {
   return <div className="pb-5 pt-5 sm:pt-8">
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <p className="mb-2 flex items-center gap-2 text-xs font-medium text-muted-foreground"><Layers className="size-3.5 text-create" />ArTrail / 游戏素材创作</p>
-        <h1 className="text-2xl font-semibold leading-tight sm:text-3xl">游戏素材创作</h1>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">从角色、场景到宣发短片，让你的游戏世界有自己的风格。</p>
-      </div>
-      <span className="hidden items-center gap-2 pb-1 text-xs text-muted-foreground sm:flex"><span className="h-px w-6 bg-border" />灵感起点</span>
-    </div>
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="游戏素材灵感">
       {starters.map(item => <Button key={item.title} type="button" variant="ghost" aria-pressed={selected === item.title} onClick={() => onChoose(item.prompt, item.mode, item.title)} className={`group block h-auto min-w-0 overflow-hidden rounded-lg border p-0 text-left font-normal transition-colors ${selected === item.title ? "border-create bg-accent" : "border-border bg-card hover:border-muted-foreground/50"}`}>
         <span className="relative block aspect-[2.6/1] overflow-hidden bg-muted">
           <img src={item.image} alt={item.title} className={`h-full w-full transition-transform duration-300 motion-safe:group-hover:scale-105 ${item.title === "角色与立绘" ? "object-contain" : "object-cover"}`} />
         </span>
-        <span className="block px-3 py-3">
-          <span className="flex items-center gap-2 text-sm font-medium"><item.icon className="size-3.5 shrink-0 text-create" /><span className="min-w-0 flex-1 whitespace-normal">{item.title}</span><ArrowUpRight className="size-3.5 shrink-0 text-muted-foreground" /></span>
-          <span className="mt-1.5 block whitespace-normal text-[11px] leading-5 text-muted-foreground">{item.subtitle}</span>
+        <span className="block px-3.5 py-3.5">
+          <span className="flex items-center gap-2">
+            <item.icon className="size-4 shrink-0 text-create" />
+            <span className="min-w-0 flex-1 whitespace-normal text-[15px] font-semibold tracking-wide">{item.title}</span>
+            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5" />
+          </span>
+          <span className="mt-2 block whitespace-normal text-xs leading-5 tracking-wide text-muted-foreground">{item.subtitle}</span>
         </span>
       </Button>)}
     </div>
