@@ -85,12 +85,12 @@ function BuildPage() {
             <h2 id="explore-works" className="text-base font-semibold">互动故事案例</h2>
             <span className="text-[11px] text-muted-foreground">STORY SHOWCASE</span>
           </div>
-          <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-6 lg:grid-cols-4 lg:gap-x-5">
             {visibleWorks.map(w => {
-              const card = <><div className="overflow-hidden rounded-lg"><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-[2] w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-[1.02]" /></div><div className="flex flex-col justify-center py-3 sm:py-6"><span className="mb-3 text-xs text-project-mint">{w.type}</span><h3 className="text-2xl font-semibold sm:text-3xl">{w.name}</h3>{w.url && <span className="mt-6 flex items-center gap-2 text-sm text-muted-foreground transition-colors group-hover:text-foreground">进入故事<ArrowUpRight className="size-4" /></span>}</div></>;
+              const card = <><div className="relative overflow-hidden rounded-lg"><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-video w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-[1.03]" />{w.url && <span className="absolute bottom-2 right-2 grid size-7 place-items-center rounded-full border border-border bg-background/85 text-foreground"><ArrowUpRight className="size-3.5" aria-hidden="true" /></span>}</div><div className="pt-3"><h3 className="truncate text-sm font-medium sm:text-base">{w.name}</h3><p className="mt-1 text-xs text-muted-foreground">{w.type}</p></div></>;
               return w.url
-                ? <a key={w.name} href={w.url} target="_blank" rel="noopener noreferrer" className="group grid gap-4 sm:grid-cols-[1.5fr_1fr] sm:gap-10">{card}</a>
-                : <div key={w.name} className="group grid gap-4 sm:grid-cols-[1.5fr_1fr] sm:gap-10">{card}</div>;
+                ? <a key={w.name} href={w.url} target="_blank" rel="noopener noreferrer" className="group block min-w-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring">{card}</a>
+                : <div key={w.name} className="group min-w-0">{card}</div>;
             })}
           </div>
         </section> : <><section aria-label="随机小游戏" className="mb-10 overflow-hidden border-y border-border py-6"><RandomHeroGame /></section><ExploreGames onContinue={g => { setBaseGame(g); toComposer(); }} onUsePrompt={g => { setSeed({ text: g.prompt, n: Date.now() }); toComposer(); }} /></>}
