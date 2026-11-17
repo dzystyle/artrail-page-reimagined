@@ -11,15 +11,12 @@ const features = [
 
 export function StoryFeatures() {
   return (
-    <section aria-label="完整的创作工具" className="pb-7 pt-6">
-      <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 xl:grid-cols-6">
+    <section aria-label="完整的创作工具" className="mx-auto max-w-[860px] py-7 sm:py-8">
+      <div className="grid grid-cols-3 gap-x-3 gap-y-4 lg:grid-cols-6">
         {features.map(f => (
-          <div key={f.title} className="group flex flex-col items-center text-center">
-            <div className="flex size-10 items-center justify-center rounded-full border border-border bg-muted/60 text-muted-foreground transition-colors group-hover:border-foreground/25 group-hover:text-foreground">
-              <f.icon className="size-4" />
-            </div>
-            <p className="mt-2 text-xs font-medium">{f.title}</p>
-            <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{f.hint}</p>
+          <div key={f.title} title={f.hint} className="flex items-center justify-center gap-2 text-muted-foreground">
+            <f.icon className="size-3.5 shrink-0 text-project-mint" aria-hidden="true" />
+            <p className="text-[11px] font-medium sm:text-xs">{f.title}</p>
           </div>
         ))}
       </div>
