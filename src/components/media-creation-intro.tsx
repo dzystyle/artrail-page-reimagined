@@ -20,9 +20,13 @@ export function MediaCreationIntro({ onChoose, selected }: { onChoose: (prompt: 
         <span className="relative block aspect-[2.6/1] overflow-hidden bg-muted">
           <img src={item.image} alt={item.title} className={`h-full w-full transition-transform duration-300 motion-safe:group-hover:scale-105 ${item.title === "角色与立绘" ? "object-contain" : "object-cover"}`} />
         </span>
-        <span className="block px-3 py-3">
-          <span className="flex items-center gap-2 text-sm font-medium"><item.icon className="size-3.5 shrink-0 text-create" /><span className="min-w-0 flex-1 whitespace-normal">{item.title}</span><ArrowUpRight className="size-3.5 shrink-0 text-muted-foreground" /></span>
-          <span className="mt-1.5 block whitespace-normal text-[11px] leading-5 text-muted-foreground">{item.subtitle}</span>
+        <span className="block px-3.5 py-3.5">
+          <span className="flex items-center gap-2">
+            <item.icon className="size-4 shrink-0 text-create" />
+            <span className="min-w-0 flex-1 whitespace-normal text-[15px] font-semibold tracking-wide">{item.title}</span>
+            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5" />
+          </span>
+          <span className="mt-2 block whitespace-normal text-xs leading-5 tracking-wide text-muted-foreground">{item.subtitle}</span>
         </span>
       </Button>)}
     </div>
