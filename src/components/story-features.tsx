@@ -11,7 +11,7 @@ const features = [
 
 export function StoryFeatures() {
   return (
-    <section aria-label="完整的创作工具" className="mx-auto max-w-[800px] pt-10">
+    <section aria-label="完整的创作工具" className="pb-7 pt-6">
       <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 xl:grid-cols-6">
         {features.map(f => (
           <div key={f.title} className="group flex flex-col items-center text-center">
