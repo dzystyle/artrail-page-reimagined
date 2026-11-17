@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { ArrowLeft, ArrowUpRight, Clapperboard, Gamepad2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Clapperboard } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
 import { ExploreGames, type ExploreGame } from "@/components/explore-games";
@@ -61,22 +61,23 @@ function BuildPage() {
   return <div className="flex min-h-screen bg-background text-foreground">
     <Sidebar />
     <main ref={mainRef} className="h-screen min-w-0 flex-1 overflow-y-auto">
-      <header className="flex h-16 items-center gap-2 border-b border-border/50 px-5 sm:px-8">
+      <header className={story ? "flex h-16 items-center gap-2 border-b border-border/50 px-5 sm:px-8" : "flex h-[52px] items-center px-5"}>
         <Button asChild variant="ghost" size="icon"><Link to="/" aria-label="返回创作" title="返回创作"><ArrowLeft /></Link></Button>
-        <Link to="/" className="text-xs text-muted-foreground transition-colors hover:text-foreground">创作</Link>
+        {story && <><Link to="/" className="text-xs text-muted-foreground transition-colors hover:text-foreground">创作</Link>
         <span aria-hidden="true" className="text-xs text-muted-foreground/50">/</span>
-        <span className="text-xs font-medium">{story ? "互动影游" : "构建游戏"}</span>
+        <span className="text-xs font-medium">互动影游</span></>}
       </header>
-      <div className="mx-auto max-w-[1200px] px-5 pb-14 sm:px-10">
-        <section className="mx-auto max-w-[900px] pb-10 pt-12 sm:pb-14 sm:pt-16">
-          <div className="mb-5 flex items-center justify-center gap-2 text-project-mint">
-            {story ? <Clapperboard className="size-4" /> : <Gamepad2 className="size-4" />}
-            <span className="text-[11px] font-medium tracking-[0.12em]">ArTrail / {story ? "INTERACTIVE STORY" : "GAME STUDIO"}</span>
-          </div>
-          <h1 className="text-center text-[30px] font-semibold leading-tight sm:text-[40px]">{story ? "互动影游创作" : "构建游戏"}</h1>
-          <p className="mt-4 text-center text-sm leading-6 text-muted-foreground sm:text-base">{story ? "描述你的故事，AI 帮你生成可玩的互动影游" : "从一个玩法开始，打造你的游戏世界"}</p>
+      <div className={story ? "mx-auto max-w-[1200px] px-5 pb-14 sm:px-10" : "mx-auto max-w-[1240px] px-5 pb-14 sm:px-8"}>
+        {!story && <RandomHeroGame />}
+        <section className={story ? "mx-auto max-w-[900px] pb-10 pt-12 sm:pb-14 sm:pt-16" : "mx-auto max-w-[800px] pt-6"}>
+          {story && <div className="mb-5 flex items-center justify-center gap-2 text-project-mint">
+            <Clapperboard className="size-4" />
+            <span className="text-[11px] font-medium">ArTrail / INTERACTIVE STORY</span>
+          </div>}
+          <h1 className={story ? "text-center text-[30px] font-semibold leading-tight sm:text-[40px]" : "text-3xl font-semibold"}>{story ? "互动影游创作" : "构建游戏"}</h1>
+          <p className={story ? "mt-4 text-center text-sm leading-6 text-muted-foreground sm:text-base" : "mt-2 text-sm text-muted-foreground"}>{story ? "描述你的故事，AI 帮你生成可玩的互动影游" : "从一个玩法开始，打造你的游戏世界"}</p>
           {story && <StoryFeatures />}
-          <div className={`build-page-composer ${story ? "" : "mt-8"}`}>
+          <div className={story ? "build-page-composer" : ""}>
           <HomeComposer key={mode} simple gameOnly={!story} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
           </div>
         </section>
@@ -85,15 +86,15 @@ function BuildPage() {
             <h2 id="explore-works" className="text-base font-semibold">互动故事案例</h2>
             <span className="text-[11px] text-muted-foreground">STORY SHOWCASE</span>
           </div>
-          <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-6 lg:grid-cols-4">
             {visibleWorks.map(w => {
-              const card = <><div className="overflow-hidden rounded-lg"><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="aspect-[2] w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-[1.02]" /></div><div className="flex flex-col justify-center py-3 sm:py-6"><span className="mb-3 text-xs text-project-mint">{w.type}</span><h3 className="text-2xl font-semibold sm:text-3xl">{w.name}</h3>{w.url && <span className="mt-6 flex items-center gap-2 text-sm text-muted-foreground transition-colors group-hover:text-foreground">进入故事<ArrowUpRight className="size-4" /></span>}</div></>;
+              const card = <><div className="aspect-video overflow-hidden rounded-lg"><img src={w.image} alt={w.name} width={512} height={320} loading="lazy" className="size-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-[1.02]" /></div><div className="mt-3 flex items-start justify-between gap-2"><div className="min-w-0"><h3 className="text-sm font-medium">{w.name}</h3><p className="mt-1 text-xs text-muted-foreground">{w.type}</p></div>{w.url && <ArrowUpRight aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-project-mint" />}</div></>;
               return w.url
-                ? <a key={w.name} href={w.url} target="_blank" rel="noopener noreferrer" className="group grid gap-4 sm:grid-cols-[1.5fr_1fr] sm:gap-10">{card}</a>
-                : <div key={w.name} className="group grid gap-4 sm:grid-cols-[1.5fr_1fr] sm:gap-10">{card}</div>;
+                ? <a key={w.name} href={w.url} target="_blank" rel="noopener noreferrer" className="group block min-w-0">{card}</a>
+                : <div key={w.name} className="group min-w-0">{card}</div>;
             })}
           </div>
-        </section> : <><section aria-label="随机小游戏" className="mb-10 overflow-hidden border-y border-border py-6"><RandomHeroGame /></section><ExploreGames onContinue={g => { setBaseGame(g); toComposer(); }} onUsePrompt={g => { setSeed({ text: g.prompt, n: Date.now() }); toComposer(); }} /></>}
+        </section> : <ExploreGames onContinue={g => { setBaseGame(g); toComposer(); }} onUsePrompt={g => { setSeed({ text: g.prompt, n: Date.now() }); toComposer(); }} />}
         {!story && <section aria-labelledby="asset-templates" className="mt-10 border-t border-border pt-8">
           <h2 id="asset-templates" className="mb-5 text-xl font-semibold">资产模板</h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-7 xl:grid-cols-4">
