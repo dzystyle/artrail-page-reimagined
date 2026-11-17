@@ -254,6 +254,21 @@
 .home-game-play { background: var(--game-preview-shade); color: var(--game-preview-ink); }
 .home-game-remix { background: linear-gradient(135deg, var(--game-remix-start), var(--game-remix-end)); color: var(--game-preview-ink); }
 .workspace-nodes { position: relative; }
+.build-page-composer > div { margin-top: 0; margin-bottom: 0; }
+.build-page-composer form {
+  border-radius: 8px;
+  border-color: color-mix(in oklch, var(--foreground) 18%, transparent);
+  box-shadow: 0 12px 36px -24px color-mix(in oklch, var(--foreground) 24%, transparent);
+  transition: border-color 160ms ease;
+}
+.build-page-composer form:focus-within { border-color: var(--project-mint); }
+.build-page-composer textarea { height: 138px; line-height: 1.8; }
+@media (max-width: 639px) {
+  .build-page-composer textarea { height: 120px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .build-page-composer form { transition: none; }
+}
 @media (min-width: 768px) {
   .workspace-nodes::before {
     content: "";
