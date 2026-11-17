@@ -68,15 +68,9 @@ function BuildPage() {
         {!story && <RandomHeroGame />}
         {story && <StoryFeatures />}
         <section className="mx-auto max-w-[800px] pt-6">
-          {story ? <HomeComposer key={mode} simple gameOnly={false} scrollRoot={mainRef} baseGame={null} seed={seed} initialType="Interactive Story" /> : <>
-            <h1 className="text-3xl font-semibold">构建游戏</h1>
-            <p className="mt-2 text-sm text-muted-foreground">从一个玩法开始，打造你的游戏世界</p>
-            <HomeComposer key={mode} simple gameOnly scrollRoot={mainRef} baseGame={baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType="Web Game" onCreate={request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
-          </>}
-          {story && <div className="mt-4 text-center">
-            <h1 className="text-xl font-semibold">互动影游创作</h1>
-            <p className="mt-1 text-sm text-muted-foreground">描述你的故事，AI 帮你生成可玩的互动影游</p>
-          </div>}
+          <h1 className="text-3xl font-semibold">{story ? "互动影游创作" : "构建游戏"}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{story ? "描述你的故事，AI 帮你生成可玩的互动影游" : "从一个玩法开始，打造你的游戏世界"}</p>
+          <HomeComposer key={mode} simple gameOnly={!story} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "Interactive Story" : "Web Game"} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
         </section>
         {story ? <section aria-labelledby="explore-works" className="mt-10">
           <h2 id="explore-works" className="mb-4 text-base font-semibold">{story ? "互动故事案例" : "探索"}</h2>
