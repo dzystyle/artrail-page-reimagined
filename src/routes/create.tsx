@@ -3,8 +3,9 @@ import { useRef, useState } from "react";
 import { ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, FlaskConical, Play, Sparkles } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { MediaComposer } from "@/components/media-composer";
+import { MediaCreationIntro } from "@/components/media-creation-intro";
 import { setMediaWorkspaceDraft } from "@/lib/media-workspace";
-import { type MediaSkill } from "@/lib/media-composer";
+import { type MediaMode, type MediaSkill } from "@/lib/media-composer";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -27,10 +28,10 @@ import template6 from "@/assets/build-templates-6.jpg";
 export const Route = createFileRoute("/create")({
   head: () => ({
     meta: [
-      { title: "创建图片和视频 — ArTrail" },
-      { name: "description", content: "在 ArTrail 用模板和炼金模式创建图片与视频：短片、推广广告、讲解视频和产品展示。" },
-      { property: "og:title", content: "创建图片和视频 — ArTrail" },
-      { property: "og:description", content: "用模板和炼金模式创建图片与视频：短片、推广广告、讲解视频和产品展示。" },
+      { title: "游戏素材创作 — ArTrail" },
+      { name: "description", content: "在 ArTrail 创作游戏角色、场景、道具与宣发视频，探索素材模板与创作灵感。" },
+      { property: "og:title", content: "游戏素材创作 — ArTrail" },
+      { property: "og:description", content: "探索游戏角色、场景、道具与宣发视频的素材模板和创作灵感。" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -124,7 +125,7 @@ function DetailDialog({ detail, onClose, onUse }: { detail: CreateDetail; onClos
 const models = ["ArTrail 2.0 Lite", "ArTrail 2.0", "ArTrail 1.5"];
 
 function ModelPicker() {
-  const [model, setModel] = useState(models[0]!);
+  const [model, setModel] = useState(models[0] ?? "ArTrail 2.0 Lite");
   const [open, setOpen] = useState(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -148,8 +149,9 @@ function CreatePage() {
   const navigate = useNavigate();
   const mainRef = useRef<HTMLElement>(null);
   const templateRow = useRef<HTMLDivElement>(null);
-  const [tab, setTab] = useState(tabs[0]!);
-  const [seed, setSeed] = useState<{ text: string; n: number } | null>(null);
+  const [tab, setTab] = useState(tabs[0] ?? "所有模板");
+  const [seed, setSeed] = useState<{ text: string; n: number; mode?: MediaMode } | null>(null);
+  const [starter, setStarter] = useState<string | null>(null);
   const [detail, setDetail] = useState<CreateDetail | null>(null);
   const [skill, setSkill] = useState<MediaSkill | null>(null);
   const visibleTemplates = templates.filter(t => tab === "所有模板" || t.tab === tab);
@@ -175,7 +177,7 @@ function CreatePage() {
 
         <div className="mx-auto max-w-[1240px] px-5 pb-8 sm:px-8">
           <section className="mx-auto max-w-[1040px] pb-6 pt-2">
-            <h1 className="sr-only">创建图片和视频</h1>
+            <MediaCreationIntro selected={starter} onChoose={(text, mode, title) => { setStarter(title); setSeed(current => ({ text, mode, n: (current?.n ?? 0) + 1 })); }} />
             <MediaComposer skills={composerSkills} skill={skill} onSkillChange={setSkill} seed={seed} onSubmit={submission => { setMediaWorkspaceDraft(submission); void navigate({ to: "/media-workspace", search: { prompt: submission.text, mode: submission.mode } }); }} />
           </section>
 
