@@ -269,6 +269,24 @@
 @media (prefers-reduced-motion: reduce) {
   .build-page-composer form { transition: none; }
 }
+.prd-doc { font-size: 14px; line-height: 1.8; color: var(--foreground); }
+.prd-doc h1 { font-size: 26px; font-weight: 650; line-height: 1.35; margin: 0 0 16px; }
+.prd-doc h2 { font-size: 19px; font-weight: 600; margin: 40px 0 12px; padding-top: 20px; border-top: 1px solid var(--border); }
+.prd-doc h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; }
+.prd-doc p { margin: 10px 0; }
+.prd-doc blockquote { margin: 12px 0 20px; padding: 10px 14px; border-left: 3px solid var(--project-mint); background: color-mix(in oklch, var(--muted) 55%, transparent); border-radius: 0 8px 8px 0; color: var(--muted-foreground); font-size: 13px; }
+.prd-doc blockquote p { margin: 4px 0; }
+.prd-doc ul, .prd-doc ol { margin: 10px 0; padding-left: 22px; }
+.prd-doc li { margin: 4px 0; }
+.prd-doc strong { font-weight: 600; }
+.prd-doc code { font-size: 12.5px; padding: 1px 5px; border-radius: 5px; background: var(--muted); }
+.prd-doc pre { margin: 12px 0; padding: 14px 16px; border-radius: 10px; background: var(--muted); overflow-x: auto; font-size: 12.5px; line-height: 1.7; }
+.prd-doc pre code { padding: 0; background: transparent; }
+.prd-doc table { width: 100%; margin: 14px 0; border-collapse: collapse; font-size: 13px; display: block; overflow-x: auto; }
+.prd-doc th, .prd-doc td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+.prd-doc th { background: color-mix(in oklch, var(--muted) 60%, transparent); font-weight: 600; white-space: nowrap; }
+.prd-doc hr { margin: 28px 0; border: none; border-top: 1px solid var(--border); }
+.prd-doc a { color: var(--project-mint); text-decoration: underline; text-underline-offset: 3px; }
 @media (min-width: 768px) {
   .workspace-nodes::before {
     content: "";
