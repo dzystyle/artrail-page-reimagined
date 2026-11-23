@@ -19,7 +19,6 @@ import { Route as MediaWorkspaceRouteImport } from './routes/media-workspace'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ToolboxRouteImport } from './routes/toolbox'
-import { Route as BuildPrdRouteImport } from './routes/build.prd'
 import { Route as GamesCategoryRouteImport } from './routes/games.$category'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
 import { Route as WorksWorkIdRouteImport } from './routes/works.$workId'
@@ -77,11 +76,6 @@ const ToolboxRoute = ToolboxRouteImport.update({
   path: '/toolbox',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BuildPrdRoute = BuildPrdRouteImport.update({
-  id: '/prd',
-  path: '/prd',
-  getParentRoute: () => BuildRoute,
-} as any)
 const GamesCategoryRoute = GamesCategoryRouteImport.update({
   id: '/games/$category',
   path: '/games/$category',
@@ -117,7 +111,7 @@ const ApiPublicTranscribeRoute = ApiPublicTranscribeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/asset-template': typeof AssetTemplateRoute
-  '/build': typeof BuildRouteWithChildren
+  '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/image-template': typeof ImageTemplateRoute
@@ -125,7 +119,6 @@ export interface FileRoutesByFullPath {
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
-  '/build/prd': typeof BuildPrdRoute
   '/games/$category': typeof GamesCategoryRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
@@ -136,7 +129,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/asset-template': typeof AssetTemplateRoute
-  '/build': typeof BuildRouteWithChildren
+  '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/image-template': typeof ImageTemplateRoute
@@ -144,7 +137,6 @@ export interface FileRoutesByTo {
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
-  '/build/prd': typeof BuildPrdRoute
   '/games/$category': typeof GamesCategoryRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
@@ -156,7 +148,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/asset-template': typeof AssetTemplateRoute
-  '/build': typeof BuildRouteWithChildren
+  '/build': typeof BuildRoute
   '/create': typeof CreateRoute
   '/game': typeof GameRoute
   '/image-template': typeof ImageTemplateRoute
@@ -164,7 +156,6 @@ export interface FileRoutesById {
   '/plugins': typeof PluginsRoute
   '/settings': typeof SettingsRoute
   '/toolbox': typeof ToolboxRoute
-  '/build/prd': typeof BuildPrdRoute
   '/games/$category': typeof GamesCategoryRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
   '/works/$workId': typeof WorksWorkIdRoute
@@ -185,7 +176,6 @@ export interface FileRouteTypes {
     | '/plugins'
     | '/settings'
     | '/toolbox'
-    | '/build/prd'
     | '/games/$category'
     | '/projects/$projectId'
     | '/works/$workId'
@@ -204,7 +194,6 @@ export interface FileRouteTypes {
     | '/plugins'
     | '/settings'
     | '/toolbox'
-    | '/build/prd'
     | '/games/$category'
     | '/projects/$projectId'
     | '/works/$workId'
@@ -223,7 +212,6 @@ export interface FileRouteTypes {
     | '/plugins'
     | '/settings'
     | '/toolbox'
-    | '/build/prd'
     | '/games/$category'
     | '/projects/$projectId'
     | '/works/$workId'
@@ -235,7 +223,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssetTemplateRoute: typeof AssetTemplateRoute
-  BuildRoute: typeof BuildRouteWithChildren
+  BuildRoute: typeof BuildRoute
   CreateRoute: typeof CreateRoute
   GameRoute: typeof GameRoute
   ImageTemplateRoute: typeof ImageTemplateRoute
@@ -323,13 +311,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolboxRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/build/prd': {
-      id: '/build/prd'
-      path: '/prd'
-      fullPath: '/build/prd'
-      preLoaderRoute: typeof BuildPrdRouteImport
-      parentRoute: typeof BuildRoute
-    }
     '/games/$category': {
       id: '/games/$category'
       path: '/games/$category'
@@ -375,20 +356,10 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface BuildRouteChildren {
-  BuildPrdRoute: typeof BuildPrdRoute
-}
-
-const BuildRouteChildren: BuildRouteChildren = {
-  BuildPrdRoute: BuildPrdRoute,
-}
-
-const BuildRouteWithChildren = BuildRoute._addFileChildren(BuildRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssetTemplateRoute: AssetTemplateRoute,
-  BuildRoute: BuildRouteWithChildren,
+  BuildRoute: BuildRoute,
   CreateRoute: CreateRoute,
   GameRoute: GameRoute,
   ImageTemplateRoute: ImageTemplateRoute,

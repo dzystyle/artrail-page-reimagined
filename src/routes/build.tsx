@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { ArrowLeft, ArrowUpRight, Clapperboard, FileText } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Clapperboard } from "lucide-react";
 import { Sidebar } from "@/components/app-sidebar";
 import { HomeComposer } from "@/components/home-composer";
 import { ExploreGames, type ExploreGame } from "@/components/explore-games";
@@ -8,6 +8,7 @@ import { RandomHeroGame } from "@/components/random-hero-game";
 import { StoryFeatures } from "@/components/story-features";
 import { Button } from "@/components/ui/button";
 import { AssetPresetDialog } from "@/components/asset-preset-dialog";
+import { BuildPrdDialog } from "@/components/build-prd-dialog";
 import { assetPresets } from "@/lib/asset-presets";
 import { buildWorks } from "@/lib/build-works";
 import { parseCreationMode, worksForMode } from "@/lib/creation-mode";
@@ -67,7 +68,7 @@ function BuildPage() {
         {story && <><Link to="/" className="text-xs text-muted-foreground transition-colors hover:text-foreground">创作</Link>
         <span aria-hidden="true" className="text-xs text-muted-foreground/50">/</span>
         <span className="text-xs font-medium">互动影游</span></>}
-        <Button asChild variant="outline" size="sm" className="ml-auto gap-1.5 text-xs"><Link to="/build/prd" search={{ mode: "build" }}><FileText className="size-3.5" aria-hidden="true" />产品需求文档</Link></Button>
+        <BuildPrdDialog />
       </header>
       <div className={story ? "mx-auto max-w-[1200px] px-5 pb-14 sm:px-10" : "mx-auto max-w-[1240px] px-5 pb-14 sm:px-8"}>
         {!story && <RandomHeroGame />}
