@@ -11,7 +11,7 @@ import { AssetPresetDialog } from "@/components/asset-preset-dialog";
 import { assetPresets } from "@/lib/asset-presets";
 import { buildWorks } from "@/lib/build-works";
 import { parseCreationMode, worksForMode } from "@/lib/creation-mode";
-import { isMediaCreation } from "@/lib/creation-types";
+import { buildCreationTypes } from "@/lib/creation-types";
 import template1 from "@/assets/build-templates-1.jpg";
 import template2 from "@/assets/build-templates-2.jpg";
 import template3 from "@/assets/build-templates-3.jpg";
@@ -79,7 +79,7 @@ function BuildPage() {
           <p className={story ? "mt-4 text-center text-sm leading-6 text-muted-foreground sm:text-base" : "mt-2 text-sm text-muted-foreground"}>{story ? "描述你的故事，AI 帮你生成可玩的互动影游" : "从一个玩法开始，打造你的游戏世界"}</p>
           {story && <StoryFeatures />}
           <div className={story ? "build-page-composer" : ""}>
-          <HomeComposer key={mode} simple homeTypes gameOnly={!story} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "Interactive Story" : "Web Game"} onTypeChange={t => { if (t.name === "Interactive Story") void navigate({ to: "/build", search: { mode: "story" } }); else if (isMediaCreation(t.name)) void navigate({ to: "/create" }); else if (story) void navigate({ to: "/build", search: { mode: "build" } }); }} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
+          <HomeComposer key={mode} simple types={buildCreationTypes} gameOnly={!story} scrollRoot={mainRef} baseGame={story ? null : baseGame} onRemoveBaseGame={() => setBaseGame(null)} seed={seed} initialType={story ? "互动故事" : "网页游戏"} onTypeChange={t => { if (t.name === "互动故事") void navigate({ to: "/build", search: { mode: "story" } }); else if (story) void navigate({ to: "/build", search: { mode: "build" } }); }} onCreate={story ? undefined : request => { void navigate({ to: "/game", search: { tab: "canvas", prompt: request.prompt, project: request.project } }); }} />
           </div>
         </section>
         {story ? <section aria-labelledby="explore-works" className="border-t border-border pt-7 sm:pt-8">

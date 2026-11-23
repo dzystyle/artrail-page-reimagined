@@ -15,7 +15,7 @@ import { ComposerAddMenu } from "@/components/composer-add-menu";
 import { type LibraryAsset } from "@/lib/asset-library";
 
 /** Keeps the composer in one instance so the draft survives docking/expanding. */
-export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed, alwaysFloating = false, gameOnly = false, simple = false, homeTypes = false, onTypeChange }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null; alwaysFloating?: boolean; gameOnly?: boolean; simple?: boolean; homeTypes?: boolean; onTypeChange?: ((type: CreationType) => void) | undefined } = {}) {
+export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreate, baseGame, onRemoveBaseGame, seed, alwaysFloating = false, gameOnly = false, simple = false, types, onTypeChange }: { scrollRoot?: React.RefObject<HTMLElement | null>; initialType?: string; onCreate?: ((request: CreationRequest) => void) | undefined; baseGame?: { name: string; image: string } | null; onRemoveBaseGame?: () => void; seed?: { text: string; n: number } | null; alwaysFloating?: boolean; gameOnly?: boolean; simple?: boolean; types?: CreationType[] | undefined; onTypeChange?: ((type: CreationType) => void) | undefined } = {}) {
   const anchor = useRef<HTMLDivElement>(null);
   const [docked, setDocked] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -41,7 +41,7 @@ export function HomeComposer({ scrollRoot, initialType = "Asset Canvas", onCreat
     return () => window.removeEventListener("keydown", onKey);
   }, [expanded]);
   const [text, setText] = useState("");
-  const availableTypes = gameOnly && !homeTypes ? gameCreationTypes : homeCreationTypes;
+  const availableTypes = types ?? (gameOnly ? gameCreationTypes : homeCreationTypes);
   const [type, setType] = useState(availableTypes.find(t => t.name === initialType) ?? availableTypes[0]);
   const [typeOpen, setTypeOpen] = useState(false);
   const [project, setProject] = useState("ArTrail");
