@@ -1,0 +1,1 @@
+ALTER TABLE public.game_messages ADD COLUMN IF NOT EXISTS code text;

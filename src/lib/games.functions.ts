@@ -34,7 +34,7 @@ export const getGame = createServerFn({ method: "GET" })
     const [{ data: game }, { data: assets }, { data: messages }] = await Promise.all([
       db.from("games").select("*").eq("id", data.id).maybeSingle(),
       db.from("game_assets").select("id, kind, name, url").eq("game_id", data.id).order("created_at"),
-      db.from("game_messages").select("id, role, content").eq("game_id", data.id).order("created_at"),
+      db.from("game_messages").select("id, role, content, code, created_at").eq("game_id", data.id).order("created_at"),
     ]);
     if (!game) return null;
     return { game: { ...game, design: game.design as GameDesign | null }, assets: assets ?? [], messages: messages ?? [] };
@@ -120,7 +120,7 @@ export const generateCode = createServerFn({ method: "POST" })
         `用户需求：${game.prompt}\n\n设计文档：${JSON.stringify(game.design)}\n\n可用图片资产：\n${(assets ?? []).map(a => `- ${a.kind} ${a.name}: ${a.url}`).join("\n")}`);
       const code = extractHtml(text);
       await db.from("games").update({ code, status: "ready", error: null, updated_at: new Date().toISOString() }).eq("id", data.id);
-      await db.from("game_messages").insert({ game_id: data.id, role: "assistant", content: "游戏已生成，打开 Game 即可试玩。告诉我你想修改什么。" });
+      await db.from("game_messages").insert({ game_id: data.id, role: "assistant", content: "游戏已生成，打开 Game 即可试玩。告诉我你想修改什么。", code });
       return { ok: true };
     } catch (e) { return fail(data.id, e); }
   });
@@ -137,8 +137,9 @@ export const reviseGame = createServerFn({ method: "POST" })
       const { aiText, extractHtml } = await import("./games.server");
       const text = await aiText(`你是资深 HTML5 游戏开发者。根据修改要求更新现有游戏，保留未提及的部分与图片 URL。${codeRules}`,
         `原始需求：${game.prompt}\n\n修改要求：${data.message}\n\n当前代码：\n${game.code}`);
-      await db.from("games").update({ code: extractHtml(text), status: "ready", error: null, updated_at: new Date().toISOString() }).eq("id", data.id);
-      await db.from("game_messages").insert({ game_id: data.id, role: "assistant", content: "已按要求更新游戏，Game 中可直接试玩新版本。" });
+      const code = extractHtml(text);
+      await db.from("games").update({ code, status: "ready", error: null, updated_at: new Date().toISOString() }).eq("id", data.id);
+      await db.from("game_messages").insert({ game_id: data.id, role: "assistant", content: "已按要求更新游戏，Game 中可直接试玩新版本。", code });
       return { ok: true };
     } catch (e) {
       const { friendlyError } = await import("./games.server");
@@ -160,5 +161,19 @@ export const retryGame = createServerFn({ method: "POST" })
     const planned = (game.design as GameDesign | null)?.assets.length ?? 0;
     const status = game.code ? "ready" : !game.design ? "designing" : (count ?? 0) < planned ? "assets" : "coding";
     await db.from("games").update({ status, error: null }).eq("id", data.id);
+    return { ok: true };
+  });
+
+export const restoreGameVersion = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ id: z.string().uuid(), messageId: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const db = await admin();
+    const { data: game } = await db.from("games").select("status").eq("id", data.id).single();
+    if (game?.status !== "ready") return { error: "游戏正在生成中，暂时无法回退。" };
+    const { data: msg } = await db.from("game_messages").select("code, created_at").eq("id", data.messageId).eq("game_id", data.id).single();
+    if (!msg?.code) return { error: "这条消息没有可回退的版本。" };
+    await db.from("games").update({ code: msg.code, error: null, updated_at: new Date().toISOString() }).eq("id", data.id);
+    const when = new Date(msg.created_at).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Shanghai" });
+    await db.from("game_messages").insert({ game_id: data.id, role: "assistant", content: `已回退到 **${when}** 的版本，Game 中可直接试玩。`, code: msg.code });
     return { ok: true };
   });

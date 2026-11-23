@@ -15,6 +15,13 @@
       "when": 1794280350463,
       "tag": "0001_canvas_image_access",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795401945705,
+      "tag": "0002_game_message_versions",
+      "breakpoints": true
     }
   ]
 }

@@ -72,6 +72,7 @@ export type Database = {
       }
       game_messages: {
         Row: {
+          code: string | null
           content: string
           created_at: string
           game_id: string
@@ -79,6 +80,7 @@ export type Database = {
           role: string
         }
         Insert: {
+          code?: string | null
           content: string
           created_at?: string
           game_id: string
@@ -86,6 +88,7 @@ export type Database = {
           role: string
         }
         Update: {
+          code?: string | null
           content?: string
           created_at?: string
           game_id?: string

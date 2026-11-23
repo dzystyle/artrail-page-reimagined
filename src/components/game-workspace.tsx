@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowUp, Code2, Download, FileText, Gamepad2, Image, Layers, Loader2, MessageSquare, PanelLeftClose, PanelLeftOpen, Play, RotateCcw, Sparkles, Swords, Settings, AlertCircle, Check } from "lucide-react";
 import { GameChatComposer } from "@/components/game-chat-composer";
+import { GameChatMessage } from "@/components/game-chat-message";
 import { GameAssetCanvas } from "@/components/game-asset-canvas";
 import { GameDesignEditor } from "@/components/game-design-editor";
 import { GameLevelTable } from "@/components/game-level-table";
@@ -16,7 +17,7 @@ import { MultiplayerPanel } from "@/components/multiplayer-panel";
 import { Button } from "@/components/ui/button";
 import { type WorkspaceTab } from "@/lib/game-workspace";
 import { nextStep, statusLabel } from "@/lib/game-pipeline";
-import { generateAsset, generateCode, generateDesign, getGame, listGames, retryGame, reviseGame } from "@/lib/games.functions";
+import { generateAsset, generateCode, generateDesign, getGame, listGames, restoreGameVersion, retryGame, reviseGame } from "@/lib/games.functions";
 import { gameListKey, gameListOptions } from "@/lib/game-list";
 
 const tabs = [{ id: "game", label: "Game", icon: Gamepad2 }, { id: "design", label: "Design", icon: FileText }, { id: "canvas", label: "Canvas", icon: Layers }, { id: "assets", label: "Assets", icon: Image }, { id: "code", label: "Code", icon: Code2 }, { id: "multiplayer", label: "多人游戏", icon: Swords }] as const;
@@ -34,7 +35,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
   const assets = data?.assets ?? [];
   const planned = game?.design?.assets.length ?? 0;
 
-  const design = useServerFn(generateDesign), asset = useServerFn(generateAsset), code = useServerFn(generateCode), revise = useServerFn(reviseGame), retry = useServerFn(retryGame);
+  const design = useServerFn(generateDesign), asset = useServerFn(generateAsset), code = useServerFn(generateCode), revise = useServerFn(reviseGame), restore = useServerFn(restoreGameVersion), retry = useServerFn(retryGame);
   const running = useRef<string | null>(null);
   const refresh = async () => {
     await Promise.all([
@@ -68,6 +69,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
   }, [id]);
   const shownDesign = withMoleLevels(id, localDesign && localDesign.id === id ? localDesign.design : game?.design);
   const reviseM = useMutation({ mutationFn: (message: string) => revise({ data: { id: id!, message } }), onSettled: () => refresh() });
+  const restoreM = useMutation({ mutationFn: (messageId: string) => restore({ data: { id: id!, messageId } }), onSettled: () => refresh() });
   const retryM = useMutation({ mutationFn: () => { running.current = null; return retry({ data: { id: id! } }); }, onSettled: () => refresh() });
 
   const download = (text: string, name: string) => { const url = URL.createObjectURL(new Blob([text], { type: "text/plain" })); const a = document.createElement("a"); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url); };
@@ -84,9 +86,9 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
   return <div className="flex h-dvh flex-col overflow-hidden bg-surface-deep text-foreground">
     <div className="relative flex min-h-0 flex-1">
       {chatOpen && <aside aria-label="Agent 会话" className="absolute inset-y-0 left-0 z-20 flex w-full min-w-0 flex-col border-r border-border bg-background md:w-[360px] lg:static lg:w-[clamp(340px,27%,420px)] lg:shrink-0">
-        <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3 text-sm font-medium"><Button asChild size="icon" variant="ghost" className="size-8 shrink-0"><Link to="/build" search={{ mode: "build" }} aria-label="返回构建"><ArrowLeft /></Link></Button><span className="flex shrink-0 items-center gap-2"><Sparkles className="size-4 text-project-mint" />Agent</span><span className="min-w-0 flex-1 truncate text-xs font-normal text-muted-foreground" title={game.title}>{game.title}</span><Button variant="ghost" size="icon" className="size-7 shrink-0" title="收起会话" aria-label="收起会话" onClick={() => setChatOpen(false)}><PanelLeftClose /></Button></div>
+        <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3 text-sm font-medium"><Button asChild size="icon" variant="ghost" className="size-8 shrink-0"><Link to="/build" search={{ mode: "build" }} aria-label="返回构建"><ArrowLeft /></Link></Button><span className="flex shrink-0 items-center gap-2"><MessageSquare className="size-4" />对话</span><span className="min-w-0 flex-1 truncate text-xs font-normal text-muted-foreground" title={game.title}>{game.title}</span><Button variant="ghost" size="icon" className="size-7 shrink-0" title="收起会话" aria-label="收起会话" onClick={() => setChatOpen(false)}><PanelLeftClose /></Button></div>
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 text-sm [overflow-wrap:anywhere]">
-          {data.messages.map(m => m.role === "user" ? <p key={m.id} className="rounded-lg bg-secondary p-3 leading-relaxed">{m.content}</p> : <div key={m.id} className="flex gap-2"><Sparkles className="mt-0.5 size-4 shrink-0 text-project-mint" /><p className="leading-relaxed">{m.content}</p></div>)}
+          {data.messages.map(m => <GameChatMessage key={m.id} m={m} current={!!m.code && m.code === game.code && m.id === [...data.messages].reverse().find(x => x.code === game.code)?.id} canRestore={game.status === "ready"} restoring={restoreM.isPending && restoreM.variables === m.id} onRestore={() => restoreM.mutate(m.id)} />)}
           {(busy(game.status) || game.status === "error") && <div className="space-y-2 border-l border-border pl-3 text-xs text-muted-foreground">
             <Step done={!!game.design} active={game.status === "designing"}>设计文档</Step>
             <Step done={planned > 0 && assets.length >= planned} active={game.status === "assets"}>美术资产 {planned ? `${assets.length}/${planned}` : ""}</Step>
