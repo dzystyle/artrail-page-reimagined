@@ -88,7 +88,11 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
       {chatOpen && <aside aria-label="Agent 会话" className="absolute inset-y-0 left-0 z-20 flex w-full min-w-0 flex-col border-r border-border bg-background md:w-[360px] lg:static lg:w-[clamp(340px,27%,420px)] lg:shrink-0">
         <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3 text-sm font-medium"><Button asChild size="icon" variant="ghost" className="size-8 shrink-0"><Link to="/build" search={{ mode: "build" }} aria-label="返回构建"><ArrowLeft /></Link></Button><span className="flex shrink-0 items-center gap-2"><MessageSquare className="size-4" />对话</span><span className="min-w-0 flex-1 truncate text-xs font-normal text-muted-foreground" title={game.title}>{game.title}</span><Button variant="ghost" size="icon" className="size-7 shrink-0" title="收起会话" aria-label="收起会话" onClick={() => setChatOpen(false)}><PanelLeftClose /></Button></div>
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 text-sm [overflow-wrap:anywhere]">
-          {data.messages.map(m => <GameChatMessage key={m.id} m={m} current={!!m.code && m.code === game.code && m.id === [...data.messages].reverse().find(x => x.code === game.code)?.id} canRestore={game.status === "ready"} restoring={restoreM.isPending && restoreM.variables === m.id} onRestore={() => restoreM.mutate(m.id)} />)}
+          {(() => {
+            const currentId = [...data.messages].reverse().find(x => x.code && x.code === game.code)?.id;
+            const prevId = [...data.messages].reverse().find(x => x.code && x.code !== game.code)?.id;
+            return data.messages.map(m => <GameChatMessage key={m.id} m={m} current={!!m.code && m.id === currentId} canRestore={game.status === "ready"} restoring={restoreM.isPending && restoreM.variables === (m.id === currentId ? prevId : m.id)} onRestore={() => restoreM.mutate(m.id)} onUndo={m.id === currentId && prevId ? () => restoreM.mutate(prevId) : undefined} />);
+          })()}
           {(busy(game.status) || game.status === "error") && <div className="space-y-2 border-l border-border pl-3 text-xs text-muted-foreground">
             <Step done={!!game.design} active={game.status === "designing"}>设计文档</Step>
             <Step done={planned > 0 && assets.length >= planned} active={game.status === "assets"}>美术资产 {planned ? `${assets.length}/${planned}` : ""}</Step>
