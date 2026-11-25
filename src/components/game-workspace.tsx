@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowUp, Code2, Download, FileText, Gamepad2, Image, Layers, Loader2, MessageSquare, PanelLeftClose, PanelLeftOpen, Play, RotateCcw, Sparkles, Swords, Settings, AlertCircle, Check } from "lucide-react";
 import { GameChatComposer } from "@/components/game-chat-composer";
+import { GameDevAgent } from "@/components/game-dev-agent";
 import { GameChatMessage } from "@/components/game-chat-message";
 import { GameAssetCanvas } from "@/components/game-asset-canvas";
 import { GameDesignEditor } from "@/components/game-design-editor";
@@ -57,6 +58,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
   }, [game?.status, assets.length, planned, id]);
 
   const [chatOpen, setChatOpen] = useState(true);
+  const [agent, setAgent] = useState<"art" | "dev">("art");
   useEffect(() => { if (window.innerWidth < 1024) setChatOpen(false); }, []);
   const [assetKind, setAssetKind] = useState("全部");
   const [designEditOpen, setDesignEditOpen] = useState(false);
@@ -86,7 +88,8 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
   return <div className="flex h-dvh flex-col overflow-hidden bg-surface-deep text-foreground">
     <div className="relative flex min-h-0 flex-1">
       {chatOpen && <aside aria-label="Agent 会话" className="absolute inset-y-0 left-0 z-20 flex w-full min-w-0 flex-col border-r border-border bg-background md:w-[360px] lg:static lg:w-[clamp(340px,27%,420px)] lg:shrink-0">
-        <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3 text-sm font-medium"><Button asChild size="icon" variant="ghost" className="size-8 shrink-0"><Link to="/build" search={{ mode: "build" }} aria-label="返回构建"><ArrowLeft /></Link></Button><span className="flex shrink-0 items-center gap-2"><MessageSquare className="size-4" />对话</span><span className="min-w-0 flex-1 truncate text-xs font-normal text-muted-foreground" title={game.title}>{game.title}</span><Button variant="ghost" size="icon" className="size-7 shrink-0" title="收起会话" aria-label="收起会话" onClick={() => setChatOpen(false)}><PanelLeftClose /></Button></div>
+        <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3 text-sm font-medium"><Button asChild size="icon" variant="ghost" className="size-8 shrink-0"><Link to="/build" search={{ mode: "build" }} aria-label="返回构建"><ArrowLeft /></Link></Button><span className="flex shrink-0 items-center gap-2"><MessageSquare className="size-4" />对话</span><div role="tablist" aria-label="Agent 类型" className="flex shrink-0 rounded-lg bg-muted p-0.5 text-xs">{(["art","dev"] as const).map(k => <button key={k} role="tab" aria-selected={agent===k} onClick={() => setAgent(k)} className={`rounded-md px-2.5 py-1 ${agent===k ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>{k==="art" ? "游戏美术" : "游戏开发"}</button>)}</div><span className="min-w-0 flex-1 truncate text-xs font-normal text-muted-foreground" title={game.title}>{game.title}</span><Button variant="ghost" size="icon" className="size-7 shrink-0" title="收起会话" aria-label="收起会话" onClick={() => setChatOpen(false)}><PanelLeftClose /></Button></div>
+        {agent === "dev" ? <GameDevAgent /> : <>
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 text-sm [overflow-wrap:anywhere]">
           {(() => {
             const currentId = [...data.messages].reverse().find(x => x.code && x.code === game.code)?.id;
@@ -101,6 +104,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
           </div>}
         </div>
         <GameChatComposer key={id} ready={game.status === "ready" && !reviseM.isPending} onSubmit={message => reviseM.mutate(message)} />
+        </>}
       </aside>}
       <main aria-label="游戏创作区域" className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
         <header aria-label="游戏创作工具栏" className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3">
