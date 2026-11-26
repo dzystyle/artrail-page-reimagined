@@ -10,8 +10,12 @@ import { gameSkills, type GameSkill } from "@/lib/game-skills";
 import { ComposerAddMenu } from "@/components/composer-add-menu";
 import type { LibraryAsset } from "@/lib/asset-library";
 
-export function GameChatComposer({ ready, onSubmit }: {
+import { CanvasReferenceChips } from "@/components/canvas-reference-chips";
+import type { CanvasReference } from "@/lib/canvas-references";
+
+export function GameChatComposer({ ready, onSubmit, references = [], onRemoveReference = () => {} }: {
   ready: boolean; onSubmit: (message: string) => void;
+  references?: CanvasReference[]; onRemoveReference?: (id: string) => void;
 }) {
   const [draft, setDraft] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -35,6 +39,7 @@ export function GameChatComposer({ ready, onSubmit }: {
       onSubmit(`${skill ? `使用 ${skill.name}：` : ""}${draft.trim()}`);
       setDraft("");
     }}>
+      <CanvasReferenceChips references={references} onRemove={onRemoveReference} />
       <Textarea aria-label="游戏修改需求" placeholder={ready ? "描述你想修改的内容…" : "游戏生成完成后可继续修改"} value={draft} onChange={event => setDraft(event.target.value)} className="h-24 resize-none border-0 p-0 shadow-none focus-visible:ring-0" />
       {skill && <div className="mb-2 flex min-w-0 items-center gap-1 rounded-md border border-border p-1 text-xs"><img src={skill.image} alt="" className="size-6 shrink-0 rounded object-cover" /><span className="min-w-0 flex-1 truncate" title={skill.name}>{skill.name}</span><Button type="button" variant="ghost" size="icon" className="size-6 shrink-0" aria-label={`移除 ${skill.name}`} onClick={() => setSkill(null)}><X /></Button></div>}
       {(files.length > 0 || libraryAssets.length > 0) && <div className="mb-2 flex flex-wrap gap-1.5">

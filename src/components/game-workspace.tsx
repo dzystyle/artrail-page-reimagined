@@ -21,6 +21,8 @@ import { nextStep, statusLabel } from "@/lib/game-pipeline";
 import { generateAsset, generateCode, generateDesign, getGame, listGames, restoreGameVersion, retryGame, reviseGame } from "@/lib/games.functions";
 import { gameListKey, gameListOptions } from "@/lib/game-list";
 
+import { addCanvasReference, type CanvasReference } from "@/lib/canvas-references";
+
 const tabs = [{ id: "game", label: "Game", icon: Gamepad2 }, { id: "design", label: "Design", icon: FileText }, { id: "canvas", label: "Canvas", icon: Layers }, { id: "assets", label: "Assets", icon: Image }, { id: "code", label: "Code", icon: Code2 }, { id: "multiplayer", label: "多人游戏", icon: Swords }] as const;
 
 const busy = (s?: string) => s === "designing" || s === "assets" || s === "coding" || s === "revising";
@@ -59,6 +61,17 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
 
   const [chatOpen, setChatOpen] = useState(true);
   const [agent, setAgent] = useState<"art" | "dev">("art");
+  const [referenceState, setReferenceState] = useState<{ gameId: string; art: CanvasReference[]; dev: CanvasReference[] }>({ gameId: "", art: [], dev: [] });
+  const references = referenceState.gameId === id ? referenceState[agent] : [];
+  const addReference = (reference: CanvasReference) => {
+    if (!id) return;
+    setReferenceState(current => {
+      const scoped = current.gameId === id ? current : { gameId: id, art: [], dev: [] };
+      return { ...scoped, [agent]: addCanvasReference(scoped[agent], reference) };
+    });
+    setChatOpen(true);
+  };
+  const removeReference = (referenceId: string) => setReferenceState(current => ({ ...current, [agent]: current[agent].filter(item => item.id !== referenceId) }));
   useEffect(() => { if (window.innerWidth < 1024) setChatOpen(false); }, []);
   const [assetKind, setAssetKind] = useState("全部");
   const [designEditOpen, setDesignEditOpen] = useState(false);
@@ -89,7 +102,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
     <div className="relative flex min-h-0 flex-1">
       {chatOpen && <aside aria-label="Agent 会话" className="absolute inset-y-0 left-0 z-20 flex w-full min-w-0 flex-col border-r border-border bg-background md:w-[360px] lg:static lg:w-[clamp(340px,27%,420px)] lg:shrink-0">
         <div className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-3 text-sm font-medium"><Button asChild size="icon" variant="ghost" className="size-8 shrink-0"><Link to="/build" search={{ mode: "build" }} aria-label="返回构建"><ArrowLeft /></Link></Button><span className="flex shrink-0 items-center gap-2"><MessageSquare className="size-4" />对话</span><div role="tablist" aria-label="Agent 类型" className="flex shrink-0 rounded-lg bg-muted p-0.5 text-xs">{(["art","dev"] as const).map(k => <button key={k} role="tab" aria-selected={agent===k} onClick={() => setAgent(k)} className={`rounded-md px-2.5 py-1 ${agent===k ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>{k==="art" ? "游戏美术" : "游戏开发"}</button>)}</div><span className="min-w-0 flex-1 truncate text-xs font-normal text-muted-foreground" title={game.title}>{game.title}</span><Button variant="ghost" size="icon" className="size-7 shrink-0" title="收起会话" aria-label="收起会话" onClick={() => setChatOpen(false)}><PanelLeftClose /></Button></div>
-        {agent === "dev" ? <GameDevAgent /> : <>
+        {agent === "dev" ? <GameDevAgent references={references} onRemoveReference={removeReference} /> : <>
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 text-sm [overflow-wrap:anywhere]">
           {(() => {
             const currentId = [...data.messages].reverse().find(x => x.code && x.code === game.code)?.id;
@@ -103,7 +116,7 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
             {game.status === "error" && <p className="text-destructive">{game.error}</p>}
           </div>}
         </div>
-        <GameChatComposer key={id} ready={game.status === "ready" && !reviseM.isPending} onSubmit={message => reviseM.mutate(message)} />
+        <GameChatComposer key={id} references={references} onRemoveReference={removeReference} ready={game.status === "ready" && !reviseM.isPending} onSubmit={message => reviseM.mutate(message)} />
         </>}
       </aside>}
       <main aria-label="游戏创作区域" className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
@@ -114,11 +127,11 @@ export function GameWorkspace({ id, tab, onTab }: { id?: string | undefined; tab
           <div className="flex shrink-0 items-center gap-2"><Button variant={tab === "settings" ? "secondary" : "outline"} size="icon" className="size-8 shrink-0" aria-label="游戏设置" title="设置" onClick={() => onTab("settings")}><Settings className="size-4" /></Button><Button size="sm" variant="secondary" disabled={!game.code} onClick={() => onTab("game")}><Play />试玩</Button></div>
         </header>
         {tab === "game" && (game.code ? <iframe key={game.updated_at} title={`${game.title} 试玩`} sandbox="allow-scripts allow-pointer-lock" srcDoc={game.code} className="min-h-0 w-full flex-1 border-0 bg-black" /> : pending(statusLabel[game.status] ?? ""))}
-        {tab === "canvas" && <GameAssetCanvas key={`${id}-canvas`} gameId={id} assets={assets} editingDesign={designEditOpen}>
+        {tab === "canvas" && <GameAssetCanvas key={`${id}-canvas`} gameId={id} assets={assets} onReference={addReference} editingDesign={designEditOpen}>
           <Button variant="ghost" aria-label="编辑游戏设计文档" disabled={!shownDesign} className="block h-auto w-full max-w-[320px] whitespace-normal rounded-lg border border-border bg-card p-3 text-left" onClick={() => setDesignEditOpen(true)}><span className="mb-3 flex items-center gap-2 text-xs text-muted-foreground"><FileText />游戏设计文档</span><span className="block space-y-2 rounded bg-surface-deep p-4 text-xs leading-relaxed">{shownDesign ? <><span className="block font-semibold">{shownDesign.title}</span><span className="line-clamp-6 block font-normal">{shownDesign.summary}</span><span className="block border-t border-border pt-2 text-muted-foreground">关卡配置表 · {shownDesign.levels?.length ?? 0} 关</span></> : <span className="flex items-center gap-2 text-muted-foreground"><Loader2 className="size-3 animate-spin" />撰写中…</span>}</span></Button>
         </GameAssetCanvas>}
         {tab === "design" && (shownDesign ? <div className="min-h-0 flex-1 overflow-y-auto"><div className="sticky top-0 flex justify-end gap-2 bg-background p-3"><Button variant="ghost" size="sm" onClick={() => setDesignEditOpen(true)}><FileText />编辑文档</Button><Button variant="ghost" size="icon" aria-label="下载设计文档" title="下载设计文档" onClick={() => download(designMd, "game-design.md")}><Download /></Button></div><article className="mx-auto max-w-[760px] px-6 pb-12"><h1 className="mb-3 text-2xl font-semibold">{shownDesign.title}</h1><p className="mb-8 text-sm text-muted-foreground">{shownDesign.summary}</p>{shownDesign.sections.map((s, i) => <section key={i} className="mb-8"><h2 className="mb-3 text-lg font-semibold">{i + 1}. {s.heading}</h2><p className="whitespace-pre-wrap text-sm leading-7 text-foreground/80">{s.body}</p></section>)}<GameLevelTable levels={shownDesign.levels ?? []} /></article></div> : pending(statusLabel["designing"] ?? ""))}
-        {tab === "assets" && (assets.length ? <GameAssetCanvas key={`${id}-assets`} gameId={id} assets={assets} visibleKind={assetKind} filters={["全部", ...new Set(assets.map(a => a.kind))].map(k => <Button key={k} size="sm" variant={assetKind === k ? "secondary" : "ghost"} onClick={() => setAssetKind(k)}>{k}</Button>)} /> : pending(statusLabel["assets"] ?? ""))}
+        {tab === "assets" && (assets.length ? <GameAssetCanvas key={`${id}-assets`} gameId={id} assets={assets} onReference={addReference} visibleKind={assetKind} filters={["全部", ...new Set(assets.map(a => a.kind))].map(k => <Button key={k} size="sm" variant={assetKind === k ? "secondary" : "ghost"} onClick={() => setAssetKind(k)}>{k}</Button>)} /> : pending(statusLabel["assets"] ?? ""))}
         {tab === "code" && (game.code ? <div className="flex min-h-0 flex-1 flex-col"><div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs"><span>index.html</span><Button variant="ghost" size="sm" onClick={() => download(game.code!, "index.html")}><Download />下载</Button></div><pre className="min-h-0 flex-1 overflow-auto p-4 text-xs leading-5"><code>{game.code}</code></pre></div> : pending(statusLabel["coding"] ?? ""))}
         {tab === "multiplayer" && <MultiplayerPanel />}
         {tab === "settings" && <GameSettings initialName={game.title} />}

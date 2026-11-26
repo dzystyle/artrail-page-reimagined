@@ -3,6 +3,9 @@ import { AtSign, Diamond, Hash, Image, Layers, List, Paperclip, Plus, ScanLine, 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
+import { CanvasReferenceChips } from "@/components/canvas-reference-chips";
+import type { CanvasReference } from "@/lib/canvas-references";
+
 const skills = [
   { cmd: "goal", desc: "keep working until an objective is met [pause|resume|clear]", group: "命令" },
   { cmd: "aigc-image", tag: "图片生成", desc: "生成二维静态图片（含单张或成套 UI 位图）、参考图生成和已有图片去背", group: "技能" },
@@ -11,7 +14,7 @@ const skills = [
   { cmd: "aigc-video", tag: "视频生成", desc: "从已有首帧和可选尾帧生成独立视频文件，用于短片、过场或动态素材", group: "技能" },
 ];
 
-export function GameDevAgent() {
+export function GameDevAgent({ references, onRemoveReference }: { references: CanvasReference[]; onRemoveReference: (id: string) => void }) {
   const [text, setText] = useState("");
   const ta = useRef<HTMLTextAreaElement>(null);
   const showSlash = text.startsWith("/") && !text.includes(" ");
@@ -30,11 +33,12 @@ export function GameDevAgent() {
         <div className="flex items-center gap-2 text-primary"><Layers className="size-4 shrink-0" /><h3 className="font-medium">从你的游戏美术开始</h3></div>
         <p className="leading-6 text-muted-foreground">在右侧画布选中已有的游戏美术资产，或先制作角色、场景、道具等素材。</p>
         <p className="leading-6 text-muted-foreground">再在下方描述玩法与开发需求，让游戏开发围绕你的美术资产展开。</p>
-        <p className="text-xs leading-5 text-muted-foreground">游戏开发服务尚未接入，画布资产暂不会自动发送给开发助手。</p>
+        <p className="text-xs leading-5 text-muted-foreground">游戏开发服务尚未接入，引用暂存于当前输入框。</p>
       </section>
     </div>
     <div className="flex items-center gap-2 px-3 pb-2"><span className="rounded-full bg-primary/10 px-3 py-0.5 text-xs text-primary">主话题</span><span className="flex-1" /><button aria-label="新话题" onClick={notLive}><Plus className="size-4 text-muted-foreground" /></button><button aria-label="话题列表" onClick={notLive}><List className="size-4 text-muted-foreground" /></button></div>
     <div className="relative mx-3 mb-3 rounded-xl border border-input bg-background focus-within:border-primary">
+      <div className={references.length ? "px-3 pt-3" : ""}><CanvasReferenceChips references={references} onRemove={onRemoveReference} /></div>
       {showSlash && list.length > 0 && <div className="absolute inset-x-0 bottom-full mb-2 max-h-72 overflow-y-auto rounded-xl border border-border bg-popover py-1 text-popover-foreground shadow-lg">
         {["命令", "技能"].map(g => list.some(s => s.group === g) && <div key={g}><p className="px-3 py-1.5 text-xs text-muted-foreground">{g}</p>{list.filter(s => s.group === g).map(s => <button key={s.cmd} onClick={() => pick(s.cmd)} className="flex w-full gap-2 px-3 py-2 text-left hover:bg-accent/40">{g === "命令" ? <Zap className="mt-0.5 size-4 shrink-0 text-primary" /> : <Diamond className="mt-0.5 size-4 shrink-0 text-muted-foreground" />}<span className="min-w-0"><span className="text-sm"><span className="text-primary">/</span>{s.cmd}{s.tag && <span className="text-primary">[{s.tag}]</span>}</span><span className="block truncate text-xs text-muted-foreground">{s.desc}</span></span></button>)}</div>)}
       </div>}

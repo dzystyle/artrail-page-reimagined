@@ -12,6 +12,8 @@ import { streamImage } from "@/lib/stream-image";
 import { AssetLibraryDialog } from "@/components/asset-library-dialog";
 import type { LibraryAsset } from "@/lib/asset-library";
 
+import type { CanvasReference } from "@/lib/canvas-references";
+
 type CanvasAsset = { id: string; name: string; kind: string; url: string };
 const tools = [{ name: "放大", icon: Expand }, { name: "去背景", icon: ScanFace }, { name: "扩图", icon: SquareUserRound }, { name: "消除笔", icon: Eraser }, { name: "编辑元素", icon: Layers }, { name: "编辑文字", icon: Type }, { name: "裁剪", icon: Crop }, { name: "调效果", icon: WandSparkles }, { name: "多角度", icon: Box }, { name: "快速切分", icon: Grid2X2 }];
 
@@ -36,10 +38,11 @@ const DesignContext = createContext<ReactNode>(null);
 function DesignNode() { return <div className="w-[300px]">{useContext(DesignContext)}</div>; }
 const nodeTypes = { image: ImageNode, document: DocumentNode, design: DesignNode };
 
-export function GameAssetCanvas(props: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string; editingDesign?: boolean }) {
+type CanvasProps = { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string; editingDesign?: boolean; onReference?: (reference: CanvasReference) => void };
+export function GameAssetCanvas(props: CanvasProps) {
   return <DesignContext.Provider value={props.children}><ReactFlowProvider><CanvasWorkspace {...props} /></ReactFlowProvider></DesignContext.Provider>;
 }
-function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全部", editingDesign = false }: { gameId: string; assets: CanvasAsset[]; children?: ReactNode; filters?: ReactNode; visibleKind?: string; editingDesign?: boolean }) {
+function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全部", editingDesign = false, onReference }: CanvasProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>([]);
   const { fitView, screenToFlowPosition } = useReactFlow<CanvasNode>();
   const [hand, setHand] = useState(false);
@@ -125,7 +128,13 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
   const layers = displayNodes.filter(node => !node.hidden);
   const layerName = (node: CanvasNode) => node.type === "design" ? "游戏设计文档" : node.data.name;
   const filteredLayers = layers.filter(node => layerName(node).toLowerCase().includes(layerQuery.trim().toLowerCase()));
+  const referenceNode = (node: CanvasNode) => {
+    if (node.data.partial || (node.type === "image" && !node.data.url)) return;
+    onReference?.({ id: node.id, name: layerName(node), kind: node.data.kind, ...(node.data.url ? { url: node.data.url } : {}), ...(node.data.content !== undefined ? { content: node.data.content } : {}) });
+  };
   const selectLayer = (id: string) => {
+    const node = nodes.find(item => item.id === id);
+    if (node) referenceNode(node);
     setNodes(current => current.map(node => ({ ...node, selected: node.id === id })));
     setHand(false);
     void fitView({ nodes: [{ id }], padding: 0.65, maxZoom: 1, duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 300 });
@@ -137,7 +146,7 @@ function CanvasWorkspace({ gameId, assets, children, filters, visibleKind = "全
     {selected && <div role="toolbar" aria-label="图片工具" className={`absolute right-3 z-20 flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg ${layersOpen ? "left-3 bottom-20 sm:bottom-auto sm:left-[316px]" : "left-3"} ${filters ? "top-16" : "top-3"} ${layersOpen ? "max-sm:top-auto" : ""}`}>
       {tools.map(tool => <Button key={tool.name} variant="ghost" size="sm" aria-disabled="true" title={`${tool.name}（仅展示）`} className="h-10 shrink-0 gap-2 px-3"><tool.icon />{tool.name}</Button>)}<span className="mx-1 h-7 shrink-0 border-l border-border" /><Button variant="ghost" size="icon" aria-label="下载图片" aria-disabled="true" title="下载图片（仅展示）" className="shrink-0"><Download /></Button><Button variant="ghost" size="icon" aria-label="删除图片" aria-disabled="true" title="删除图片（仅展示）" className="shrink-0 text-destructive"><Trash2 /></Button>
     </div>}
-    <div className="min-h-0 flex-1">{ready && <ReactFlow nodes={displayNodes} edges={[]} nodeTypes={nodeTypes} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} selectionOnDrag={!hand} deleteKeyCode={editor || libraryOpen || editingDesign ? null : ["Delete", "Backspace"]} onBeforeDelete={async ({ nodes: deleting }) => ({ nodes: deleting.filter(node => !node.hidden && !node.data.partial), edges: [] })} onNodesDelete={deleting => {
+    <div className="min-h-0 flex-1">{ready && <ReactFlow nodes={displayNodes} edges={[]} nodeTypes={nodeTypes} onNodeClick={(_, node) => referenceNode(node)} onNodesChange={onNodesChange} nodesDraggable={!hand} panOnDrag={hand ? true : [1, 2]} selectionOnDrag={!hand} deleteKeyCode={editor || libraryOpen || editingDesign ? null : ["Delete", "Backspace"]} onBeforeDelete={async ({ nodes: deleting }) => ({ nodes: deleting.filter(node => !node.hidden && !node.data.partial), edges: [] })} onNodesDelete={deleting => {
       const ids = deleting.map(node => node.id);
       removedIds.current = Array.from(new Set([...removedIds.current, ...ids]));
       void set(storageKey, { nodes: storedCanvasNodes(latest.current.filter(node => !ids.includes(node.id))), removedIds: removedIds.current }).catch(() => setStorageError("本机保存失败，请勿刷新页面。"));

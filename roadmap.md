@@ -52,3 +52,4 @@
 - [x] Redesign /build around a prominent composer, lightweight story capabilities and editorial showcase; verify both modes and mobile.
 - [x] Restore the previous game-build layout and change only story showcase to four columns on desktop; verify both modes.
 - [x] Restyle /create introduction as a centered heading and lightweight icon menu; retain starter selection and verify desktop/mobile.
+- [x] Reference clicked game canvas elements in the active art/development input; verify separate session-only lists, deduplication and removal in a real game.
