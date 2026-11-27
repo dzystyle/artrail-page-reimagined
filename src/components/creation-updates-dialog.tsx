@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Bell, ChevronLeft, ChevronRight, Clapperboard, Gamepad2, Image, Sparkles, Video, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,10 @@ const slides = [
 const imageModels = ["gpt-image-2.6-flare", "gpt-image-2.6-sunburst", "gemini-nano-banana-2.1", "doubao-seedream-5-0-flash", "doubao-seedream-5-5"];
 const videoModels = ["gemini-omni-flash", "gemini-omni-1.1-flash", "doubao-seedance-2-5-flash", "kling-v4-flash", "kling-v4"];
 
-export function CreationUpdatesDialog({ children }: { children?: React.ReactNode }) {
+export function CreationUpdatesDialog({ children, autoOpen = false }: { children?: React.ReactNode; autoOpen?: boolean }) {
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
+  useEffect(() => { if (autoOpen) setOpen(true); }, [autoOpen]);
   const slide = slides[index] ?? slides[0];
   if (!slide) return null;
   return <Dialog open={open} onOpenChange={setOpen}>

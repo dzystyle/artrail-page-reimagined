@@ -87,7 +87,7 @@ export function Index() {
             </div>
             <span className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[15px]"><Sparkles className="size-4" />300</span>
             <ThemeToggle />
-            <CreationUpdatesDialog />
+            <CreationUpdatesDialog autoOpen />
           </div>
         </header>
 
