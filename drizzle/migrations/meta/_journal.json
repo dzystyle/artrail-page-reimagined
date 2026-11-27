@@ -29,6 +29,13 @@
       "when": 1795659773351,
       "tag": "0003_restrict_game_messages_read",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795765244703,
+      "tag": "0004_lock_games_public_read",
+      "breakpoints": true
     }
   ]
 }

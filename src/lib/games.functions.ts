@@ -41,22 +41,21 @@ export const getGame = createServerFn({ method: "GET" })
   });
 
 export const listGames = createServerFn({ method: "GET" }).handler(async () => {
-  const { createClient } = await import("@supabase/supabase-js");
-  const url = process.env["SUPABASE_URL"];
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
-  if (!url || !key) throw new Error("任务加载失败，请稍后重试");
-  const db = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-    global: { fetch: (input, init) => {
-      const headers = new Headers(init?.headers);
-      if (key.startsWith("sb_") && headers.get("Authorization") === `Bearer ${key}`) headers.delete("Authorization");
-      headers.set("apikey", key);
-      return fetch(input, { ...init, headers });
-    } },
-  });
+  const db = await admin();
   const { data, error } = await db.from("games").select("id, title, status, updated_at").order("updated_at", { ascending: false }).limit(50);
   if (error) throw new Error("任务加载失败，请稍后重试");
   return data ?? [];
+});
+
+export const listLibraryAssets = createServerFn({ method: "GET" }).handler(async () => {
+  const db = await admin();
+  const [assets, games] = await Promise.all([
+    db.from("game_assets").select("id, name, kind, url, game_id, created_at").order("created_at", { ascending: false }).limit(500),
+    db.from("games").select("id, title"),
+  ]);
+  if (assets.error || games.error) throw new Error("资产加载失败，请重试。");
+  const titles = new Map((games.data ?? []).map((g) => [g.id, g.title]));
+  return (assets.data ?? []).map((a) => ({ ...a, project: titles.get(a.game_id) ?? "游戏项目" }));
 });
 
 const designSchema = z.object({

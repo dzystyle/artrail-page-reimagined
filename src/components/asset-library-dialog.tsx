@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Check, FolderOpen, Grid2X2, Image, List, Loader2, Search, SlidersHorizontal } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { listLibraryAssets } from "@/lib/games.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -17,10 +17,8 @@ export function AssetLibraryDialog({ open, onOpenChange, localAssets, onAdd, act
   const [selected, setSelected] = useState<string[]>([]);
   const [view, setView] = useState("grid");
   const { data, isPending, error, refetch } = useQuery({ queryKey: ["asset-library"], enabled: open, queryFn: async () => {
-    const [assets, games] = await Promise.all([supabase.from("game_assets").select("id, name, kind, url, game_id, created_at").order("created_at", { ascending: false }), supabase.from("games").select("id, title")]);
-    if (assets.error || games.error) throw new Error("资产加载失败，请重试。");
-    const titles = new Map(games.data?.map(game => [game.id, game.title]));
-    return (assets.data ?? []).map((asset): LibraryAsset => ({ id: asset.id, name: asset.name, kind: asset.kind, url: asset.url, gameId: asset.game_id, project: titles.get(asset.game_id) ?? "游戏项目", createdAt: asset.created_at, source: "cloud" }));
+    const assets = await listLibraryAssets();
+    return assets.map((asset): LibraryAsset => ({ id: asset.id, name: asset.name, kind: asset.kind, url: asset.url, gameId: asset.game_id, project: asset.project, createdAt: asset.created_at, source: "cloud" }));
   } });
   const all = useMemo(() => [...(data ?? []), ...localAssets.filter(local => !data?.some(asset => asset.id === local.id))], [data, localAssets]);
   const filtered = filterLibraryAssets(all, filters);
