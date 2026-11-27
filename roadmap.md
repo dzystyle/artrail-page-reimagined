@@ -54,3 +54,4 @@
 - [x] Restyle /create introduction as a centered heading and lightweight icon menu; retain starter selection and verify desktop/mobile.
 - [x] Reference clicked game canvas elements in the active art/development input; verify separate session-only lists, deduplication and removal in a real game.
 - [x] Add the reference-style creation updates dialog for game, interactive story and image/video models; verify navigation and desktop/mobile layouts.
+- [x] Refresh creation update imagery and verify direct build/story entry links in both themes and on mobile.

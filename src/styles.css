@@ -174,6 +174,7 @@
 }
 
 .creation-update-dialog { background: var(--update-shade); }
+.creation-update-dialog > img { mask-image: linear-gradient(180deg, black 65%, transparent 100%); }
 .creation-update-shade { background: linear-gradient(180deg, color-mix(in oklab, var(--update-shade) 25%, transparent) 0%, color-mix(in oklab, var(--update-shade) 10%, transparent) 20%, color-mix(in oklab, var(--update-shade) 86%, transparent) 58%, var(--update-shade) 100%); }
 .creation-update-content { animation: update-reveal 240ms ease-out; }
 @keyframes update-reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -216,6 +217,11 @@
 }
 :root.light .creation-update-shade {
   background: linear-gradient(180deg, color-mix(in oklab, var(--update-shade) 94%, transparent) 0%, color-mix(in oklab, var(--update-shade) 20%, transparent) 22%, color-mix(in oklab, var(--update-shade) 96%, transparent) 58%, var(--update-shade) 100%);
+}
+@media (max-width: 639px) {
+  .creation-update-shade, :root.light .creation-update-shade {
+    background: linear-gradient(180deg, color-mix(in oklab, var(--update-shade) 85%, transparent) 0%, color-mix(in oklab, var(--update-shade) 55%, transparent) 15%, color-mix(in oklab, var(--update-shade) 94%, transparent) 42%, var(--update-shade) 70%);
+  }
 }
 @theme inline {
   --color-link: var(--link);

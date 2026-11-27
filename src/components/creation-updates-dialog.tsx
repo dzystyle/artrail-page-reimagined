@@ -3,14 +3,14 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Bell, ChevronLeft, ChevronRight, Clapperboard, Gamepad2, Image, Sparkles, Video, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import gameCover from "@/assets/entry-build.jpg";
-import storyCover from "@/assets/entry-story.jpg";
-import modelCover from "@/assets/entry-create.jpg";
+import gameCover from "@/assets/creation-update-game.png.asset.json";
+import storyCover from "@/assets/creation-update-story.png.asset.json";
+import modelCover from "@/assets/creation-update-models.png.asset.json";
 
 const slides = [
-  { label: "构建游戏", image: gameCover, eyebrow: "PLAY YOUR IDEAS", title: "构建游戏", subtitle: "从一个玩法开始，\n让想象成为可玩的世界。", description: "游戏设计、美术资产、可玩版本，让创意一步步成形。", tags: ["游戏设计", "美术资产", "在线试玩"] },
-  { label: "互动影游", image: storyCover, eyebrow: "EVERY CHOICE MATTERS", title: "互动影游", subtitle: "故事不止被观看，\n也由每一次选择改写。", description: "场景、角色与剧情分支，让观众走进你的故事。", tags: ["剧情分支", "沉浸场景", "互动叙事"] },
-  { label: "新模型", image: modelCover, eyebrow: "MORE WAYS TO CREATE", title: "新模型", subtitle: "新的画面，新的可能。", description: "图片与视频模型更新，让游戏素材创作拥有更多选择。", tags: ["图片模型", "视频模型"] },
+  { label: "构建游戏", image: gameCover.url, mode: "build" as const, eyebrow: "PLAY YOUR IDEAS", title: "构建游戏", subtitle: "从一个玩法开始，\n让想象成为可玩的世界。", description: "游戏设计、美术资产、可玩版本，让创意一步步成形。", tags: ["游戏设计", "美术资产", "在线试玩"] },
+  { label: "互动影游", image: storyCover.url, mode: "story" as const, eyebrow: "EVERY CHOICE MATTERS", title: "互动影游", subtitle: "故事不止被观看，\n也由每一次选择改写。", description: "场景、角色与剧情分支，让观众走进你的故事。", tags: ["剧情分支", "沉浸场景", "互动叙事"] },
+  { label: "新模型", image: modelCover.url, mode: null, eyebrow: "MORE WAYS TO CREATE", title: "新模型", subtitle: "新的画面，新的可能。", description: "图片与视频模型更新，让游戏素材创作拥有更多选择。", tags: ["图片模型", "视频模型"] },
 ];
 const imageModels = ["gpt-image-2.6-flare", "gpt-image-2.6-sunburst", "gemini-nano-banana-2.1", "doubao-seedream-5-0-flash", "doubao-seedream-5-5"];
 const videoModels = ["gemini-omni-flash", "gemini-omni-1.1-flash", "doubao-seedance-2-5-flash", "kling-v4-flash", "kling-v4"];
@@ -24,7 +24,7 @@ export function CreationUpdatesDialog({ children, autoOpen = false }: { children
   return <Dialog open={open} onOpenChange={setOpen}>
     <DialogTrigger asChild>{children ?? <Button variant="ghost" size="icon" aria-label="查看创作更新" title="创作更新"><Bell /></Button>}</DialogTrigger>
     <DialogContent className="creation-update-dialog flex h-[min(860px,92dvh)] w-[calc(100vw-24px)] max-w-[780px] flex-col gap-0 overflow-hidden rounded-lg border-0 p-0 text-update-foreground [&>button]:hidden">
-      <img key={slide.image} src={slide.image} alt="" className="absolute inset-0 size-full object-cover object-center" />
+      <img key={slide.image} src={slide.image} alt="" className={`absolute inset-x-0 top-0 w-full object-cover object-center ${index === 2 ? "h-[48%]" : "h-[65%]"}`} />
       <div className="creation-update-shade pointer-events-none absolute inset-0" />
       <div className="relative flex shrink-0 items-center justify-between px-6 pb-4 pt-6 sm:px-10">
         <span className="flex items-center gap-2 text-sm font-medium"><Sparkles className="size-4" />ArTrail <span className="ml-2 border-l border-update-foreground/25 pl-3 text-update-foreground/70">创作更新</span></span>
@@ -43,9 +43,9 @@ export function CreationUpdatesDialog({ children, autoOpen = false }: { children
               <ul className="space-y-2">{group.models.map(model => <li key={model} className="break-words text-[12px] leading-5 text-update-foreground/85">{model}</li>)}</ul>
             </section>)}
             <p className="text-[11px] leading-5 text-update-foreground/70 sm:col-span-2">模型更新展示 · 实际可用范围以创作页为准</p>
-          </div> : <Button asChild className="mt-6 border border-update-foreground/30 bg-update-foreground/10 text-update-foreground shadow-none backdrop-blur-sm hover:bg-update-foreground/20">
-            <Link to="/build" search={{ mode: index === 0 ? "build" : "story" }} onClick={() => setOpen(false)}>{index === 0 ? <Gamepad2 /> : <Clapperboard />}{index === 0 ? "开始构建游戏" : "开始创作影游"}<ArrowUpRight /></Link>
-          </Button>}
+          </div> : slide.mode && <DialogClose asChild><Button asChild className="mt-6 border border-update-foreground/30 bg-update-foreground/10 text-update-foreground shadow-none backdrop-blur-sm hover:bg-update-foreground/20">
+            <Link to="/build" search={{ mode: slide.mode }}>{slide.mode === "build" ? <Gamepad2 /> : <Clapperboard />}{slide.mode === "build" ? "开始构建游戏" : "开始创作影游"}<ArrowUpRight /></Link>
+          </Button></DialogClose>}
         </div>
       </div>
       <footer className="relative shrink-0 px-6 pb-7 pt-3 sm:px-10">
