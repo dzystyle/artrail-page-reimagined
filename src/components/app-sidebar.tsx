@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Search, PanelLeft, Rocket, MonitorPlay, Sparkles, MessageSquarePlus, Folder, Box, FolderPlus, FileText, Cloud, MessageCircle, Gamepad2, Loader, Gift, ChevronRight, MonitorSmartphone, Bell, Wrench } from "lucide-react";
 import { WorkspaceSearch } from "@/components/workspace-search";
 import { SidebarTasks } from "@/components/sidebar-tasks";
+import { CreationUpdatesDialog } from "@/components/creation-updates-dialog";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
@@ -82,7 +83,7 @@ export function Sidebar() {
         <div className="mt-2 flex items-center gap-2.5 px-1 py-1.5">
           <span className="grid size-8 place-items-center rounded-full bg-build text-sm text-foreground">y</span>
           <span className="flex-1 text-[15px]">yang yang</span>
-          <MonitorSmartphone className="size-5" /><Bell className="ml-2 size-5" />
+          <MonitorSmartphone className="size-5" /><CreationUpdatesDialog />
         </div>
       </div>
     </aside>

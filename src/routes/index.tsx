@@ -12,6 +12,7 @@ import { SubscriptionDialog } from "@/components/subscription-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { WorkspaceSearch } from "@/components/workspace-search";
 import { HomeComposer } from "@/components/home-composer";
+import { CreationUpdatesDialog } from "@/components/creation-updates-dialog";
 import { RecentCanvases } from "@/components/home-gallery";
 import { CanvasCreation } from "@/components/canvas-creation";
 import { isGameCreation } from "@/lib/game-workspace";
@@ -86,6 +87,7 @@ export function Index() {
             </div>
             <span className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-[15px]"><Sparkles className="size-4" />300</span>
             <ThemeToggle />
+            <CreationUpdatesDialog />
           </div>
         </header>
 

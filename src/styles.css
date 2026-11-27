@@ -20,6 +20,7 @@
  */
 
 @theme inline {
+  --color-update-foreground: var(--update-foreground);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -63,6 +64,8 @@
 }
 
 :root {
+  --update-foreground: oklch(0.98 0 0);
+  --update-shade: oklch(0.10 0 0);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
@@ -169,6 +172,12 @@
   --image-badge-foreground: oklch(1 0 0);
   --image-selection-foreground: oklch(1 0 0);
 }
+
+.creation-update-dialog { background: var(--update-shade); }
+.creation-update-shade { background: linear-gradient(180deg, color-mix(in oklab, var(--update-shade) 25%, transparent) 0%, color-mix(in oklab, var(--update-shade) 10%, transparent) 20%, color-mix(in oklab, var(--update-shade) 86%, transparent) 58%, var(--update-shade) 100%); }
+.creation-update-content { animation: update-reveal 240ms ease-out; }
+@keyframes update-reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .creation-update-content { animation: none; } }
 
 /* Neutral daylight surfaces preserve the workspace hierarchy and imagery. */
 :root.light {
