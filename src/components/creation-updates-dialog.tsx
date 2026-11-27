@@ -39,10 +39,10 @@ export function CreationUpdatesDialog({ children, autoOpen = false }: { children
           <DialogDescription className="mt-4 max-w-[520px] text-sm leading-6 text-update-foreground/75">{slide.description}</DialogDescription>
           {index === 2 ? <div className="mt-6 grid gap-5 sm:grid-cols-2">
             {[{ title: "图片模型", Icon: Image, models: imageModels }, { title: "视频模型", Icon: Video, models: videoModels }].map(group => <section key={group.title} className="min-w-0 border-t border-update-foreground/25 pt-3">
-              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold"><group.Icon className="size-4" />{group.title}<span className="ml-auto text-[10px] font-normal text-update-foreground/50">{group.models.length} 款</span></h3>
+              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold"><group.Icon className="size-4" />{group.title}<span className="ml-auto text-[10px] font-normal text-update-foreground/70">{group.models.length} 款</span></h3>
               <ul className="space-y-2">{group.models.map(model => <li key={model} className="break-words text-[12px] leading-5 text-update-foreground/85">{model}</li>)}</ul>
             </section>)}
-            <p className="text-[11px] leading-5 text-update-foreground/50 sm:col-span-2">模型更新展示 · 实际可用范围以创作页为准</p>
+            <p className="text-[11px] leading-5 text-update-foreground/70 sm:col-span-2">模型更新展示 · 实际可用范围以创作页为准</p>
           </div> : <Button asChild className="mt-6 border border-update-foreground/30 bg-update-foreground/10 text-update-foreground shadow-none backdrop-blur-sm hover:bg-update-foreground/20">
             <Link to="/build" search={{ mode: index === 0 ? "build" : "story" }} onClick={() => setOpen(false)}>{index === 0 ? <Gamepad2 /> : <Clapperboard />}{index === 0 ? "开始构建游戏" : "开始创作影游"}<ArrowUpRight /></Link>
           </Button>}
@@ -53,7 +53,7 @@ export function CreationUpdatesDialog({ children, autoOpen = false }: { children
           <span className={`h-[3px] w-full rounded-full ${i === index ? "bg-update-foreground" : "bg-update-foreground/25"}`} />
           <span className={`text-xs ${i === index ? "text-update-foreground" : ""}`}>{item.label}</span>
         </Button>)}</div>
-        <div className="mt-5 flex items-center justify-between"><span className="text-[10px] text-update-foreground/40">0{index + 1} / 03</span><div className="flex gap-1"><Button variant="ghost" size="icon" aria-label="上一页更新" onClick={() => setIndex((index + 2) % 3)} className="size-7 text-update-foreground/70 hover:bg-update-foreground/10 hover:text-update-foreground"><ChevronLeft /></Button><Button variant="ghost" size="icon" aria-label="下一页更新" onClick={() => setIndex((index + 1) % 3)} className="size-7 text-update-foreground/70 hover:bg-update-foreground/10 hover:text-update-foreground"><ChevronRight /></Button></div></div>
+        <div className="mt-5 flex items-center justify-between"><span className="text-[10px] text-update-foreground/65">0{index + 1} / 03</span><div className="flex gap-1"><Button variant="ghost" size="icon" aria-label="上一页更新" onClick={() => setIndex((index + 2) % 3)} className="size-7 text-update-foreground/70 hover:bg-update-foreground/10 hover:text-update-foreground"><ChevronLeft /></Button><Button variant="ghost" size="icon" aria-label="下一页更新" onClick={() => setIndex((index + 1) % 3)} className="size-7 text-update-foreground/70 hover:bg-update-foreground/10 hover:text-update-foreground"><ChevronRight /></Button></div></div>
       </footer>
     </DialogContent>
   </Dialog>;

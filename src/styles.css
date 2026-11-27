@@ -182,6 +182,8 @@
 /* Neutral daylight surfaces preserve the workspace hierarchy and imagery. */
 :root.light {
   color-scheme: light;
+  --update-foreground: oklch(0.22 0 0);
+  --update-shade: oklch(0.99 0 0);
   --background: oklch(0.985 0 0);
   --foreground: oklch(0.24 0 0);
   --card: oklch(1 0 0);
@@ -211,6 +213,9 @@
   --build: oklch(0.5 0.17 250);
   --create: oklch(0.51 0.12 65);
   --surface-deep: oklch(0.97 0 0);
+}
+:root.light .creation-update-shade {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--update-shade) 94%, transparent) 0%, color-mix(in oklab, var(--update-shade) 20%, transparent) 22%, color-mix(in oklab, var(--update-shade) 96%, transparent) 58%, var(--update-shade) 100%);
 }
 @theme inline {
   --color-link: var(--link);
